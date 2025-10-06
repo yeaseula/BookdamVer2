@@ -36,7 +36,7 @@ const Wave = styled.div`
     border-radius: 43%;
     animation: ${Drift} 7000ms infinite linear;
     @media(max-width:399px) {
-        top: 270px;
+        top: -270px;
         left: -122px;
     }
     @media (max-width: 340px) {

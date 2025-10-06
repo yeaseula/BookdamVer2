@@ -1,6 +1,6 @@
-
-import WaveBack from "./WaveBack";
-import MainSwiper from "./MainSwiper";
+"use client"
+import WaveBack from "./WaveBack"
+import MainSwiper from "./MainSwiper"
 
 export default function MainSlide() {
     return(

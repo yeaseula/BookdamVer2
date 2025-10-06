@@ -5,42 +5,9 @@
   --point-color: #6ac8d8;
   --background-color: #fffdfc;
 }
-@font-face {
-    font-family: 'AppleSDGothicNeoR00';
-    src: url('/fonts/AppleSDGothicNeoR00.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-    ascent-override: 100%;
-}
-@font-face {
-    font-family: 'AppleSDGothicNeoB00';
-    src: url('/fonts/AppleSDGothicNeoB00.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-    ascent-override: 100%;
-}
-@font-face {
-    font-family: 'AppleSDGothicNeoM00';
-    src: url('/fonts/AppleSDGothicNeoM00.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-    ascent-override: 100%;
-}
-@font-face {
-    font-family: 'AppleSDGothicNeoEB00';
-    src: url('/fonts/AppleSDGothicNeoEB00.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-    ascent-override: 100%;
-}
 html {
   font-size: 10px;
   font-size: 62.5%; /* 1rem = 10px */
-  font-family: 'AppleSDGothicNeoR00';
 }
 
 body {

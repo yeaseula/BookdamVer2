@@ -30,8 +30,8 @@ const UserName = styled.span`
 `
 
 const StyleSwiper = styled(Swiper)`
-    width: 100%;
-    margin-top: 20px;
+    width: calc(100% + 30px);
+    margin: 20px 0 0 -15px;
     .swiper-wrapper {
         align-items: center;
     }
