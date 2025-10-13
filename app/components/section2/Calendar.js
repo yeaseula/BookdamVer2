@@ -110,7 +110,6 @@ export default function Calendar() {
                     initialView="dayGridMonth"
                 />
             </FullCalBox>
-
         </section>
     )
 }

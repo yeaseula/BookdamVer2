@@ -15,6 +15,7 @@ const SliderWrap = styled.div`
     margin-top: 13px;
 `
 const StyleSwiper = styled(Swiper)`
+    overflow:visible;
     .swiper-slide { opacity: 0.5 };
     .swiper-slide-active { opacity: 1 !important; }
     .swiper-slide:focus { outline: 2px solid var(--point-color) }
@@ -41,6 +42,11 @@ const BookCover = styled.div`
         width: 100%;
         height: 100%;
     }
+`
+const EmptyBox = styled.div`
+    width: 100px;
+    aspect-ratio: 3/4;
+    background-color: #bdbdbd;
 `
 const BookDesc = styled.div`
     position: relative;
@@ -78,11 +84,17 @@ const Button = styled.button`
     display: flex;
     align-items: center;
     height: 24px;
+    line-height: 24px;
     padding: 0 4px;
     border-radius: 150px;
     text-align: center;
     font-size: 1.1rem;
     border-radius: 500px;
+    background-color: #bdbdbd;
+`
+const ButtonDark = styled(Button)`
+    background-color:var(--sub_color);
+    color:#fff;
 `
 
 export default function RecomandSwiper({books}){
@@ -111,16 +123,20 @@ export default function RecomandSwiper({books}){
                 <SwiperSlide key={book.isbn}>
                     <SwiperDepth>
                         <BookCover>
-                            <Image src={`${book.thumbnail||''}`}
-                            alt={book.title}
-                            width={'120'} height={'174'}></Image>
+                            {book.thumbnail ? (
+                                <Image src={`${book.thumbnail}`}
+                                alt={book.title}
+                                width={'120'} height={'174'}></Image>
+                            ) : (
+                                <EmptyBox></EmptyBox>
+                            )}
                         </BookCover>
                         <BookDesc>
                             <BookTitle>{book.title}</BookTitle>
                             <BookIntro>{book.contents ? book.contents.substring(0, 200) + '...' : '설명이 없습니다.'}</BookIntro>
                             <ButtonWrap>
-                                <Button><span>Wish</span></Button>
-                                <Button><span>More View</span></Button>
+                                <Button>Wish</Button>
+                                <ButtonDark>More View</ButtonDark>
                             </ButtonWrap>
                         </BookDesc>
                     </SwiperDepth>
