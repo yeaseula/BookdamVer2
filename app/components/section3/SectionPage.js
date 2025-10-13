@@ -23,7 +23,7 @@ const Title = styled.p`
 
 export default function SectionPageThree({ books }) {
     return(
-        <section className="pt-15 pb-20 pr-5 pl-5">
+        <section className="pt-20 pb-20 pr-5 pl-5">
             <h2 className="sr-only">AI가 추천하는 책 리스트</h2>
                 <TitleSection>
                     <TitleImage src={'/images/heart-chat.webp'}

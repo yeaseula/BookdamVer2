@@ -3,6 +3,7 @@ import MainSlide from "./components/mainSlide/MainBanner";
 import SectionPageOne from "./components/section1/SectionPage";
 import Calendar from "./components/section2/Calendar";
 import FetchBooks from "./components/section3/BookRecomand";
+import Footer from "./components/footer/Footer";
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
         <Calendar></Calendar>
         <FetchBooks></FetchBooks>
       </main>
+      <Footer />
     </div>
   );
 }
