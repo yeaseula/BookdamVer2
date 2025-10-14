@@ -39,9 +39,9 @@ const FooterToggle = styled.p`
     cursor: pointer;
 `
 const CopyRightDropDown = styled.ul`
-    opacity: ${(props) => props.togglestate ? '1' : '0'};
-    height: ${(props) => props.togglestate? '90px' : '0'};
-    padding-top: ${(props) => props.togglestate? '15px' : '0'};
+    opacity: ${(props) => props.$togglestate ? '1' : '0'};
+    height: ${(props) => props.$togglestate? '90px' : '0'};
+    padding-top: ${(props) => props.$togglestate? '15px' : '0'};
     transition: 0.2s
 `
 const CopyDepth = styled.li`
@@ -79,7 +79,7 @@ export default function Footer() {
             <FooterMenuCont><Link href="#"><span>개인정보처리방침</span></Link></FooterMenuCont>
         </FooterMenu>
         <FooterToggle onClick={()=>{setToggleState(!toggleState)}}>개발자 정보</FooterToggle>
-        <CopyRightDropDown togglestate={toggleState}>
+        <CopyRightDropDown $togglestate={toggleState}>
             <CopyDepth><span>이름</span> <Bar /> <span>김예슬</span></CopyDepth>
             <CopyDepth><span>git hub</span> <Bar /> <span>www.github/yeaseula</span></CopyDepth>
             <CopyDepth><span>Email</span> <Bar /> <span>kminea@naver.com</span></CopyDepth>
