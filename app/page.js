@@ -1,4 +1,3 @@
-import Image from "next/image";
 import MainSlide from "./components/mainSlide/MainBanner";
 import SectionPageOne from "./components/section1/SectionPage";
 import Calendar from "./components/section2/Calendar";
@@ -16,7 +15,6 @@ export default function Home() {
         <FetchBooks></FetchBooks>
       </main>
       <Footer />
-      <NavBar/>
     </div>
   );
 }

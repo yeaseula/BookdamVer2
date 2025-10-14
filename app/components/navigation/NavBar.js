@@ -1,7 +1,7 @@
 "use client"
 import Link from "next/link"
 import Lottie from 'lottie-react';
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const NavWrap = styled.nav`
@@ -37,7 +37,7 @@ const NavLink = styled(Link)`
     }
 `
 
-export default function NavBar({currentPage}) {
+export default function NavBar() {
     const AnimationLogos = {
         home: 'home.json',
         review: 'review.json',
@@ -46,7 +46,6 @@ export default function NavBar({currentPage}) {
         mypage: 'mypage.json'
     }
     const [animationCurrent,setAnimationCurrent] = useState([])
-    const Ref = useRef(0)
 
     useEffect(()=>{
         const Func = async (current) => {
@@ -62,17 +61,10 @@ export default function NavBar({currentPage}) {
             }
         }
 
-        if(Ref > 5) return;
         Object.keys(AnimationLogos).map((current)=>{
             Func(current)
-            Ref.current++
         })
     },[])
-
-    useEffect(()=>{
-        console.log(Ref.current)
-    },[])
-
 
     return(
         <NavWrap>
@@ -80,7 +72,7 @@ export default function NavBar({currentPage}) {
                 {animationCurrent.map(icon => {
                     const key = Object.keys(icon);
                     return <NavList key={key}>
-                        <NavLink href={`${key}`}>
+                        <NavLink href={`${key == 'home'? '/' : key}`}>
                         <Lottie
                         animationData={icon[key]}
                         loop={false}
