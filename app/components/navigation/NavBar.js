@@ -5,6 +5,12 @@ import { useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
 import styled from "styled-components";
 
+import home from '../../nav-animation/home.json'
+import review from '../../nav-animation/review.json'
+import memo from '../../nav-animation/memo.json'
+import reading from '../../nav-animation/reading.json'
+import mypage from '../../nav-animation/mypage.json'
+
 const NavWrap = styled.nav`
     max-width: 450px;
     width: 100%;
@@ -37,61 +43,52 @@ const NavLink = styled(Link)`
         color: #424242;
     }
 `
-
 export default function NavBar() {
-    const AnimationLogos = {
-        home: 'home.json',
-        review: 'review.json',
-        memo: 'memo.json',
-        reading: 'reading.json',
-        mypage: 'mypage.json'
-    }
-    const [animationCurrent,setAnimationCurrent] = useState([])
-    const lottieRef = useRef();
+
+    const animIcons = [
+        {pages:'home', name: home},
+        {pages:'review',name: review},
+        {pages:'memo', name: memo},
+        {pages:'reading', name: reading},
+        {pages:'mypage', name: mypage},
+    ]
+
+    const lottieRef = useRef({});
     const pathname = usePathname();
-    const currentPath = pathname.slice(1) || '/';
+    const currentPath = pathname.slice(1) || '/'
 
-    // useEffect(() => {
-    //     console.log('페이지 바뀜!!!', pathname)
-    //     console.log('루트!!!', currentPath)
-    // }, [pathname]);
+    useEffect(() => {
+        if (!lottieRef.current) return;
+        if (currentPath == 'mypage') return;
 
-    useEffect(()=>{
-        const Func = async (current) => {
-            try {
-                const animation = await fetch(`/nav-animation/${current}.json`);
-                if(!animation.ok) return;
-                const res = await animation.json();
-                if(!res) return;
-                setAnimationCurrent(prev=>[...prev, {[current] : res}])
+        const frame = currentPath == 'mypage' ? 0 : 80;
+
+        lottieRef.current.stop();
+        setTimeout(() => {
+            if (lottieRef.current) {
+                lottieRef.current.goToAndStop(frame, true);
             }
-            catch(err) {
-                console.error('파일 로드 실패')
-            }
-        }
+        }, 0);
+    }, [currentPath]);
 
-        Object.keys(AnimationLogos).map((current)=>{
-            Func(current)
-        })
-    },[])
 
     return(
         <NavWrap>
             <NavCont key={pathname}>
-                {animationCurrent.map(icon => {
-                    const key = Object.keys(icon);
-                    const pagename = key == 'home' ? '/' : key;
-                    //console.log(`${pagename} key값`)
-                    return <NavList key={key}>
-                        <NavLink href={`${key == 'home'? '/' : key}`}>
+                {animIcons.map((icon,idx)=>{
+                    const pagename = icon.pages == 'home' ? '/' : icon.pages;
+                    const isMypage = icon.pages == 'mypage';
+
+                    return <NavList key={icon.pages}>
+                        <NavLink href={pagename}>
                         <Lottie
-                        lottieRef={(ele)=>lottieRef.current[key] = ele}
-                        animationData={icon[key]}
-                        loop={false}
-                        autoplay={pagename == currentPath ? true : false}
-                        style={{ width: '40px', height: '40px' }}
+                            lottieRef={isMypage && lottieRef}
+                            animationData={animIcons[idx].name}
+                            loop={false}
+                            autoplay={pagename == currentPath ? true : false}
+                            className={`w-[40px] h-[40px] relative ${pagename == 'review'? 'top-[-4px]':''}`}
                         />
-                        <p>{key}</p>
+                        <p>{icon.pages}</p>
                         </NavLink>
                     </NavList>
                 })}
