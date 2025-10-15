@@ -1,7 +1,8 @@
 "use client"
 import Link from "next/link"
 import Lottie from 'lottie-react';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { usePathname } from "next/navigation";
 import styled from "styled-components";
 
 const NavWrap = styled.nav`
@@ -46,6 +47,14 @@ export default function NavBar() {
         mypage: 'mypage.json'
     }
     const [animationCurrent,setAnimationCurrent] = useState([])
+    const lottieRef = useRef();
+    const pathname = usePathname();
+    const currentPath = pathname.slice(1) || '/';
+
+    // useEffect(() => {
+    //     console.log('페이지 바뀜!!!', pathname)
+    //     console.log('루트!!!', currentPath)
+    // }, [pathname]);
 
     useEffect(()=>{
         const Func = async (current) => {
@@ -68,14 +77,18 @@ export default function NavBar() {
 
     return(
         <NavWrap>
-            <NavCont>
+            <NavCont key={pathname}>
                 {animationCurrent.map(icon => {
                     const key = Object.keys(icon);
+                    const pagename = key == 'home' ? '/' : key;
+                    //console.log(`${pagename} key값`)
                     return <NavList key={key}>
                         <NavLink href={`${key == 'home'? '/' : key}`}>
                         <Lottie
+                        lottieRef={(ele)=>lottieRef.current[key] = ele}
                         animationData={icon[key]}
                         loop={false}
+                        autoplay={pagename == currentPath ? true : false}
                         style={{ width: '40px', height: '40px' }}
                         />
                         <p>{key}</p>
