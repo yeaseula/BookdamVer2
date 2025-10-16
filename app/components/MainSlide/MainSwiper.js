@@ -1,5 +1,5 @@
 "use client";
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, A11y, Keyboard, Autoplay} from 'swiper/modules';
 import 'swiper/css';
@@ -28,7 +28,6 @@ const UserName = styled.span`
     font-size: 2.8rem;
     vertical-align: inherit;
 `
-
 const StyleSwiper = styled(Swiper)`
     width: calc(100% + 30px);
     margin: 20px 0 0 -15px;
@@ -50,8 +49,9 @@ const StyleSwiper = styled(Swiper)`
     }
 `
 
-export default function MainSwiper() {
-    const SwiperRef = useRef(null);
+export default function MainSwiper({slide}) {
+    const SwiperRef = useRef(null)
+    const slideLength = slide.length
 
     return (
         <SliderWrap>
@@ -73,17 +73,15 @@ export default function MainSwiper() {
                 slidesPerView={'auto'}
                 className='my-book-list'
             >
-                <SwiperSlide></SwiperSlide>
-                <SwiperSlide></SwiperSlide>
-                <SwiperSlide></SwiperSlide>
-                <SwiperSlide></SwiperSlide>
-                <SwiperSlide></SwiperSlide>
-                <SwiperSlide></SwiperSlide>
-                <SwiperSlide></SwiperSlide>
-                <SwiperSlide></SwiperSlide>
-                <SwiperSlide></SwiperSlide>
-                <SwiperSlide></SwiperSlide>
-                <SwiperSlide></SwiperSlide>
+                {slide.map((img)=>(
+                    <SwiperSlide key={img} style={{ backgroundImage : `url(${img})` }} />
+                ))}
+                {slideLength < 11 && Array.from({ length: 11 - slideLength }).map((_, index) => (
+                    <SwiperSlide
+                    key={`empty-${index}`}
+                    style={{ backgroundImage: `url('/images/cover-thumbnail.svg')` }}
+                    />
+                ))}
             </StyleSwiper>
         </SliderWrap>
     )

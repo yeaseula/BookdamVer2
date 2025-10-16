@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
         <StyledComponentsRegistry>
           {children}
           <NavBar />
-          </StyledComponentsRegistry>
+        </StyledComponentsRegistry>
       </body>
     </html>
   );
