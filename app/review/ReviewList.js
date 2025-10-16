@@ -3,11 +3,11 @@ import Image from "next/image"
 import Link from "next/link"
 import styled from "styled-components"
 import FloatWrite from "../components/common/Write"
+import { useEffect, useState } from "react"
 
 const ReivewWrap = styled.section`
     padding: 30px 15px 65px;
 `
-
 const ListItem = styled.div`
     padding: 12px;
     background-color: #fff;
@@ -21,7 +21,6 @@ const ListItem = styled.div`
     background-color: rgb(70, 69, 118);
     transition: all 0.2s;
 `
-
 const ListHref = styled(Link)`
     position: absolute;
     top: 0;
@@ -30,7 +29,6 @@ const ListHref = styled(Link)`
     width: 100%;
     height: 100%;
 `
-
 const Thumbnail = styled.div`
     width: 97px;
     height: 97px;
@@ -75,13 +73,20 @@ const Date = styled.p`
 `
 
 export default function ReviewList({ reviews }) {
+
+    const [count,setCount] = useState('')
+
+    useEffect(()=>{
+        setCount(reviews.length)
+    },[])
+
     return(
         <ReivewWrap>
             <h2 className="sr-only">내가 쓴 리뷰 리스트</h2>
-            <p className="total-count text-s">총 4개</p>
+            <p className="total-count text-s">총 {count}개</p>
             <div className="mt-10">
                 {reviews.map(cont=>(
-                    <ListItem key={cont.title}>
+                    <ListItem key={cont.booktitle}>
                         <ListHref href={'#'}></ListHref>
                         <Thumbnail style={{ backgroundImage: `url(${cont.bookthumbnail})` }}></Thumbnail>
                         <Content>
