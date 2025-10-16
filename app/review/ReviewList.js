@@ -6,35 +6,92 @@ import styled from "styled-components"
 const ReivewWrap = styled.section`
     padding: 30px 15px 65px;
 `
-const ReivewTitle = styled.div`
+
+const ListItem = styled.div`
+    padding: 12px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px var(--sub_color);
     display: flex;
-    justify-content: space-between;
+    gap: 10px;
+    position: relative;
+    align-items: center;
+    margin-bottom: 13px;
+    background-color: rgb(70, 69, 118);
+    transition: all 0.2s;
+`
+
+const ListHref = styled(Link)`
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+`
+
+const Thumbnail = styled.div`
+    width: 97px;
+    height: 97px;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #bdbdbd;
+    background-size: cover;
+    @media(max-width: 376px) {
+        width: 85px;
+        height: 85px;
+    }
+`
+
+const Content = styled.div`
+    width: calc(100% - 107px);
+    @media(max-width: 376px) {
+        width: calc(100% - 95px);
+    }
+`
+const Title = styled.p`
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--point-color);
+    @media(max-width: 376px) {
+        font-size: 1.5rem;
+    }
+`
+const Summary = styled.p`
+    margin-top: 5px;
+    font-size: 1.5rem;
+    color: #fff;
+    @media(max-width: 376px) {
+        font-size: 1.4rem;
+    }
+`
+const Date = styled.p`
+    margin-top: 2px;
+    font-size: 1.4rem;
+    color: #e0e0e0;
+    @media(max-width: 376px) {
+        font-size: 1.3rem;
+    }
 `
 
 export default function ReviewList({ reviews }) {
-
-    console.log(reviews[0])
-
     return(
         <ReivewWrap>
             <h2 className="sr-only">내가 쓴 리뷰 리스트</h2>
-            <ReivewTitle>
                 <p className="total-count text-s">총 4개</p>
-                <Link href={'write'} className="go-wwite-btn">
-                    <Image src={'/images/pen-fill.svg'}
-                    alt={'dd'}
-                    width={25}
-                    height={25}
-                    />
-                </Link>
-            </ReivewTitle>
-
-            <div className="my-review-list">
-                <div className="list-item empty"></div>
-                <div className="list-item empty"></div>
-                <div className="list-item empty"></div>
-                <div className="list-item empty"></div>
-            </div>
+                <div className="mt-10">
+                    {reviews.map(cont=>(
+                        <ListItem key={cont.title}>
+                            <ListHref href={'#'}></ListHref>
+                            <Thumbnail style={{ backgroundImage: `url(${cont.bookthumbnail})` }}></Thumbnail>
+                            <Content>
+                                <Title>{cont.booktitle}</Title>
+                                <Summary>{cont.bookoneline}</Summary>
+                                <Date>{cont.bookdate}</Date>
+                            </Content>
+                        </ListItem>
+                    ))}
+                </div>
         </ReivewWrap>
     )
 }

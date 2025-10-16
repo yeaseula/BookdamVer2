@@ -3,6 +3,30 @@ import ReviewList from "./ReviewList";
 export default async function ReviewPage() {
     const sheetId = '1EiQpFub62jL2VZOULwozl_f3hkz1J-wVec9rcSbR5CU';
     const gid = '1116419757';
+    const kakaoKey = '302f0421ccb82381f281e48097885ede';
+
+    const fetchBookCover = async (title,author) => {
+        try {
+            const query = `${title} ${author}`;
+            const apiUrl = `https://dapi.kakao.com/v3/search/book?target=all&query=${encodeURIComponent(query)}`;
+
+            const res = await fetch(apiUrl, {
+                headers: {
+                    Authorization: `KakaoAK ${kakaoKey}`
+                }
+            });
+            const data = await res.json();
+            const filtered = data.documents.find(book =>
+                book.title.includes(title) && book.authors.join(',').includes(author)
+            );
+
+            return (filtered || data.documents[0])?.thumbnail || '';
+
+            } catch (e) {
+                console.error('카카오 API 오류:', e);
+                return '';
+            }
+    }
 
     const loadGoogle =  async (sheetId, gid) => {
         const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=${gid}`;
@@ -63,9 +87,12 @@ export default async function ReviewPage() {
                 console.warn('날짜 파싱 실패:', rawDate);
             }
 
+            const thumbnail = await fetchBookCover(title, author);
+
             const ReviewContent = {
                 booktitle : title,
                 bookauthor : author,
+                bookthumbnail : thumbnail,
                 bookoneline : oneline,
                 bookdate : formattedDate
             }
