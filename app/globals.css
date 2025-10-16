@@ -56,3 +56,10 @@ body {
   color: var(--foreground);
   font-family: 'AppleSDGothicNeoR00' !important;
 }
+
+.sub-wrap {
+  max-width: 450px;
+  width: 100%;
+  overflow-y: auto;
+  background-color: #fff;
+}
