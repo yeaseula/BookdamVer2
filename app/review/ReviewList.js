@@ -2,6 +2,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import styled from "styled-components"
+import FloatWrite from "../components/common/Write"
 
 const ReivewWrap = styled.section`
     padding: 30px 15px 65px;
@@ -42,7 +43,6 @@ const Thumbnail = styled.div`
         height: 85px;
     }
 `
-
 const Content = styled.div`
     width: calc(100% - 107px);
     @media(max-width: 376px) {
@@ -78,20 +78,21 @@ export default function ReviewList({ reviews }) {
     return(
         <ReivewWrap>
             <h2 className="sr-only">내가 쓴 리뷰 리스트</h2>
-                <p className="total-count text-s">총 4개</p>
-                <div className="mt-10">
-                    {reviews.map(cont=>(
-                        <ListItem key={cont.title}>
-                            <ListHref href={'#'}></ListHref>
-                            <Thumbnail style={{ backgroundImage: `url(${cont.bookthumbnail})` }}></Thumbnail>
-                            <Content>
-                                <Title>{cont.booktitle}</Title>
-                                <Summary>{cont.bookoneline}</Summary>
-                                <Date>{cont.bookdate}</Date>
-                            </Content>
-                        </ListItem>
-                    ))}
-                </div>
+            <p className="total-count text-s">총 4개</p>
+            <div className="mt-10">
+                {reviews.map(cont=>(
+                    <ListItem key={cont.title}>
+                        <ListHref href={'#'}></ListHref>
+                        <Thumbnail style={{ backgroundImage: `url(${cont.bookthumbnail})` }}></Thumbnail>
+                        <Content>
+                            <Title>{cont.booktitle}</Title>
+                            <Summary>{cont.bookoneline}</Summary>
+                            <Date>{cont.bookdate}</Date>
+                        </Content>
+                    </ListItem>
+                ))}
+            <FloatWrite />
+            </div>
         </ReivewWrap>
     )
 }
