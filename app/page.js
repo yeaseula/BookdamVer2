@@ -83,12 +83,13 @@ export default async function mainHome() {
 
   const slide = googledata[0]
   const stamp = googledata[1]
+  const readingCount = slide.length
 
   return(
     <div className="common-wrap">
       <main>
-        <MainSlide slide={slide}></MainSlide>
-        <SectionPageOne></SectionPageOne>
+        <MainSlide slide={slide} readingCount={readingCount}></MainSlide>
+        <SectionPageOne readingCount={readingCount}></SectionPageOne>
         <Calendar stamp={stamp}></Calendar>
         <FetchBooks></FetchBooks>
       </main>

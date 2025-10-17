@@ -49,20 +49,26 @@ const StyleSwiper = styled(Swiper)`
     }
 `
 
-export default function MainSwiper({slide}) {
+export default function MainSwiper({slide, readingCount}) {
     const SwiperRef = useRef(null)
-    const slideLength = slide.length
+    const slideLength = readingCount
 
     return (
         <SliderWrap>
             <Text>
-                <UserName>모카</UserName>님,<br />
+                <UserName>User</UserName>님,<br />
                 오늘도 당신의 이야기를 들려주실래요?
             </Text>
+
+            {/* <div className='prev-main-slide'>이전 슬라이드</div>
+            <div className='next-slide-main'>다음 슬라이드</div> */}
             <StyleSwiper
                 modules={[Navigation, A11y, Keyboard, Autoplay]}
                 onSwiper={(swiper)=>SwiperRef.current = swiper}
-                navigation
+                navigation={{
+                    nextEl: '.next-slide-main',
+                    prevEl: '.prev-slide-main',
+                }}
                 centeredSlides={true}
                 autoplay={{
                     delay: 2500,

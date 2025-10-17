@@ -12,10 +12,10 @@ const HisBox = styled.div`
     min-height: 56px;
 `
 
-export default function ReadingHistory() {
+export default function ReadingHistory({readingCount}) {
     return (
         <HisBox>
-            <p>지금까지 <span className="reading-book font-bold">0권</span>의 책을 읽었어요!</p>
+            <p>지금까지 <span className="reading-book font-bold">{readingCount}권</span>의 책을 읽었어요!</p>
         </HisBox>
     )
 }

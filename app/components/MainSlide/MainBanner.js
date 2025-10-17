@@ -2,12 +2,12 @@
 import WaveBack from "./WaveBack"
 import MainSwiper from "./MainSwiper"
 
-export default function MainSlide({slide}) {
+export default function MainSlide({slide, readingCount}) {
     return(
         <section>
             <h2 className="sr-only bg">내가 기록한 독서리뷰 목록</h2>
             <WaveBack />
-            <MainSwiper slide={slide}/>
+            <MainSwiper slide={slide} readingCount={readingCount}/>
         </section>
     )
 }
