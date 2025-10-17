@@ -76,7 +76,7 @@ export default function NavBar() {
         <NavWrap>
             <NavCont key={pathname}>
                 {animIcons.map((icon,idx)=>{
-                    const pagename = icon.pages == 'home' ? '/' : icon.pages;
+                    const pagename = icon.pages == 'home' ? '/' : `/${icon.pages}`;
                     const isMypage = icon.pages == 'mypage';
 
                     return <NavList key={icon.pages}>
