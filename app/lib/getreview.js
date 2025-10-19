@@ -37,7 +37,7 @@ const loadGoogle =  async (sheetId, gid) => {
     return json.table.rows;
 }
 
-const myReview = async () => {
+export const myReview = async () => {
     let allReviews = []
     const rows = await loadGoogle(sheetId, gid);
 
@@ -99,6 +99,82 @@ const myReview = async () => {
     return allReviews
 }
 
-export default myReview;
+const sheetDateFormat = (rawDate) => {
+    const dateMatch = rawDate.match(/Date\((\d+),\s*(\d+),\s*(\d+)\)/);
+    if (!dateMatch) return rawDate;
+    const year = dateMatch[1];
+    const month = String(Number(dateMatch[2]) + 1).padStart(2, '0'); // 0부터 시작
+    const day = String(dateMatch[3]).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+const MyRaiting = (star) => {
+    const score = star;
+    const total = 10;
+    document.querySelector('.icons-wrap').setAttribute(
+        'aria-label',
+        `내가 준 평점: ${total}점 만점에 ${score}점`
+    );
+
+    return score
+    //별
+    // const Selectedbox = document.querySelectorAll('.icons-detail');
+    // Selectedbox.forEach((ele)=>{
+    //     const Targets = Number(ele.getAttribute('data-score'));
+    //     if(Targets <= score) {
+    //         ele.classList.add('selected')
+    //     }
+    // })
+}
+
+export const loadReviewDetail = async (title, author) => {
+    const rows = await loadGoogle(sheetId, gid);
+
+    // 제목, 작가 모두 일치하는 row 찾기
+    const review = rows.find(row =>
+        (row.c[2]?.v || '') === title && (row.c[3]?.v || '') === author
+    );
+    if (!review) {
+        console.log('리뷰 데이터를 찾을 수 없습니다.');
+        return;
+    }
+
+    // 시트 인덱스에 따라 데이터 추출
+    const cate = review.c[1]?.v || '';
+    const startDateRaw = review.c[4]?.v || '';
+    const endDateRaw = review.c[5]?.v || '';
+    const oneline = review.c[6]?.v || '';
+    const reviewTextRaw = review.c[7]?.v || '';
+    const star = review.c[8]?.v || '';
+
+    // 날짜 형식 변환
+    const startDate = sheetDateFormat(startDateRaw);
+    const endDate = sheetDateFormat(endDateRaw);
+
+    //textarea로 받은 값은 줄바꿈없이 출력됩니다. 변환필요
+    const reviewText = reviewTextRaw.replace(/\n/g, `<br>`);
+
+    // 별점
+    // MyRaiting(star);
+    // 커버 이미지 넣기
+    const thumb = await fetchBookCover(title, author);
+    // if (thumb) {
+    //     document.querySelector('.book-cover-img').style.backgroundImage = `url('${thumb}')`;
+    // }
+
+    const detailReturn = {
+        thumbnail: thumb,
+        category: cate,
+        booktitle: title,
+        bookauthor: `${author} 저`,
+        startdate: startDate,
+        enddate:endDate,
+        onelinecont: oneline,
+        reviewcont: reviewText,
+        point:star
+    }
+
+    return detailReturn
+}
 
 // const reviews = await myReview();
