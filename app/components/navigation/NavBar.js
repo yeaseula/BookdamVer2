@@ -59,9 +59,8 @@ export default function NavBar() {
 
     useEffect(() => {
         if (!lottieRef.current) return;
-        if (currentPath == 'mypage') return;
-
-        const frame = currentPath == 'mypage' ? 0 : 80;
+        if (currentPath == '/mypage') return;
+        const frame = currentPath == '/mypage' ? 0 : 80;
 
         lottieRef.current.stop();
         setTimeout(() => {
