@@ -55,7 +55,7 @@ export default function NavBar() {
 
     const lottieRef = useRef({});
     const pathname = usePathname();
-    const currentPath = pathname.slice(1) || '/'
+    const currentPath = pathname.slice(0) || '/'
 
     useEffect(() => {
         if (!lottieRef.current) return;
@@ -86,7 +86,7 @@ export default function NavBar() {
                             animationData={animIcons[idx].name}
                             loop={false}
                             autoplay={pagename == currentPath ? true : false}
-                            className={`w-[40px] h-[40px] relative ${pagename == 'review'? 'top-[-4px]':''}`}
+                            className={`w-[40px] h-[40px] relative ${pagename == '/review'? 'top-[-4px]':''}`}
                         />
                         <p>{icon.pages}</p>
                         </NavLink>
