@@ -3,8 +3,12 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --main-color: #fff4ba;
+  --main-color-light: #fffadf;
+  --sub_color: #3a3967;
+  --point-color: #6ac8d8;
+  --background-color: #fffdfc;
 }
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
