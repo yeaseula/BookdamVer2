@@ -4,7 +4,7 @@ import styled from "styled-components"
 
 interface FiledType {
     type: string;
-    placeholder: string;
+    placeholder?: string;
     name: string;
     width?: number | undefined;
     onChange?:(e:React.ChangeEvent<HTMLInputElement>)=>void;
