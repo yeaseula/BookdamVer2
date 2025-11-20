@@ -2,8 +2,9 @@
 import styled from "styled-components"
 import Image from "next/image"
 import Link from "next/link"
-import { useState } from "react"
+import React, { useState } from "react"
 import { supabase } from "../lib/supabase"
+import InputFields from "../components/form/input"
 import SignUpButton from "./components/signupButton"
 
 const SignUpWrapper = styled.section`
@@ -23,15 +24,6 @@ const Label = styled.label`
     width: 100%;
     display: block;
     > span { font-size: 12px; color: #616161 }
-`
-const Input = styled.input`
-    width: 100%;
-    height: 37px;
-    padding: 0 9px;
-    border: 1px solid #bdbdbd;
-    margin-top: 4px;
-    border-radius: 5px;
-    font-size: 14px;
 `
 const ToLoginBox = styled.div`
     margin-top: 35px;
@@ -98,26 +90,27 @@ export default function SignUp() {
             <div style={{ width: '100%', marginTop: '20px' }}>
                 <Label>
                     <span>이메일</span>
-                    <Input type="email"
-                    id="login-email"
-                    placeholder="이메일을 입력해주세요"
-                    onChange={(e)=>setEmail(e.currentTarget.value)}/>
+                    <InputFields type={"email"}
+                    name={"login-emapl"}
+                    placeholder={"이메일을 입력해주세요"}
+                    onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setEmail(e.currentTarget.value)}
+                    />
                 </Label>
                 <Label style={{ marginTop: '10px' }}>
                     <span>닉네임</span>
-                    <Input
-                    type="text"
-                    id="login-nickname"
-                    placeholder="닉네임을 입력해주세요"
-                    onChange={(e)=>setNickname(e.currentTarget.value)}/>
+                    <InputFields type={"text"}
+                    name={"login-nickname"}
+                    placeholder={"닉네임을 입력해주세요"}
+                    onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setNickname(e.currentTarget.value)}
+                    />
                 </Label>
                 <Label style={{ marginTop: '10px' }}>
                     <span>비밀번호</span>
-                    <Input
-                    type="password"
-                    id="login-pass"
-                    placeholder="8자 이상, 숫자/영문 조합해주세요"
-                    onChange={(e)=>setPassword(e.currentTarget.value)}/>
+                    <InputFields type={"text"}
+                    name={"login-pass"}
+                    placeholder={"8자 이상, 숫자/영문 조합해주세요"}
+                    onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setPassword(e.currentTarget.value)}
+                    />
                 </Label>
             </div>
 

@@ -9,6 +9,7 @@ import 'swiper/css/autoplay';
 import 'swiper/css/a11y';
 import 'swiper/css/keyboard';
 import styled from 'styled-components';
+import { supabase } from '../../lib/supabase';
 
 const SliderWrap = styled.div`
     position: relative;
@@ -52,11 +53,46 @@ const StyleSwiper = styled(Swiper)`
 export default function MainSwiper({slide, readingCount}) {
     const SwiperRef = useRef(null)
     const slideLength = readingCount
+    const [username,setUsername] = useState(null)
+
+    const fetchProfile = async () => {
+        // 현재 로그인한 유저
+        const { data: { user }, error: userError } = await supabase.auth.getUser()
+        if (userError) {
+            console.error('유저 정보 가져오기 실패:', userError)
+            return null
+        }
+        if (!user) return null
+
+        // profiles 테이블에서 조회
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('username, interests')
+            .eq('id', user.id)
+            .single()
+
+        if (error) {
+            console.error('프로필 조회 실패:', error)
+            return null
+        }
+
+        return data  // { username: '닉네임', interests: [...] }
+    }
+
+    useEffect(()=>{
+        const username = async()=>{
+            const profile = await fetchProfile();
+            if(!profile) return;
+
+            setUsername(profile.username)
+        }
+        username()
+    },[])
 
     return (
         <SliderWrap>
             <Text>
-                <UserName>User</UserName>님,<br />
+                <UserName>{username}</UserName>님,<br />
                 오늘도 당신의 이야기를 들려주실래요?
             </Text>
 
