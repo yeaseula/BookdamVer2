@@ -1,7 +1,8 @@
 "use client"
 import styled from "styled-components"
 import Image from "next/image"
-import { useState, useEffect, SetStateAction } from "react"
+import Link from "next/link"
+import { useState } from "react"
 import { supabase } from "../lib/supabase"
 import SignUpButton from "./components/signupButton"
 
@@ -13,6 +14,11 @@ const SignUpWrapper = styled.section`
     align-items: center;
     padding: 0 15px;
 `
+const Letter = styled.p`
+    letter-spacing: 2.4px;
+    margin-top: 5px;
+    font-size: 15px;
+`
 const Label = styled.label`
     width: 100%;
     display: block;
@@ -20,12 +26,24 @@ const Label = styled.label`
 `
 const Input = styled.input`
     width: 100%;
-    height: 34px;
+    height: 37px;
     padding: 0 9px;
     border: 1px solid #bdbdbd;
     margin-top: 4px;
     border-radius: 5px;
+    font-size: 14px;
 `
+const ToLoginBox = styled.div`
+    margin-top: 35px;
+    font-size: 15px;
+    color: #424242;
+    a {
+        display: inline-block;
+        margin-left: 5px;
+        text-decoration: underline;
+    }
+`
+
 export default function SignUp() {
     const [email,setEmail] = useState<string>('');
     const [password,setPassword] = useState<string>('')
@@ -75,19 +93,31 @@ export default function SignUp() {
             alt="로고"
             width={100}
             height={60} />
+            <Letter>당신의 독서리뷰 다이어리</Letter>
 
             <div style={{ width: '100%', marginTop: '20px' }}>
                 <Label>
                     <span>이메일</span>
-                    <Input type="email" id="login-email" onChange={(e)=>setEmail(e.currentTarget.value)}/>
+                    <Input type="email"
+                    id="login-email"
+                    placeholder="이메일을 입력해주세요"
+                    onChange={(e)=>setEmail(e.currentTarget.value)}/>
                 </Label>
                 <Label style={{ marginTop: '10px' }}>
                     <span>닉네임</span>
-                    <Input type="text" id="login-nickname" onChange={(e)=>setNickname(e.currentTarget.value)}/>
+                    <Input
+                    type="text"
+                    id="login-nickname"
+                    placeholder="닉네임을 입력해주세요"
+                    onChange={(e)=>setNickname(e.currentTarget.value)}/>
                 </Label>
                 <Label style={{ marginTop: '10px' }}>
                     <span>비밀번호</span>
-                    <Input type="password" id="login-pass" onChange={(e)=>setPassword(e.currentTarget.value)}/>
+                    <Input
+                    type="password"
+                    id="login-pass"
+                    placeholder="8자 이상, 숫자/영문 조합해주세요"
+                    onChange={(e)=>setPassword(e.currentTarget.value)}/>
                 </Label>
             </div>
 
@@ -97,6 +127,12 @@ export default function SignUp() {
             nickname={nickname}
             onClick={()=>handleSignUp()}
             />
+
+            <ToLoginBox>
+                <p>회원이신가요?
+                <Link href={'/login'}>로그인 하러가기</Link>
+                </p>
+            </ToLoginBox>
         </SignUpWrapper>
     )
 }
