@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import LoginButton from "./components/LoginButton";
-import { supabase } from "../lib/supabase"
+import createClient from "@/utils/supabase/client";
 
 const LoginWrapper = styled.section`
     height: 100%;
@@ -40,6 +40,7 @@ const ToSignupBox = styled.div`
 export default function Login() {
     const [email,setEmail] = useState<string>('');
     const [password,setPassword] = useState<string>('')
+    const supabase = createClient()
 
     const handleLogin = async(email:string, password:string) => {
         try {

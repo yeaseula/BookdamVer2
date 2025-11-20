@@ -16,6 +16,7 @@ const Button = styled.button<{disabled:boolean}>`
 `
 
 interface ButtonProps {
+    type: string;
     category: string;
     title: string;
     author: string;
@@ -32,6 +33,6 @@ export default function WriteButton({...props}:ButtonProps) {
     props.startDate && props.endDate && props.oneLine && props.review
 
     return (
-        <Button disabled={!isValid} onClick={props.onClick}>등록</Button>
+        <Button type={props.type} disabled={!isValid} onClick={props.onClick}>등록</Button>
     )
 }

@@ -6,6 +6,7 @@ import Image from "next/image"
 import SelectField from "../components/form/select"
 import React, { useEffect, useState } from "react"
 import WriteButton from "./components/WriteButton"
+import { supabase } from "../lib/supabase"
 
 const FieldList = styled.div`
     margin-bottom: 20px;
@@ -36,8 +37,40 @@ export default function Write() {
         setPoint(Number(target))
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async(
+        userId: string,
+        category: string,
+        title: string,
+        author: string,
+        startDate: string,
+        endDate: string,
+        memeo: string,
+        content: string,
+        point: number
+    ) => {
+        try {
+            const {data,error} = await supabase.from('reviews').insert([
+                {
+                    user_id: userId,
+                    category: category,
+                    title: title,
+                    author: author,
+                    start_date: startDate,
+                    end_date: endDate,
+                    memo: memeo,
+                    content: content,
+                    point: point
+                }
+            ])
+            if(error) {
+                console.error('등록 실패 :' + error)
 
+            } else {
+                console.log('성공')
+            }
+        } catch(err) {
+            console.error('등록 실패 :' + err)
+        }
     }
 
     return (
@@ -148,6 +181,7 @@ export default function Write() {
                 </LastField>
             </form>
             <WriteButton
+            type="button"
             category={category}
             title={title}
             author={author}
@@ -156,7 +190,7 @@ export default function Write() {
             oneLine={oneLine}
             review={review}
             point={point}
-            onClick={handleSubmit}
+            onClick={handleSubmit()}
             />
         </div>
     )
