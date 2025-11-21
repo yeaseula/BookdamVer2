@@ -3,7 +3,7 @@ import styled from "styled-components"
 import Image from "next/image"
 import Link from "next/link"
 import React, { useState } from "react"
-import { supabase } from "../lib/supabase"
+import createClient from "@/utils/supabase/client"
 import InputFields from "../components/form/input"
 import SignUpButton from "./components/signupButton"
 
@@ -40,6 +40,8 @@ export default function SignUp() {
     const [email,setEmail] = useState<string>('');
     const [password,setPassword] = useState<string>('')
     const [nickname,setNickname] = useState<string>('');
+
+    const supabase = createClient();
 
     const handleSignUp = async () => {
         try {
@@ -106,7 +108,7 @@ export default function SignUp() {
                 </Label>
                 <Label style={{ marginTop: '10px' }}>
                     <span>비밀번호</span>
-                    <InputFields type={"text"}
+                    <InputFields type={"password"}
                     name={"login-pass"}
                     placeholder={"8자 이상, 숫자/영문 조합해주세요"}
                     onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setPassword(e.currentTarget.value)}
