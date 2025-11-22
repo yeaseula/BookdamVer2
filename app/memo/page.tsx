@@ -15,7 +15,8 @@ const MemoWrap = styled.section`
 `
 
 export default function MemoPage() {
-
+    const [EditPopup,setEditPopup] = useState(false)
+    const [edit,setEdit] = useState<number[]>([])
     //data first access point
     const [currentMemo,setCurrentMemo] = useState<Memo[] | null>(null)
     const { memo } = useAuthStore() as { memo: Memo[] | null};
@@ -23,7 +24,12 @@ export default function MemoPage() {
     useEffect(()=>{
         setCurrentMemo(memo)
     },[memo])
-    //session access
+
+    const handleEdit = () => {
+        setEditPopup(true)
+    }
+
+    useEffect(()=>{console.log(edit)},[edit])
 
     return(
         <MemoWrap>
@@ -32,12 +38,15 @@ export default function MemoPage() {
                 <>
                     <MemoForm session={session}/>
                     <div className="mt-[35px]">
-                        <MemoContent memo={currentMemo}/>
+                        <MemoContent memo={currentMemo} edit={edit} setEdit={setEdit}/>
                     </div>
                     <div className="mt-[20px] flex gap-3 justify-end">
-                        <EditButton />
-                        <DeleteButton />
+                        {/* <EditButton onClick={handleEdit} edit={edit}/> */}
+                        <DeleteButton onClick={handleEdit} edit={edit}/>
                     </div>
+                    {EditPopup &&
+                        <div style={{ position: 'fixed' }}>팝업</div>
+                    }
                 </>
             )}
             {(!session || !currentMemo) && (

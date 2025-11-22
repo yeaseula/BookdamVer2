@@ -1,7 +1,7 @@
 "use client"
 import styled from "styled-components"
 import { RiCheckLine } from "@remixicon/react";
-import { useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 
 const CheckStyle = styled.input`
     appearance: none;
@@ -27,12 +27,25 @@ interface CheckProps {
     type: string;
     name: string;
     index: number;
+    edit: number[];
+    setEdit: Dispatch<SetStateAction<number[]>>
 }
 
-export default function InputCheck({ type, name, index }:CheckProps) {
+export default function InputCheck({ type, name, index, edit, setEdit }:CheckProps) {
 
     const [ischecked,setisChecked] = useState(false)
     const [focused,setFocused] = useState(false)
+
+    useEffect(()=>{
+        if(ischecked) {
+            //check state
+            setEdit(prev=>[...prev,index])
+        } else {
+            //uncheck state
+            const editResult = edit.filter((val)=>val !== index)
+            setEdit(editResult)
+        }
+    },[ischecked])
 
     return(
         <>
