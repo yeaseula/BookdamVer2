@@ -5,7 +5,7 @@ import createClient from "@/utils/supabase/client";
 interface AuthState {
     session: Session | null;
     user: User | null;
-     profile: { username: string; interests: string[] } | null;
+    profile: { username: string; interests: string[] } | null;
     setSession: (session:Session | null)=>void;
     setProfile: (profile: { username: string; interests: string[] } | null) => void
     fetchSession: ()=>Promise<void>

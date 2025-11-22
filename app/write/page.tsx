@@ -6,7 +6,8 @@ import Image from "next/image"
 import SelectField from "../components/form/select"
 import React, { useEffect, useState } from "react"
 import WriteButton from "./components/WriteButton"
-import { supabase } from "../lib/supabase"
+import createClient from "@/utils/supabase/client"
+import { useAuthStore } from "../lib/userfetch"
 
 const FieldList = styled.div`
     margin-bottom: 20px;
@@ -22,7 +23,8 @@ const FieldName = styled.span`
 `
 
 export default function Write() {
-
+    const {session} = useAuthStore();
+    const userId = session.user.id;
     const [category,setCategory] = useState<string>('')
     const [title,setTitle] = useState<string>('')
     const [author,setAuthor] = useState<string>('')
@@ -31,6 +33,7 @@ export default function Write() {
     const [oneLine,setOneLine] = useState<string>('')
     const [review,setReview] = useState<string>('')
     const [point,setPoint] = useState<number>(0)
+    const supabase = createClient()
 
     const handlePoint = (e:React.MouseEvent<HTMLButtonElement>) => {
         const target = e.currentTarget.dataset.score;
@@ -59,7 +62,7 @@ export default function Write() {
                     end_date: endDate,
                     memo: memeo,
                     content: content,
-                    point: point
+                    rating: point
                 }
             ])
             if(error) {
@@ -190,7 +193,7 @@ export default function Write() {
             oneLine={oneLine}
             review={review}
             point={point}
-            onClick={handleSubmit()}
+            onClick={()=>{handleSubmit(userId,category,title,author,startDate,endDate,oneLine,review,point)}}
             />
         </div>
     )

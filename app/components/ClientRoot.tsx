@@ -13,9 +13,10 @@ export default function ClientRoot({initialSession, initialProfile, children}:Pr
 
     const setSession = useAuthStore((state)=>state.setSession)
     const setProfile = useAuthStore((state)=>state.setProfile)
-
-    setSession(initialSession)
-    setProfile(initialProfile)
+    useEffect(()=>{
+      setSession(initialSession)
+      setProfile(initialProfile)
+    },[])
 
     return <>{children}</>
 }

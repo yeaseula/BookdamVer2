@@ -59,8 +59,7 @@ export default function MainSwiper({slide, readingCount}) {
     //const [username,setUsername] = useState(null)
 
     const {profile} = useAuthStore()
-    const username = profile?.username
-
+    const username = profile?.username;
     return (
         <SliderWrap>
             <Text>

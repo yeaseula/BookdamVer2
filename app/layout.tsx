@@ -25,7 +25,7 @@ export const metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { session, profile } = await createClient()
-  //console.log('session:🚀', profile)
+
 
   return (
     <html lang="en" className={AppleSDGothicNeo.className}>
