@@ -24,14 +24,13 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const { session, profile } = await createClient()
-
+  const { session, profile, reviews } = await createClient()
 
   return (
     <html lang="en" className={AppleSDGothicNeo.className}>
       <body>
         <StyledComponentsRegistry>
-          <ClientRoot initialSession={session} initialProfile={profile}>
+          <ClientRoot initialSession={session} initialProfile={profile} initialReview={reviews}>
             {children}
             <NavBar />
           </ClientRoot>

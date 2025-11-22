@@ -34,5 +34,15 @@ export default async function createClient() {
   .eq('id', session.user.id)
   .single();
 
-  return { supabase, session, profile }
+  const { data:reviews, error:reviewError } = await supabase
+  .from('reviews')
+  .select('*')
+  .eq('user_id', session.user.id)
+  .order('created_at', { ascending: false })
+
+  if(reviewError) {
+    console.log('review data 패치 실패', reviewError)
+  }
+
+  return { supabase, session, profile, reviews }
 }

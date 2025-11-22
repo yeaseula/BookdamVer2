@@ -24,7 +24,6 @@ const FieldName = styled.span`
 
 export default function Write() {
     const {session} = useAuthStore();
-    const userId = session.user.id;
     const [category,setCategory] = useState<string>('')
     const [title,setTitle] = useState<string>('')
     const [author,setAuthor] = useState<string>('')
@@ -39,6 +38,8 @@ export default function Write() {
         const target = e.currentTarget.dataset.score;
         setPoint(Number(target))
     }
+    if(!session.user.id) return;
+    const userId = session.user.id;
 
     const handleSubmit = async(
         userId: string,
