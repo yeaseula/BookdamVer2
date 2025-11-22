@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { Memo } from '@/app/type/Memo'
 
 export default async function createClient() {
   const cookieStore = await cookies()
@@ -44,5 +45,11 @@ export default async function createClient() {
     console.log('review data 패치 실패', reviewError)
   }
 
-  return { supabase, session, profile, reviews }
+  const { data:memo, error:memoError } = await supabase
+  .from('memo')
+  .select('*')
+  .eq('user_id', session.user.id)
+  .order('created_at', { ascending: false })
+
+  return { supabase, session, profile, reviews, memo }
 }

@@ -1,22 +1,10 @@
 "use client"
 import styled from "styled-components"
+import { ButtonStyle } from "@/app/components/form/Button.styled";
 
-const Button = styled.button<{disabled:boolean}>`
-    width: 100%;
-    height: 40px;
-    margin-top: 30px;
-    color: #fff;
-    border-radius: 5px;
-    background-color: var(--sub_color);
-    cursor: ${(props)=>props.disabled ? 'initial' : 'pointer'};
-    &:disabled {
-        background-color: #bdbdbd;
-        color: #e0e0e0;
-    }
-`
 
 interface ButtonProps {
-    type: string;
+    type: "button" | "submit" | "reset";
     category: string;
     title: string;
     author: string;
@@ -33,6 +21,10 @@ export default function WriteButton({...props}:ButtonProps) {
     props.startDate && props.endDate && props.oneLine && props.review
 
     return (
-        <Button type={props.type} disabled={!isValid} onClick={props.onClick}>등록</Button>
+        <ButtonStyle
+        type={props.type}
+        disabled={!isValid}
+        $height={40}
+        onClick={props.onClick}>등록</ButtonStyle>
     )
 }

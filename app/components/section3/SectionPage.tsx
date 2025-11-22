@@ -2,6 +2,7 @@
 import Image from "next/image"
 import RecomandSwiper from "./RecomandSwiper"
 import styled from "styled-components"
+import { useAuthStore } from "@/app/lib/userfetch"
 
 const TitleSection = styled.div`
     position: relative;
@@ -22,6 +23,9 @@ const Title = styled.p`
 `
 
 export default function SectionPageThree({ books }) {
+    const {profile} = useAuthStore()
+    const username = profile?.username;
+
     return(
         <section className="pt-20 pb-20 pr-5 pl-5">
             <h2 className="sr-only">AI가 추천하는 책 리스트</h2>
@@ -32,7 +36,7 @@ export default function SectionPageThree({ books }) {
                     height={70}
                     ></TitleImage>
                     <Title>
-                        <span className="font-bold">모카</span>님을 위해<br/>
+                        <span className="font-bold">{username}</span>님을 위해<br/>
                         AI가 추천해드려요!
                     </Title>
                     <div className="swiper-btn">

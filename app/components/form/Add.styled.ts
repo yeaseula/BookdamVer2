@@ -1,8 +1,6 @@
-"use client"
 import styled from "styled-components"
-import Image from "next/image"
 
-const AddButtonstyle = styled.button`
+export const AddButtonstyle = styled.button<{disabled: boolean}>`
     display: flex;
     align-items: center;
     justify-content: center;
@@ -15,12 +13,9 @@ const AddButtonstyle = styled.button`
     transition: all .2s;
     outline: 0;
     cursor: pointer;
+    &:disabled {
+        background-color: #bdbdbd;
+        border: 1px solid #bdbdbd;
+        color: #e0e0e0;
+    }
 `
-
-export default function AddButton({arialabel}) {
-    return(
-        <AddButtonstyle aria-label={arialabel}>
-            <Image src={'/images/add-line.svg'} width={24} height={24} alt="추가 버튼"></Image>
-        </AddButtonstyle>
-    )
-}

@@ -10,7 +10,7 @@ const CheckStyle = styled.input`
     left: 0;
     z-index: -1;
 `
-const Label = styled.label`
+const Label = styled.label<{checked:boolean, $focused: boolean}>`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -23,30 +23,31 @@ const Label = styled.label`
     opacity: ${(props)=>props.checked || props.$focused ? 1 : 0.5};
 `
 
-export default function InputCheck({ type, name }) {
-    const CheckRef = useRef(null)
-    const [checkState,setCheckState] = useState(false)
-    const [focusState,setFocusState] = useState(false)
-    const handleCheck = () => {
-        setCheckState(!checkState)
-    }
-    const handleFocus = () => {
-        setFocusState(!focusState)
-    }
+interface CheckProps {
+    type: string;
+    name: string;
+    index: number;
+}
+
+export default function InputCheck({ type, name, index }:CheckProps) {
+
+    const [ischecked,setisChecked] = useState(false)
+    const [focused,setFocused] = useState(false)
 
     return(
         <>
             <CheckStyle
             type={type}
-            onChange={()=>{handleCheck()}}
-            onFocus={()=>handleFocus()}
+            onChange={()=>setisChecked(!ischecked)}
+            onFocus={()=>setFocused(true)}
+            onBlur={()=>setFocused(false)}
             name={name}
-            id="list0"
+            id={String(index)}
             aria-label="목록 선택" />
-            <Label htmlFor={'list0'} checked={checkState} $focused={focusState}>
+            <Label htmlFor={String(index)} checked={ischecked} $focused={focused}>
                 <RiCheckLine
                     size={16}
-                    color={checkState ? '#ffffff' : '#bdbdbd'}
+                    color={ischecked ? '#ffffff' : '#bdbdbd'}
                     aria-hidden="true"
                 ></RiCheckLine>
             </Label>

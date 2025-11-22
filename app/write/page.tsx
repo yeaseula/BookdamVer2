@@ -38,7 +38,7 @@ export default function Write() {
         const target = e.currentTarget.dataset.score;
         setRating(Number(target))
     }
-    if(!session.user.id) return;
+    if(!session) return;
     const userId = session.user.id;
 
     const handleSubmit = async(
@@ -143,7 +143,7 @@ export default function Write() {
                     <div>
                         <button type="button" aria-label="2점" data-score="2" onClick={(e:React.MouseEvent<HTMLButtonElement>)=>handlePoint(e)}>
                             <Image
-                            src={`${point >= 2 ? '/images/star-fill.svg' : 'images/star-gray.svg'}`}
+                            src={`${rating >= 2 ? '/images/star-fill.svg' : 'images/star-gray.svg'}`}
                             alt=""
                             width={24}
                             height={24}
@@ -151,7 +151,7 @@ export default function Write() {
                         </button>
                         <button type="button" aria-label="4점" data-score="4" onClick={(e:React.MouseEvent<HTMLButtonElement>)=>handlePoint(e)}>
                             <Image
-                            src={`${point >= 4 ? '/images/star-fill.svg' : 'images/star-gray.svg'}`}
+                            src={`${rating >= 4 ? '/images/star-fill.svg' : 'images/star-gray.svg'}`}
                             alt=""
                             width={24}
                             height={24}
@@ -159,7 +159,7 @@ export default function Write() {
                         </button>
                         <button type="button" aria-label="6점" data-score="6" onClick={(e:React.MouseEvent<HTMLButtonElement>)=>handlePoint(e)}>
                             <Image
-                            src={`${point >= 6 ? '/images/star-fill.svg' : 'images/star-gray.svg'}`}
+                            src={`${rating >= 6 ? '/images/star-fill.svg' : 'images/star-gray.svg'}`}
                             alt=""
                             width={24}
                             height={24}
@@ -167,7 +167,7 @@ export default function Write() {
                         </button>
                         <button type="button" aria-label="8점" data-score="8" onClick={(e:React.MouseEvent<HTMLButtonElement>)=>handlePoint(e)}>
                             <Image
-                            src={`${point >= 8 ? '/images/star-fill.svg' : 'images/star-gray.svg'}`}
+                            src={`${rating >= 8 ? '/images/star-fill.svg' : 'images/star-gray.svg'}`}
                             alt=""
                             width={24}
                             height={24}
@@ -175,7 +175,7 @@ export default function Write() {
                         </button>
                         <button type="button" aria-label="10점" data-score="10" onClick={(e:React.MouseEvent<HTMLButtonElement>)=>handlePoint(e)}>
                             <Image
-                            src={`${point === 10 ? '/images/star-fill.svg' : 'images/star-gray.svg'}`}
+                            src={`${rating === 10 ? '/images/star-fill.svg' : 'images/star-gray.svg'}`}
                             alt=""
                             width={24}
                             height={24}
@@ -184,18 +184,20 @@ export default function Write() {
                     </div>
                 </LastField>
             </form>
-            <WriteButton
-            type="button"
-            category={category}
-            title={title}
-            author={author}
-            startDate={startDate}
-            endDate={endDate}
-            oneLine={oneLine}
-            review={review}
-            point={rating}
-            onClick={()=>{handleSubmit(userId,category,title,author,startDate,endDate,oneLine,review,rating)}}
-            />
+            <div className="mt-[35px]">
+                <WriteButton
+                type="button"
+                category={category}
+                title={title}
+                author={author}
+                startDate={startDate}
+                endDate={endDate}
+                oneLine={oneLine}
+                review={review}
+                point={rating}
+                onClick={()=>{handleSubmit(userId,category,title,author,startDate,endDate,oneLine,review,rating)}}
+                />
+            </div>
         </div>
     )
 }

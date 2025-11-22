@@ -2,15 +2,7 @@
 import React from "react";
 import styled from "styled-components"
 
-interface FiledType {
-    type: string;
-    placeholder?: string;
-    name: string;
-    width?: number | undefined;
-    onChange?:(e:React.ChangeEvent<HTMLInputElement>)=>void;
-}
-
-const InputField = styled.input<{$width:number | undefined}>`
+const InputField = styled.input<{$width:string | number | undefined}>`
     width: ${(props)=>props.$width || '100%'};
     border-radius: 5px;
     box-shadow: none;
@@ -32,6 +24,14 @@ const InputField = styled.input<{$width:number | undefined}>`
         border: 2px solid var(--point-color);
     }
 `
+interface FiledType {
+    type: string;
+    placeholder?: string;
+    name: string;
+    value?: string | number;
+    width?:  string | number | undefined;
+    onChange?:(e:React.ChangeEvent<HTMLInputElement>)=>void;
+}
 
 export default function InputFields({type, placeholder, name, width, onChange }:FiledType) {
     return(
