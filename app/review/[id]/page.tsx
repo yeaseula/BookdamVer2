@@ -1,5 +1,4 @@
 import ReviewDetail from "../detail/Detail"
-import { loadReviewDetail } from "../../lib/getreview";
 
 export default async function ReviewDetailServer({params}) {
     const {id} = await params;
