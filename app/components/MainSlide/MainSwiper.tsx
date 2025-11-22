@@ -11,6 +11,8 @@ import 'swiper/css/keyboard';
 import styled from 'styled-components';
 import { useAuthStore } from '../../lib/userfetch';
 import LoadingSpinner from '../common/Loading';
+import Skeleton, {SkeletonTheme} from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const SliderWrap = styled.div`
     position: relative;
@@ -62,11 +64,23 @@ export default function MainSwiper({slide, readingCount}) {
     return (
         <SliderWrap>
             <Text>
-                {username &&
-                <p><UserName>{username}</UserName>님,</p>
-                }
-                {!username && <LoadingSpinner />}
-                <p>오늘도 당신의 이야기를 들려주실래요?</p>
+                {username && (
+                    <>
+                        <p><UserName>{username}</UserName>님,</p>
+                        <p>오늘도 당신의 이야기를 들려주실래요?</p>
+                    </>
+                )}
+                {!username && (
+                    <>
+                    <SkeletonTheme width={'100px'} baseColor="#bdbdbd" highlightColor="#fff">
+                        <Skeleton count={1} />
+                    </SkeletonTheme>
+                    <SkeletonTheme width={'320px'} baseColor="#bdbdbd" highlightColor="#fff">
+                        <Skeleton count={1} />
+                    </SkeletonTheme>
+                    </>
+                )}
+
             </Text>
 
             {/* <div className='prev-main-slide'>이전 슬라이드</div>
