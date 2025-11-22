@@ -1,5 +1,4 @@
 "use client"
-import Image from "next/image"
 import Link from "next/link"
 import styled from "styled-components"
 import FloatWrite from "../components/common/Write"
@@ -7,6 +6,7 @@ import { useAuthStore } from "../lib/userfetch"
 import Skeleton,{SkeletonTheme} from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
 import { useEffect,useState } from "react"
+import Thumbnail from "./components/Thumbnail"
 
 const ReivewWrap = styled.section`
     padding: 30px 15px 65px;
@@ -31,18 +31,6 @@ const ListHref = styled(Link)`
     display: inline-block;
     width: 100%;
     height: 100%;
-`
-const Thumbnail = styled.div`
-    width: 97px;
-    height: 97px;
-    border-radius: 10px;
-    overflow: hidden;
-    background-color: #bdbdbd;
-    background-size: cover;
-    @media(max-width: 376px) {
-        width: 85px;
-        height: 85px;
-    }
 `
 const Content = styled.div`
     width: calc(100% - 107px);
@@ -83,17 +71,17 @@ export default function ReviewList() {
             <h2 className="sr-only">내가 쓴 리뷰 리스트</h2>
             {!reviews && (
                 <>
-                    <SkeletonTheme>
-                        <Skeleton height={22}></Skeleton>
+                    <SkeletonTheme baseColor="#bdbdbd" highlightColor="#fff">
+                        <Skeleton width={50} height={22} borderRadius={5} />
                     </SkeletonTheme>
                     <div className="mt-10">
-                        <SkeletonTheme>
-                            <Skeleton height={121}></Skeleton>
+                        <SkeletonTheme baseColor="#bdbdbd" highlightColor="#fff">
+                            <Skeleton height={121} borderRadius={12} />
                         </SkeletonTheme>
                     </div>
-                    <div style={{ marginTop: '13px' }}>
-                        <SkeletonTheme>
-                            <Skeleton height={121}></Skeleton>
+                    <div style={{ marginTop: '10px' }}>
+                        <SkeletonTheme baseColor="#bdbdbd" highlightColor="#fff">
+                            <Skeleton height={121} borderRadius={12}/>
                         </SkeletonTheme>
                     </div>
                 </>
@@ -105,7 +93,7 @@ export default function ReviewList() {
                     {reviews.map(cont=>(
                         <ListItem key={cont.id}>
                             <ListHref href={`review/${cont.author}-${cont.title}`}></ListHref>
-                            <Thumbnail style={{ backgroundImage: `url('')` }}></Thumbnail>
+                            <Thumbnail title={cont.title} author={cont.author}/>
                             <Content>
                                 <Title>{cont.title}</Title>
                                 <Summary>{cont.memo}</Summary>
