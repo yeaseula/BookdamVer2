@@ -1,7 +1,6 @@
 "use client"
 import { useEffect, useState } from "react";
 import styled from "styled-components"
-import Skeleton, {SkeletonTheme} from "react-loading-skeleton";
 
 const ThumbContainer = styled.div`
     width: 100%;
@@ -54,14 +53,7 @@ export default function Thumbnail({title, author}:ThumbProps) {
 
     return(
         <>
-            {!thumbnail && (
-                <SkeletonTheme baseColor="#bdbdbd" highlightColor="#fff">
-                    <Skeleton width={97} height={97} borderRadius={10} />
-                </SkeletonTheme>
-            )}
-            {thumbnail &&
             <ThumbContainer style={{ backgroundImage: `url(${thumbnail})` }} />
-            }
         </>
     )
 }

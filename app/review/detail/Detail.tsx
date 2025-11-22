@@ -5,6 +5,8 @@ import { useAuthStore } from "@/app/lib/userfetch"
 import { useEffect, useState } from "react"
 import { Review } from "@/app/type/Review"
 import Thumbnail from "../components/Thumbnail"
+import Skeleton, {SkeletonTheme} from "react-loading-skeleton"
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const ReivewWrap = styled.div`
     padding: 30px 15px 0;
@@ -89,7 +91,40 @@ export default function ReviewDetail({ title, author }) {
                 </ReviewBody>
             </>
             )}
+            {reviewArr.length === 0 && (
+                <>
+                <ReivewHead>
+                    <BookThumbnail>
+                        <Skeleton height={'100%'} borderRadius={5}/>
+                    </BookThumbnail>
+                    <BookContent>
+                        <Skeleton width={78} height={20} borderRadius={5}></Skeleton>
+                        <Skeleton width={150} height={20} borderRadius={5}></Skeleton>
+                        <Skeleton height={20} borderRadius={5}></Skeleton>
 
+                        <div className="text-[1.5rem] mt-5">
+                            <Skeleton height={20} borderRadius={5}></Skeleton>
+                            <Skeleton height={20} borderRadius={5}></Skeleton>
+                        </div>
+
+                        <div className="mt-3 text-[1.5rem]">
+                            <Skeleton height={20} borderRadius={5}></Skeleton>
+                        </div>
+                        <Skeleton height={20} borderRadius={5}></Skeleton>
+                    </BookContent>
+                </ReivewHead>
+                <ReviewBody>
+                    <div className="mb-8">
+                        <Skeleton width={300} height={20} borderRadius={5}></Skeleton>
+                        <Skeleton height={20} borderRadius={5}></Skeleton>
+                    </div>
+                    <div>
+                        <Skeleton width={300} height={20} borderRadius={5}></Skeleton>
+                        <Skeleton height={20} borderRadius={5}></Skeleton>
+                    </div>
+                </ReviewBody>
+                </>
+            )}
         </ReivewWrap>
     )
 }
