@@ -24,6 +24,16 @@ const ListItem = styled.div`
     background-color: rgb(70, 69, 118);
     transition: all 0.2s;
 `
+const BookThumbnail = styled.div`
+    width: 97px;
+    height: 97px;
+    border-radius: 10px;
+    overflow: hidden;
+    @media(max-width: 376px) {
+        width: 85px;
+        height: 85px;
+    }
+`
 const ListHref = styled(Link)`
     position: absolute;
     top: 0;
@@ -71,16 +81,16 @@ export default function ReviewList() {
             <h2 className="sr-only">내가 쓴 리뷰 리스트</h2>
             {!reviews && (
                 <>
-                    <SkeletonTheme baseColor="#bdbdbd" highlightColor="#fff">
+                    <SkeletonTheme>
                         <Skeleton width={50} height={22} borderRadius={5} />
                     </SkeletonTheme>
                     <div className="mt-10">
-                        <SkeletonTheme baseColor="#bdbdbd" highlightColor="#fff">
+                        <SkeletonTheme>
                             <Skeleton height={121} borderRadius={12} />
                         </SkeletonTheme>
                     </div>
                     <div style={{ marginTop: '10px' }}>
-                        <SkeletonTheme baseColor="#bdbdbd" highlightColor="#fff">
+                        <SkeletonTheme>
                             <Skeleton height={121} borderRadius={12}/>
                         </SkeletonTheme>
                     </div>
@@ -93,7 +103,9 @@ export default function ReviewList() {
                     {reviews.map(cont=>(
                         <ListItem key={cont.id}>
                             <ListHref href={`review/${cont.author}-${cont.title}`}></ListHref>
-                            <Thumbnail title={cont.title} author={cont.author}/>
+                            <BookThumbnail>
+                                <Thumbnail title={cont.title} author={cont.author}/>
+                            </BookThumbnail>
                             <Content>
                                 <Title>{cont.title}</Title>
                                 <Summary>{cont.memo}</Summary>

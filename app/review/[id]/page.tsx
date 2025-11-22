@@ -10,11 +10,9 @@ export default async function ReviewDetailServer({params}) {
     const bookTitle = urlArr[1]
     const bookauthor = urlArr[0]
 
-    const detail = await loadReviewDetail(bookTitle, bookauthor)
-
     return(
         <>
-            <ReviewDetail detail={detail}></ReviewDetail>
+            <ReviewDetail title={bookTitle} author={bookauthor}></ReviewDetail>
         </>
     )
 }

@@ -31,12 +31,12 @@ export default function Write() {
     const [endDate,setEndDate] = useState<string>('')
     const [oneLine,setOneLine] = useState<string>('')
     const [review,setReview] = useState<string>('')
-    const [point,setPoint] = useState<number>(0)
+    const [rating,setRating] = useState<number>(0)
     const supabase = createClient()
 
     const handlePoint = (e:React.MouseEvent<HTMLButtonElement>) => {
         const target = e.currentTarget.dataset.score;
-        setPoint(Number(target))
+        setRating(Number(target))
     }
     if(!session.user.id) return;
     const userId = session.user.id;
@@ -48,9 +48,9 @@ export default function Write() {
         author: string,
         startDate: string,
         endDate: string,
-        memeo: string,
+        memo: string,
         content: string,
-        point: number
+        rating: number
     ) => {
         try {
             const {data,error} = await supabase.from('reviews').insert([
@@ -61,9 +61,9 @@ export default function Write() {
                     author: author,
                     start_date: startDate,
                     end_date: endDate,
-                    memo: memeo,
+                    memo: memo,
                     content: content,
-                    rating: point
+                    rating: rating
                 }
             ])
             if(error) {
@@ -193,8 +193,8 @@ export default function Write() {
             endDate={endDate}
             oneLine={oneLine}
             review={review}
-            point={point}
-            onClick={()=>{handleSubmit(userId,category,title,author,startDate,endDate,oneLine,review,point)}}
+            point={rating}
+            onClick={()=>{handleSubmit(userId,category,title,author,startDate,endDate,oneLine,review,rating)}}
             />
         </div>
     )

@@ -4,16 +4,10 @@ import styled from "styled-components"
 import Skeleton, {SkeletonTheme} from "react-loading-skeleton";
 
 const ThumbContainer = styled.div`
-    width: 97px;
-    height: 97px;
-    border-radius: 10px;
-    overflow: hidden;
+    width: 100%;
+    height: 100%;
     background-color: #bdbdbd;
     background-size: cover;
-    @media(max-width: 376px) {
-        width: 85px;
-        height: 85px;
-    }
 `
 
 interface ThumbProps {
