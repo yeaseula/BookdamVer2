@@ -4,6 +4,7 @@ import MemoForm from "./components/memoForm"
 import MemoContent from "./components/memoContent"
 import DeleteButton from "./components/Delete"
 import EditButton from "./components/Edit"
+import createClient from "@/utils/supabase/client"
 import { useAuthStore } from "../lib/userfetch"
 import { Memo } from "../type/Memo"
 import { useEffect, useState } from "react"
@@ -16,20 +17,37 @@ const MemoWrap = styled.section`
 
 export default function MemoPage() {
     const [EditPopup,setEditPopup] = useState(false)
-    const [edit,setEdit] = useState<number[]>([])
+    const [edit,setEdit] = useState<string[]>([])
     //data first access point
     const [currentMemo,setCurrentMemo] = useState<Memo[] | null>(null)
     const { memo } = useAuthStore() as { memo: Memo[] | null};
     const { session } = useAuthStore()
+    const supabase = createClient()
+
     useEffect(()=>{
         setCurrentMemo(memo)
     },[memo])
 
-    const handleEdit = () => {
-        setEditPopup(true)
-    }
+    const handleEdit = async() => {
+        const { error } = await supabase
+            .from("memo")
+            .delete()
+            .in("id", edit);
 
-    useEffect(()=>{console.log(edit)},[edit])
+        if (error) {
+            console.error("삭제 실패:", error);
+            return;
+        }
+
+        alert("삭제 완료!");
+        setEdit([]);
+
+        //zustand 재업로드
+        useAuthStore.setState({
+            memo: useAuthStore.getState().memo.filter(item => !edit.includes(item.id))
+        });
+
+    }
 
     return(
         <MemoWrap>

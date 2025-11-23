@@ -2,7 +2,7 @@ import { ButtonStyle } from "@/app/components/form/Button.styled"
 
 interface DeleteProps {
     onClick:()=>void;
-    edit: number[];
+    edit: string[];
 }
 
 export default function DeleteButton({onClick,edit}:DeleteProps) {

@@ -39,6 +39,7 @@ const EmptyMessage = styled.p`
 `
 
 export default function MemoContent({memo,edit,setEdit}) {
+
     return (
         <>
             {!memo && <EmptyMessage>등록된 글이 없습니다</EmptyMessage>}
@@ -46,7 +47,7 @@ export default function MemoContent({memo,edit,setEdit}) {
                 memo.map((m:Memo,idx:number)=>(
                 <List key={`${m.title}-${idx}`}>
                     <div>
-                        <InputCheck type={'checkbox'} name={'list-check'} index={idx} edit={edit} setEdit={setEdit} />
+                        <InputCheck type={'checkbox'} name={'list-check'} index={m.id} edit={edit} setEdit={setEdit} />
                     </div>
                     <ListInfo>
                         <blockquote className="w-[100%]">

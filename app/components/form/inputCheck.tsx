@@ -26,9 +26,9 @@ const Label = styled.label<{checked:boolean, $focused: boolean}>`
 interface CheckProps {
     type: string;
     name: string;
-    index: number;
-    edit: number[];
-    setEdit: Dispatch<SetStateAction<number[]>>
+    index: string;
+    edit: string[];
+    setEdit: Dispatch<SetStateAction<string[]>>
 }
 
 export default function InputCheck({ type, name, index, edit, setEdit }:CheckProps) {
@@ -55,9 +55,9 @@ export default function InputCheck({ type, name, index, edit, setEdit }:CheckPro
             onFocus={()=>setFocused(true)}
             onBlur={()=>setFocused(false)}
             name={name}
-            id={String(index)}
+            id={index}
             aria-label="목록 선택" />
-            <Label htmlFor={String(index)} checked={ischecked} $focused={focused}>
+            <Label htmlFor={index} checked={ischecked} $focused={focused}>
                 <RiCheckLine
                     size={16}
                     color={ischecked ? '#ffffff' : '#bdbdbd'}
