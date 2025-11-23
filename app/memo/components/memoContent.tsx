@@ -38,7 +38,7 @@ const EmptyMessage = styled.p`
     padding-bottom: 10px;
 `
 
-export default function MemoContent({memo,edit,setEdit}) {
+export default function MemoContent({memo,checkId,setCheckId}) {
 
     return (
         <>
@@ -47,7 +47,7 @@ export default function MemoContent({memo,edit,setEdit}) {
                 memo.map((m:Memo,idx:number)=>(
                 <List key={`${m.title}-${idx}`}>
                     <div>
-                        <InputCheck type={'checkbox'} name={'list-check'} index={m.id} edit={edit} setEdit={setEdit} />
+                        <InputCheck type={'checkbox'} name={'list-check'} index={m.id} checkId={checkId} setCheckId={setCheckId} />
                     </div>
                     <ListInfo>
                         <blockquote className="w-[100%]">

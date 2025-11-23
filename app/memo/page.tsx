@@ -17,8 +17,9 @@ const MemoWrap = styled.section`
 `
 
 export default function MemoPage() {
-    const [EditPopup,setEditPopup] = useState(true)
-    const [edit,setEdit] = useState<string[]>([])
+    const [EditPopup,setEditPopup] = useState(false)
+    const [checkId,setCheckId] = useState<string[]>([])
+    const [editObj,setEditObj] = useState<Memo | null>(null) // 수정 할 memo 값 객체
     //data first access point
     const [currentMemo,setCurrentMemo] = useState<Memo[] | null>(null)
     const { memo } = useAuthStore() as { memo: Memo[] | null};
@@ -30,11 +31,13 @@ export default function MemoPage() {
     },[memo])
 
     const handleEdit = async() => {
-        if(edit.length > 1) {
+        if(checkId.length > 1) {
             alert('수정은 한 개씩만 선택할 수 있어요!')
             return
         }
-        if(edit.length == 1) {
+        if(checkId.length == 1) {
+            const CheckEdit = currentMemo.find((m)=>m.id===checkId[0])
+            setEditObj(CheckEdit)
             setEditPopup(true)
         }
     }
@@ -43,7 +46,7 @@ export default function MemoPage() {
         const { error } = await supabase
             .from("memo")
             .delete()
-            .in("id", edit);
+            .in("id", checkId);
 
         if (error) {
             console.error("삭제 실패:", error);
@@ -51,11 +54,11 @@ export default function MemoPage() {
         }
 
         alert("삭제 완료!");
-        setEdit([]);
+        setCheckId([]);
 
         //zustand 전역상태 재업로드
         useAuthStore.setState({
-            memo: useAuthStore.getState().memo.filter(item => !edit.includes(item.id))
+            memo: useAuthStore.getState().memo.filter(item => !checkId.includes(item.id))
         });
 
     }
@@ -67,14 +70,14 @@ export default function MemoPage() {
                 <>
                     <MemoForm session={session}/>
                     <div className="mt-[35px]">
-                        <MemoContent memo={currentMemo} edit={edit} setEdit={setEdit}/>
+                        <MemoContent memo={currentMemo} checkId={checkId} setCheckId={setCheckId}/>
                     </div>
                     <div className="mt-[20px] flex gap-3 justify-end">
-                        <EditButton onClick={handleEdit} edit={edit}/>
-                        <DeleteButton onClick={handleDelete} edit={edit}/>
+                        <EditButton onClick={handleEdit} checkId={checkId}/>
+                        <DeleteButton onClick={handleDelete} checkId={checkId}/>
                     </div>
                     {EditPopup &&
-                        <EditModal edit={edit[0]}/>
+                        <EditModal editObj={editObj}/>
                     }
                 </>
             )}

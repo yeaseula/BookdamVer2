@@ -31,8 +31,8 @@ interface textareaProps {
     onChange:(e:React.ChangeEvent<HTMLTextAreaElement>)=>void;
 }
 
-export default function TextArea({name, placeholder, height, onChange}:textareaProps) {
+export default function TextArea({name, placeholder,value, height, onChange}:textareaProps) {
     return(
-        <TextareaStyle name={name} placeholder={placeholder} $height={height} onChange={onChange} />
+        <TextareaStyle name={name} placeholder={placeholder} value={value} $height={height} onChange={onChange} />
     )
 }

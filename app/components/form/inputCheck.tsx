@@ -27,11 +27,11 @@ interface CheckProps {
     type: string;
     name: string;
     index: string;
-    edit: string[];
-    setEdit: Dispatch<SetStateAction<string[]>>
+    checkId: string[];
+    setCheckId: Dispatch<SetStateAction<string[]>>
 }
 
-export default function InputCheck({ type, name, index, edit, setEdit }:CheckProps) {
+export default function InputCheck({ type, name, index, checkId, setCheckId }:CheckProps) {
 
     const [ischecked,setisChecked] = useState(false)
     const [focused,setFocused] = useState(false)
@@ -39,11 +39,11 @@ export default function InputCheck({ type, name, index, edit, setEdit }:CheckPro
     useEffect(()=>{
         if(ischecked) {
             //check state
-            setEdit(prev=>[...prev,index])
+            setCheckId(prev=>[...prev,index])
         } else {
             //uncheck state
-            const editResult = edit.filter((val)=>val !== index)
-            setEdit(editResult)
+            const editResult = checkId.filter((val)=>val !== index)
+            setCheckId(editResult)
         }
     },[ischecked])
 

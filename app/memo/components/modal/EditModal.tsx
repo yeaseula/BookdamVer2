@@ -1,9 +1,11 @@
 "use client"
 import styled from "styled-components"
+import { Memo } from "@/app/type/Memo"
 import { useState } from "react"
 import InputFields from "@/app/components/form/input"
 import TextArea from "@/app/components/form/textarea"
 import EditModalButton from "./EditButton"
+import createClient from "@/utils/supabase/client"
 
 const Modal = styled.section`
     max-width: 400px;
@@ -33,13 +35,45 @@ const ModalBack = styled.div`
 `
 
 interface ModalProps {
-    edit: string
+    editObj: Memo
 }
 
-export default function EditModal({edit}:ModalProps) {
-    const [modalTitle,setModalTitle] = useState<string>('')
-    const [modalPage,setModalPage] = useState<number | null>(null)
-    const [modalContent,setModalContent] = useState<string>('')
+export default function EditModal({editObj}:ModalProps) {
+    const [modalTitle,setModalTitle] = useState<string>(editObj.title)
+    const [modalPage,setModalPage] = useState<number | null>(editObj.page)
+    const [modalContent,setModalContent] = useState<string>(editObj.content)
+    const editingId = editObj.id
+    const supabase = createClient()
+
+    const handleModalEdit = async() => {
+        const { data, error } = await supabase
+            .from("memo")
+            .update({
+            modalTitle,
+            modalPage,
+            modalContent
+            })
+            .eq("id", editingId);
+
+        if (error) {
+            console.error(error);
+            alert("수정 실패");
+            return;
+        }
+
+        // UI 리스트도 바로 수정해서 반영
+        // useAuthStore.setState({
+        //     memo: useAuthStore.getState().memo.filter(item => !checkId.includes(item.id))
+        // });
+
+        // setMemoList((prev) =>
+        //     prev.map((m) =>
+        //     m.id === editingId ? { ...m, title, page, content } : m
+        //     )
+        // );
+
+        // setIsEditModalOpen(false);
+    }
 
     return(
         <>
@@ -62,7 +96,7 @@ export default function EditModal({edit}:ModalProps) {
                     placeholder="페이지"
                     name="modalpage"
                     width="calc((100% - 7px) / 2)"
-                    value={modalPage ?? 0}
+                    value={modalPage ?? ''}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setModalPage(Number(e.target.value))
                     }
@@ -82,6 +116,7 @@ export default function EditModal({edit}:ModalProps) {
                 modalTitle={modalTitle}
                 modalPage={modalPage}
                 modalContent={modalContent}
+                onClick={handleModalEdit}
                 />
             </div>
         </Modal>

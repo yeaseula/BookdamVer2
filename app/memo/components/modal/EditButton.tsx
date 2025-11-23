@@ -4,11 +4,11 @@ interface EditModalProps {
 
 }
 
-export default function EditModalButton({modalTitle,modalPage,modalContent}) {
+export default function EditModalButton({modalTitle,modalPage,modalContent,onClick}) {
 
     const isValid = modalTitle && modalPage && modalContent
 
     return(
-        <ButtonStyle disabled={!isValid} $height={37}>저장</ButtonStyle>
+        <ButtonStyle disabled={!isValid} $height={37} onClick={onClick}>저장</ButtonStyle>
     )
 }

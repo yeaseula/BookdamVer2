@@ -33,12 +33,13 @@ interface FiledType {
     onChange?:(e:React.ChangeEvent<HTMLInputElement>)=>void;
 }
 
-export default function InputFields({type, placeholder, name, width, onChange }:FiledType) {
+export default function InputFields({type, placeholder, name, value, width, onChange }:FiledType) {
     return(
         <InputField
         type={type}
         placeholder={placeholder}
         name={name}
+        value={value}
         onChange={onChange}
         $width={width} />
     )
