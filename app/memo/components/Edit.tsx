@@ -2,7 +2,7 @@ import { ButtonStyle } from "@/app/components/form/Button.styled"
 
 interface EditProps {
     onClick:()=>void;
-    edit: number[];
+    edit: string[];
 }
 
 export default function EditButton({onClick,edit}:EditProps) {

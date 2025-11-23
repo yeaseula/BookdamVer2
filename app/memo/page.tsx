@@ -4,6 +4,7 @@ import MemoForm from "./components/memoForm"
 import MemoContent from "./components/memoContent"
 import DeleteButton from "./components/Delete"
 import EditButton from "./components/Edit"
+import EditModal from "./components/modal/EditModal"
 import createClient from "@/utils/supabase/client"
 import { useAuthStore } from "../lib/userfetch"
 import { Memo } from "../type/Memo"
@@ -16,7 +17,7 @@ const MemoWrap = styled.section`
 `
 
 export default function MemoPage() {
-    const [EditPopup,setEditPopup] = useState(false)
+    const [EditPopup,setEditPopup] = useState(true)
     const [edit,setEdit] = useState<string[]>([])
     //data first access point
     const [currentMemo,setCurrentMemo] = useState<Memo[] | null>(null)
@@ -29,6 +30,16 @@ export default function MemoPage() {
     },[memo])
 
     const handleEdit = async() => {
+        if(edit.length > 1) {
+            alert('수정은 한 개씩만 선택할 수 있어요!')
+            return
+        }
+        if(edit.length == 1) {
+            setEditPopup(true)
+        }
+    }
+
+    const handleDelete = async() => {
         const { error } = await supabase
             .from("memo")
             .delete()
@@ -42,7 +53,7 @@ export default function MemoPage() {
         alert("삭제 완료!");
         setEdit([]);
 
-        //zustand 재업로드
+        //zustand 전역상태 재업로드
         useAuthStore.setState({
             memo: useAuthStore.getState().memo.filter(item => !edit.includes(item.id))
         });
@@ -59,11 +70,11 @@ export default function MemoPage() {
                         <MemoContent memo={currentMemo} edit={edit} setEdit={setEdit}/>
                     </div>
                     <div className="mt-[20px] flex gap-3 justify-end">
-                        {/* <EditButton onClick={handleEdit} edit={edit}/> */}
-                        <DeleteButton onClick={handleEdit} edit={edit}/>
+                        <EditButton onClick={handleEdit} edit={edit}/>
+                        <DeleteButton onClick={handleDelete} edit={edit}/>
                     </div>
                     {EditPopup &&
-                        <div style={{ position: 'fixed' }}>팝업</div>
+                        <EditModal edit={edit[0]}/>
                     }
                 </>
             )}
