@@ -61,6 +61,11 @@ export default function MemoPage() {
             memo: useAuthStore.getState().memo.filter(item => !checkId.includes(item.id))
         });
 
+        checkId.map((number)=>(
+            useAuthStore.getState().removeData('memo',number)
+        ))
+
+
     }
 
     return(
