@@ -62,7 +62,7 @@ export const useAuthStore = create<AuthState>((set,get)=>({
         set({session, user: session?.user ?? null})
     },
     setData: (key, items) => set({ [key]: items } as any),
-    addData: (key, item) => set({ [key]: [...get()[key], item] } as any),
+    addData: (key, item) => set({ [key]: [item, ...get()[key]] } as any),
     updateData: (key, item) => set({ [key]: get()[key].map((i: any) => i.id === item.id ? item : i) } as any),
     removeData: (key, id) => set({ [key]: get()[key].filter((i: any) => i.id !== id) } as any),
 

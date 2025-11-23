@@ -64,8 +64,6 @@ export default function MemoPage() {
         checkId.map((number)=>(
             useAuthStore.getState().removeData('memo',number)
         ))
-
-
     }
 
     return(

@@ -5,6 +5,7 @@ import InputFields from "../../components/form/input"
 import TextArea from "../../components/form/textarea"
 import { useState } from "react"
 import createClient from "@/utils/supabase/client"
+import { Memo, useAuthStore } from "@/app/lib/userfetch"
 
 const FormWrap = styled.div`
     display: flex;
@@ -34,17 +35,23 @@ export default function MemoForm({session}) {
                     page,
                     content,
                 },
-            ])
-            if (error) {
-                console.error("등록 실패 :", error)
-            } else {
-                alert("성공")
-                setTitle("")
-                setPage(null)
-                setContent("")
-            }
-        } catch (err) {
-            console.error("등록 실패 :", err)
+            ]).select();
+
+            if (error) throw error;
+
+            const newMemo: Memo = data?.[0]
+            if(!newMemo) return;
+
+            //zustand 전역 업로드
+            useAuthStore.getState().addData<Memo>('memo',newMemo)
+
+            alert("성공")
+            //필드 초기화
+            setTitle("")
+            setPage(null)
+            setContent("")
+        } catch (error) {
+            console.error("등록 실패 :", error)
         }
     }
 
