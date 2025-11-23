@@ -7,7 +7,7 @@ import EditButton from "./components/Edit"
 import EditModal from "./components/modal/EditModal"
 import createClient from "@/utils/supabase/client"
 import { useAuthStore } from "../lib/userfetch"
-import { Memo } from "../type/Memo"
+import { Memo } from "../lib/userfetch"
 import { useEffect, useState } from "react"
 import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'

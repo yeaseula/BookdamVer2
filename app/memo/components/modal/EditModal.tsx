@@ -1,6 +1,6 @@
 "use client"
 import styled from "styled-components"
-import { Memo } from "@/app/type/Memo"
+import { Memo } from "@/app/lib/userfetch"
 import { useState } from "react"
 import InputFields from "@/app/components/form/input"
 import TextArea from "@/app/components/form/textarea"

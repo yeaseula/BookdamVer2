@@ -1,8 +1,7 @@
 "use client"
 import styled from "styled-components"
 import InputCheck from "../../components/form/inputCheck"
-import { useEffect, useState } from "react"
-import { Memo } from "@/app/type/Memo"
+import { Memo } from "@/app/lib/userfetch"
 
 const List = styled.div`
     width: 100%;

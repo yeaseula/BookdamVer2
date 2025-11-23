@@ -4,7 +4,6 @@ import AddButton from "./Add"
 import InputFields from "../../components/form/input"
 import TextArea from "../../components/form/textarea"
 import { useState } from "react"
-import { useAuthStore } from "../../lib/userfetch"
 import createClient from "@/utils/supabase/client"
 
 const FormWrap = styled.div`

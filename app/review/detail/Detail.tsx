@@ -3,9 +3,9 @@ import styled from "styled-components"
 import StarRaiting from "./StarRating"
 import { useAuthStore } from "@/app/lib/userfetch"
 import { useEffect, useState } from "react"
-import { Review } from "@/app/type/Review"
+import { Reviews } from "@/app/lib/userfetch"
 import Thumbnail from "../components/Thumbnail"
-import Skeleton, {SkeletonTheme} from "react-loading-skeleton"
+import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
 
 const ReivewWrap = styled.div`
@@ -43,8 +43,8 @@ const ReviewBody = styled.section`
 `
 export default function ReviewDetail({ title, author }) {
 
-    const [reviewArr,setReviewArr] = useState<Review[] | null>([])
-    const { reviews } = useAuthStore() as { reviews: Review[] | null}
+    const [reviewArr,setReviewArr] = useState<Reviews[] | null>([])
+    const { reviews } = useAuthStore() as { reviews: Reviews[] | null}
 
     useEffect(()=>{
         if(!reviews) return;
