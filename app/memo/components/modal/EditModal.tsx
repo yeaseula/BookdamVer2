@@ -102,14 +102,24 @@ export default function EditModal({editObj,setEditPopup,setCheckId}:ModalProps) 
                         }
                     />
                     <InputFields
-                        type="number"
+                        type="text"
                         placeholder="페이지"
                         name="modalpage"
                         width="calc((100% - 7px) / 2)"
                         value={modalPage ?? ''}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            setModalPage(Number(e.target.value))
-                        }
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
+                        const value = e.target.value;
+                            if (value === '') {
+                                setModalPage(null);
+                                return;
+                            }
+                            if (/^\d+$/.test(value)) {
+                                setModalPage(Number(value));
+                            } else {
+                                alert('숫자만 입력 가능합니다!');
+                            }
+
+                        }}
                     />
                     <TextArea
                         name="memo-content"

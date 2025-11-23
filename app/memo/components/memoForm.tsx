@@ -3,7 +3,7 @@ import styled from "styled-components"
 import AddButton from "./Add"
 import InputFields from "../../components/form/input"
 import TextArea from "../../components/form/textarea"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import createClient from "@/utils/supabase/client"
 import { Memo, useAuthStore } from "@/app/lib/userfetch"
 
@@ -68,14 +68,23 @@ export default function MemoForm({session}) {
                 }
             />
             <InputFields
-                type="number"
+                type="text"
                 placeholder="페이지"
                 name="bookpage"
                 width="calc((100% - 47px) / 2)"
                 value={page ?? ""}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setPage(Number(e.target.value))
-                }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
+                    const value = e.target.value;
+                    if (value === '') {
+                        setPage(null);
+                        return;
+                    }
+                    if (/^\d+$/.test(value)) {
+                        setPage(Number(value));
+                    } else {
+                        alert('숫자만 입력 가능합니다!');
+                    }
+                }}
             />
             <AddButton
                 arialabel="기억에 남는 구절 추가 버튼"
