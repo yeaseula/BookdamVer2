@@ -1,11 +1,12 @@
 "use client"
 import styled from "styled-components"
 import { Memo } from "@/app/lib/userfetch"
-import { useState } from "react"
+import { Dispatch, SetStateAction, useState } from "react"
 import InputFields from "@/app/components/form/input"
 import TextArea from "@/app/components/form/textarea"
 import EditModalButton from "./EditButton"
 import createClient from "@/utils/supabase/client"
+import { useAuthStore } from "@/app/lib/userfetch"
 
 const Modal = styled.section`
     max-width: 400px;
@@ -35,25 +36,29 @@ const ModalBack = styled.div`
 `
 
 interface ModalProps {
+    setEditPopup: Dispatch<SetStateAction<boolean>>
+    setCheckId: Dispatch<SetStateAction<string[]>>
     editObj: Memo
 }
 
-export default function EditModal({editObj}:ModalProps) {
+export default function EditModal({editObj,setEditPopup,setCheckId}:ModalProps) {
     const [modalTitle,setModalTitle] = useState<string>(editObj.title)
     const [modalPage,setModalPage] = useState<number | null>(editObj.page)
     const [modalContent,setModalContent] = useState<string>(editObj.content)
     const editingId = editObj.id
     const supabase = createClient()
 
-    const handleModalEdit = async() => {
+    const handleModalEdit = async () => {
         const { data, error } = await supabase
             .from("memo")
             .update({
-            modalTitle,
-            modalPage,
-            modalContent
+            title: modalTitle,
+            page: modalPage,
+            content: modalContent,
+            updated_at: new Date().toISOString()
             })
-            .eq("id", editingId);
+            .eq("id", editingId)
+            .select();
 
         if (error) {
             console.error(error);
@@ -61,19 +66,17 @@ export default function EditModal({editObj}:ModalProps) {
             return;
         }
 
-        // UI 리스트도 바로 수정해서 반영
-        // useAuthStore.setState({
-        //     memo: useAuthStore.getState().memo.filter(item => !checkId.includes(item.id))
-        // });
+        const updatedMemo:Memo = data?.[0];
+        if (!updatedMemo) return;
 
-        // setMemoList((prev) =>
-        //     prev.map((m) =>
-        //     m.id === editingId ? { ...m, title, page, content } : m
-        //     )
-        // );
+        // Zustand 상태 업데이트
+        useAuthStore.getState().updateData<Memo>('memo',updatedMemo);
 
-        // setIsEditModalOpen(false);
-    }
+        // setShowModal(false)
+        setEditPopup(false)
+        setCheckId([])
+    };
+
 
     return(
         <>

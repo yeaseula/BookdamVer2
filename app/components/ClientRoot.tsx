@@ -2,6 +2,8 @@
 import { useEffect } from "react"
 import { useAuthStore } from "../lib/userfetch"
 import { Session } from "@supabase/supabase-js"
+import { Reviews } from "../lib/userfetch"
+import { Memo } from "../lib/userfetch"
 
 interface Props {
   initialSession: Session | null
@@ -15,13 +17,13 @@ export default function ClientRoot({initialSession, initialProfile, initialRevie
 
     const setSession = useAuthStore((state)=>state.setSession)
     const setProfile = useAuthStore((state)=>state.setProfile)
-    const setReviews = useAuthStore((state)=>state.setReviews)
-    const setMemo = useAuthStore((state)=>state.setMemo)
+    const setData = useAuthStore((state)=>state.setData)
+
     useEffect(()=>{
       setSession(initialSession)
       setProfile(initialProfile)
-      setReviews(initialReview)
-      setMemo(initialMemo)
+      setData<Reviews>('reviews',initialReview)
+      setData<Memo>('memo',initialMemo)
     },[])
 
     return <>{children}</>

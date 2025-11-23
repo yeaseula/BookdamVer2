@@ -39,10 +39,12 @@ interface AuthState {
     profile: { username: string; interests: string[] } | null;
     reviews: Reviews[];
     memo: Memo[];
-    setSession: (session:Session | null)=>void;
-    setProfile: (profile: { username: string; interests: string[] } | null) => void
-    setReviews: (reviews: Reviews[]) => void;
-    setMemo: (memo: Memo[]) => void;
+    setSession: (session: Session | null) => void;
+    setProfile: (profile: { username: string; interests: string[] } | null) => void;
+    setData: <T extends { id: string }>(key: 'memo' | 'reviews', items: T[]) => void;
+    addData: <T extends { id: string }>(key: 'memo' | 'reviews', item: T) => void;
+    updateData: <T extends { id: string }>(key: 'memo' | 'reviews', item: T) => void;
+    removeData: (key: 'memo' | 'reviews', id: string) => void;
     fetchSession: ()=>Promise<void>
 }
 
@@ -54,34 +56,14 @@ export const useAuthStore = create<AuthState>((set,get)=>({
     memo: [],
     setSession:(session)=>set({session, user: session?.user ?? null}),
     setProfile: (profile) => set({ profile }),
-    setReviews: (reviews)=>set({reviews}),
-    setMemo: (memo)=>set({memo}),
     fetchSession: async()=>{
         const supabase = createClient()
         const {data: {session}} = await supabase.auth.getSession()
         set({session, user: session?.user ?? null})
     },
-
-    addReview: (review: Reviews) =>
-        set({ reviews: [...get().reviews, review] }),
-
-    updateReview: (updated: Reviews) =>
-        set({
-            reviews: get().reviews.map(r => r.id === updated.id ? updated : r)
-        }),
-
-    removeReview: (id: string) =>
-        set({ reviews: get().reviews.filter(r => r.id !== id) }),
-
-    addMemo: (memo: Memo) =>
-        set({ memo: [...get().memo, memo] }),
-
-    updateMemo: (updated: Memo) =>
-        set({
-            memo: get().memo.map(m => m.id === updated.id ? updated : m)
-        }),
-
-    removeMemo: (id: string) =>
-        set({ memo: get().memo.filter(m => m.id !== id) }),
+    setData: (key, items) => set({ [key]: items } as any),
+    addData: (key, item) => set({ [key]: [...get()[key], item] } as any),
+    updateData: (key, item) => set({ [key]: get()[key].map((i: any) => i.id === item.id ? item : i) } as any),
+    removeData: (key, id) => set({ [key]: get()[key].filter((i: any) => i.id !== id) } as any),
 
 }))

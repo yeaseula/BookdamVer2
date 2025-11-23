@@ -77,7 +77,7 @@ export default function MemoPage() {
                         <DeleteButton onClick={handleDelete} checkId={checkId}/>
                     </div>
                     {EditPopup &&
-                        <EditModal editObj={editObj}/>
+                        <EditModal editObj={editObj} setEditPopup={setEditPopup} setCheckId={setCheckId}/>
                     }
                 </>
             )}
