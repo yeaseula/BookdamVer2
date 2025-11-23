@@ -5,6 +5,7 @@ import { Dispatch, SetStateAction, useState } from "react"
 import InputFields from "@/app/components/form/input"
 import TextArea from "@/app/components/form/textarea"
 import EditModalButton from "./EditButton"
+import EditCloseButton from "./EditCloseButton"
 import createClient from "@/utils/supabase/client"
 import { useAuthStore } from "@/app/lib/userfetch"
 
@@ -77,50 +78,58 @@ export default function EditModal({editObj,setEditPopup,setCheckId}:ModalProps) 
         setCheckId([])
     };
 
+    const handleClose = () => {
+        setEditPopup(false)
+        setCheckId([])
+    }
+
 
     return(
         <>
         <ModalBack />
         <Modal>
-            <h2 className="mb-8 text-center font-bold text-3xl">메모 수정하기</h2>
-            <div className="flex flex-wrap gap-[7px]">
-                <InputFields
-                    type="text"
-                    placeholder="책 제목"
-                    name="modaltitle"
-                    width="calc((100% - 7px) / 2)"
-                    value={modalTitle}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setModalTitle(e.target.value)
-                    }
-                />
-                <InputFields
-                    type="number"
-                    placeholder="페이지"
-                    name="modalpage"
-                    width="calc((100% - 7px) / 2)"
-                    value={modalPage ?? ''}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setModalPage(Number(e.target.value))
-                    }
-                />
-                <TextArea
-                    name="memo-content"
-                    placeholder="100자 이내로 입력하세요."
-                    height={90}
-                    value={modalContent}
-                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                        setModalContent(e.target.value)
-                    }
-                />
-            </div>
-            <div className="mt-8">
-                <EditModalButton
-                modalTitle={modalTitle}
-                modalPage={modalPage}
-                modalContent={modalContent}
-                onClick={handleModalEdit}
-                />
+            <div className="relative">
+                <h2 className="mb-8 text-center font-bold text-3xl">메모 수정하기</h2>
+                <div className="flex flex-wrap gap-[7px]">
+                    <InputFields
+                        type="text"
+                        placeholder="책 제목"
+                        name="modaltitle"
+                        width="calc((100% - 7px) / 2)"
+                        value={modalTitle}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setModalTitle(e.target.value)
+                        }
+                    />
+                    <InputFields
+                        type="number"
+                        placeholder="페이지"
+                        name="modalpage"
+                        width="calc((100% - 7px) / 2)"
+                        value={modalPage ?? ''}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setModalPage(Number(e.target.value))
+                        }
+                    />
+                    <TextArea
+                        name="memo-content"
+                        placeholder="100자 이내로 입력하세요."
+                        height={90}
+                        value={modalContent}
+                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                            setModalContent(e.target.value)
+                        }
+                    />
+                </div>
+                <EditCloseButton onClick={handleClose} />
+                <div className="mt-8">
+                    <EditModalButton
+                    modalTitle={modalTitle}
+                    modalPage={modalPage}
+                    modalContent={modalContent}
+                    onClick={handleModalEdit}
+                    />
+                </div>
             </div>
         </Modal>
         </>
