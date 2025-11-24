@@ -6,7 +6,8 @@ import ClientRoot from "./components/ClientRoot";
 import NavBar from "./components/navigation/NavBar";
 import createClient from "@/utils/supabase/server";
 import { AppleSDGothicNeo } from "@/public/fonts/fonts";
-import Header from "./components/header/Header";
+import { ToastContainer } from "react-toastify";
+import Toast from "./components/modal/Toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,7 +38,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           initialReview={reviews}
           initialMemo={memo}
           >
-
+            <ToastContainer></ToastContainer>
+            <Toast></Toast>
             {children}
             <NavBar />
           </ClientRoot>

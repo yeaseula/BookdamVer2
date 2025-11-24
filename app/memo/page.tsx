@@ -11,6 +11,7 @@ import { Memo } from "../lib/userfetch"
 import { useEffect, useState } from "react"
 import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
+import { useToastStore } from "../lib/useToastStore"
 
 const MemoWrap = styled.section`
     padding: 80px 15px 65px;
@@ -25,6 +26,7 @@ export default function MemoPage() {
     const { memo } = useAuthStore() as { memo: Memo[] | null};
     const { session } = useAuthStore()
     const supabase = createClient()
+    const {setToast} = useToastStore()
 
     useEffect(()=>{
         setCurrentMemo(memo)
