@@ -90,7 +90,6 @@ export default function ReviewDetail({title, author}) {
                         <p dangerouslySetInnerHTML={{ __html: reviewArr[0].content }}></p>
                     </div>
                 </ReviewBody>
-                수정삭제
             </>
             )}
             {reviewArr.length === 0 && (

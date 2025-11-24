@@ -6,6 +6,7 @@ import { RiArrowLeftLine } from "@remixicon/react"
 import { useHeaderStore } from "@/app/lib/useHeaderStore"
 import { usePathname } from "next/navigation"
 import { useEffect } from "react"
+import HeaderButton from "./HeaderButton"
 
 const Container = styled.header`
     position: fixed;
@@ -41,7 +42,6 @@ const Title = styled.p`
 `
 
 const HEADER_CONFIG = {
-    '/': { title: '', type: 'none' },
     '/review': { title: '나의 리뷰', type: 'normal' },
     '/memo': { title: '기억에 남는 구절', type: 'normal' },
     '/profile': { title: '프로필', type: 'normal' },
@@ -59,22 +59,18 @@ export default function Header() {
             return
         }
 
-        if (pathname.startsWith('/review/')) {
-            setHeader('리뷰 상세', 'detail')
-            return
-        }
-
     }, [pathname, setHeader])
 
-        if(type !== 'none') {
-            return (
-                <Container>
-                    <Depth>
-                        <Link href={''}><RiArrowLeftLine size={20}></RiArrowLeftLine></Link>
-                        <Title>{title}</Title>
-                    </Depth>
-                </Container>
-            )
-        }
+    if(type === 'detail') {
+        return (
+            <Container>
+                <Depth>
+                    <Link href={''}><RiArrowLeftLine size={20}></RiArrowLeftLine></Link>
+                    <Title>{title}</Title>
+                    <HeaderButton></HeaderButton>
+                </Depth>
+            </Container>
+        )
+    }
 
 }

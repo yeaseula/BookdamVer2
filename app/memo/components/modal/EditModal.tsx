@@ -8,6 +8,7 @@ import EditModalButton from "./EditButton"
 import EditCloseButton from "./EditCloseButton"
 import createClient from "@/utils/supabase/client"
 import { useAuthStore } from "@/app/lib/userfetch"
+import ModalBack from "@/app/components/modal/ModalBack"
 
 const Modal = styled.section`
     max-width: 400px;
@@ -23,17 +24,6 @@ const Modal = styled.section`
     background-color: #fff;
     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
     padding: 25px 15px;
-`
-const ModalBack = styled.div`
-    width: 100%;
-    max-width: 450px;
-    height: 100%;
-    background-color: rgba(0,0,0, 0.15);
-    position: fixed;
-    top:0;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 99;
 `
 
 interface ModalProps {
@@ -83,10 +73,9 @@ export default function EditModal({editObj,setEditPopup,setCheckId}:ModalProps) 
         setCheckId([])
     }
 
-
     return(
         <>
-        <ModalBack />
+        <ModalBack onClick={handleClose}/>
         <Modal>
             <div className="relative">
                 <h2 className="mb-8 text-center font-bold text-3xl">메모 수정하기</h2>
