@@ -13,7 +13,7 @@ import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
 
 const MemoWrap = styled.section`
-    padding: 30px 15px 65px;
+    padding: 80px 15px 65px;
 `
 
 export default function MemoPage() {

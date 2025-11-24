@@ -5,11 +5,11 @@ import FloatWrite from "../components/common/Write"
 import { useAuthStore } from "../lib/userfetch"
 import Skeleton,{SkeletonTheme} from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
-import { useEffect,useState } from "react"
+
 import Thumbnail from "./components/Thumbnail"
 
 const ReivewWrap = styled.section`
-    padding: 30px 15px 65px;
+    padding: 80px 15px 65px;
 `
 const ListItem = styled.div`
     padding: 12px;

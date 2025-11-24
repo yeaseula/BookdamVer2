@@ -4,6 +4,7 @@ import { useAuthStore } from "../lib/userfetch"
 import { Session } from "@supabase/supabase-js"
 import { Reviews } from "../lib/userfetch"
 import { Memo } from "../lib/userfetch"
+import Header from "./header/Header"
 
 interface Props {
   initialSession: Session | null

@@ -8,8 +8,9 @@ import Thumbnail from "../components/Thumbnail"
 import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
 
+
 const ReivewWrap = styled.div`
-    padding: 30px 15px 0;
+    padding: 80px 15px 0;
     overflow: hidden;
 `
 const ReivewHead = styled.section`
@@ -41,7 +42,7 @@ const ReviewBody = styled.section`
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
     background-color: var(--background-color);
 `
-export default function ReviewDetail({ title, author }) {
+export default function ReviewDetail({title, author}) {
 
     const [reviewArr,setReviewArr] = useState<Reviews[] | null>([])
     const { reviews } = useAuthStore() as { reviews: Reviews[] | null}
@@ -89,6 +90,7 @@ export default function ReviewDetail({ title, author }) {
                         <p dangerouslySetInnerHTML={{ __html: reviewArr[0].content }}></p>
                     </div>
                 </ReviewBody>
+                수정삭제
             </>
             )}
             {reviewArr.length === 0 && (
