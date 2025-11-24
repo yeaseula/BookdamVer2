@@ -36,7 +36,6 @@ export default function Write() {
     const supabase = createClient()
     const searchParams = useSearchParams()
     const postId = searchParams.get('id')
-    const updateData = useAuthStore((state)=>state.updateData)
 
     const handlePoint = (e:React.MouseEvent<HTMLButtonElement>) => {
         const target = e.currentTarget.dataset.score;

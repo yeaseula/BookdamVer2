@@ -3,6 +3,7 @@ import styled from "styled-components"
 import ModalBack from "./ModalBack"
 import Link from "next/link"
 import { useParams } from "next/navigation"
+import DeleteCheck from "./DeleteCheck"
 
 const ModalWrap = styled.div<{$state:boolean}>`
     position: fixed;
@@ -32,22 +33,32 @@ const Button = styled.button`
     cursor: pointer;
 `
 
-export default function Modal({onClick, state}) {
+export default function Modal({ state, setModal, deleteModalState, setDeleteModal}) {
     const params = useParams()
+
+    const handleDeleteCheck = () => {
+        setDeleteModal(false)
+        setDeleteModal(false)
+    }
 
     return (
         <>
-        {state && (
-            <ModalBack onClick={onClick}/>
+        {(state || deleteModalState) && (
+            <ModalBack onClick={()=>{setModal(false); setDeleteModal(false)}}/>
         )}
+        {!deleteModalState && (
         <ModalWrap $state={state}>
             <div>
                 <Text href={`/write?id=${params.id}`}>수정</Text>
             </div>
             <div className="mt-8">
-                <Button type="button" style={{ color: 'red' }}>삭제</Button>
+                <Button type="button" style={{ color: 'red' }} onClick={()=>{setModal(false); setDeleteModal(true)}}>삭제</Button>
             </div>
         </ModalWrap>
+        )}
+        {deleteModalState && (
+            <DeleteCheck onClick={handleDeleteCheck}/>
+        )}
         </>
 
     )

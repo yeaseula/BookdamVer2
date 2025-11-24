@@ -16,17 +16,18 @@ const Button = styled.button`
 export default function HeaderButton() {
 
     const [modal,setModal] = useState(false)
-
-    const handleButton = () => {
-        setModal(!modal)
-    }
+    const [deleteModal,setDeleteModal] = useState(false)
 
     return (
         <>
-            <Button onClick={handleButton}>
+            <Button onClick={()=>setModal(!modal)}>
                 <RiMore2Fill size={24}></RiMore2Fill>
             </Button>
-            <Modal onClick={handleButton} state={modal}/>
+            <Modal
+            state={modal}
+            setModal={setModal}
+            deleteModalState={deleteModal}
+            setDeleteModal={setDeleteModal}/>
         </>
     )
 }
