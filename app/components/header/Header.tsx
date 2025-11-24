@@ -72,5 +72,15 @@ export default function Header() {
             </Container>
         )
     }
+    if(type === 'normal') {
+        return (
+            <Container>
+                <Depth>
+                    <Link href={''}><RiArrowLeftLine size={20}></RiArrowLeftLine></Link>
+                    <Title>{title}</Title>
+                </Depth>
+            </Container>
+        )
+    }
 
 }
