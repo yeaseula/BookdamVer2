@@ -93,6 +93,7 @@ export default function Write() {
                     type="text"
                     placeholder="책 제목을 입력해 주세요."
                     name="book_name"
+                    value={title}
                     onChange={(e:React.ChangeEvent<HTMLInputElement>)=>{setTitle(e.target.value)}}
                     />
                 </FieldList>
@@ -102,6 +103,7 @@ export default function Write() {
                     type="text"
                     placeholder="작가명을 입력해 주세요."
                     name="author_name"
+                    value={author}
                     onChange={(e:React.ChangeEvent<HTMLInputElement>)=>{setAuthor(e.target.value)}}
                     />
                 </FieldList>
@@ -111,11 +113,13 @@ export default function Write() {
                         <InputFields
                         type="date"
                         name="start_date"
+                        value={startDate}
                         onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setStartDate(e.target.value)}
                         />
                         <InputFields
                         type="date"
                         name="end_date"
+                        value={endDate}
                         onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setEndDate(e.target.value)}
                         />
                     </div>
@@ -126,6 +130,7 @@ export default function Write() {
                     type="text"
                     placeholder="이 책을 한 줄로 평가해 주세요."
                     name="oneline"
+                    value={oneLine}
                     onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setOneLine(e.target.value)}
                     />
                 </FieldList>
@@ -134,6 +139,7 @@ export default function Write() {
                     <TextArea
                         name="review_content"
                         height={168}
+                        value={review}
                         placeholder="독서 리뷰를 자유롭게 작성해 주세요."
                         onChange={(e:React.ChangeEvent<HTMLTextAreaElement>)=>{setReview(e.target.value)}}
                     />

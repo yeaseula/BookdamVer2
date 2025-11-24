@@ -42,14 +42,14 @@ const ReviewBody = styled.section`
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
     background-color: var(--background-color);
 `
-export default function ReviewDetail({title, author}) {
+export default function ReviewDetail({postNumber}) {
 
     const [reviewArr,setReviewArr] = useState<Reviews[] | null>([])
     const { reviews } = useAuthStore() as { reviews: Reviews[] | null}
 
     useEffect(()=>{
         if(!reviews) return;
-        const result = reviews.filter((review)=>review.title === title)
+        const result = reviews.filter((review)=>review.id === postNumber)
         setReviewArr(result)
     },[reviews])
 

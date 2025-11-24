@@ -102,7 +102,7 @@ export default function ReviewList() {
                 <div className="mt-10">
                     {reviews.map(cont=>(
                         <ListItem key={cont.id}>
-                            <ListHref href={`review/${cont.author}-${cont.title}`}></ListHref>
+                            <ListHref href={`review/${cont.id}`}></ListHref>
                             <BookThumbnail>
                                 <Thumbnail title={cont.title} author={cont.author}/>
                             </BookThumbnail>

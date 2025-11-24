@@ -1,6 +1,8 @@
 "use client"
 import styled from "styled-components"
 import ModalBack from "./ModalBack"
+import { useAuthStore } from "@/app/lib/userfetch"
+
 
 const ModalWrap = styled.div<{$state:boolean}>`
     position: fixed;
@@ -24,6 +26,10 @@ const Button = styled.button`
 `
 
 export default function Modal({onClick, state}) {
+    const { reviews } = useAuthStore()
+
+    console.log(reviews)
+
     return (
         <>
         {state && (

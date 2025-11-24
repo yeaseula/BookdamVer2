@@ -26,8 +26,7 @@ export default function HeaderButton() {
             <Button onClick={handleButton}>
                 <RiMore2Fill size={24}></RiMore2Fill>
             </Button>
-                <Modal onClick={handleButton} state={modal}/>
-
+            <Modal onClick={handleButton} state={modal}/>
         </>
     )
 }
