@@ -22,12 +22,13 @@ interface SelectProps {
     name: string;
     width?: number | undefined;
     options: string[];
+    value?: string;
     onChange?:(e:React.ChangeEvent<HTMLSelectElement>)=>void;
 }
 
-export default function SelectField({name,width,onChange,options}:SelectProps) {
+export default function SelectField({name,width,value,onChange,options}:SelectProps) {
     return (
-        <Select $width={width} name={name} onChange={onChange}>
+        <Select $width={width} name={name} value={value} onChange={onChange}>
             <option value="">카테고리 선택</option>
             {options.map((option,index)=>(
                 <option key={`${index}-${option}`} value={option}>{option}</option>

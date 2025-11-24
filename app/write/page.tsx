@@ -7,7 +7,8 @@ import SelectField from "../components/form/select"
 import React, { useEffect, useState } from "react"
 import WriteButton from "./components/WriteButton"
 import createClient from "@/utils/supabase/client"
-import { useAuthStore } from "../lib/userfetch"
+import { Reviews, useAuthStore } from "../lib/userfetch"
+import { useSearchParams } from "next/navigation"
 
 const FieldList = styled.div`
     margin-bottom: 20px;
@@ -33,11 +34,39 @@ export default function Write() {
     const [review,setReview] = useState<string>('')
     const [rating,setRating] = useState<number>(0)
     const supabase = createClient()
+    const searchParams = useSearchParams()
+    const postId = searchParams.get('id')
+    const updateData = useAuthStore((state)=>state.updateData)
 
     const handlePoint = (e:React.MouseEvent<HTMLButtonElement>) => {
         const target = e.currentTarget.dataset.score;
         setRating(Number(target))
     }
+
+    useEffect(()=>{ //수정 시 기존 review를 불러옵니다
+        if(!postId) return
+        const fetchPost = async () => {
+            const { data, error } = await supabase
+                .from("reviews")
+                .select("*")
+                .eq("id", postId)
+                .single();
+
+            if (!error && data) {
+                setCategory(data.category);
+                setTitle(data.title);
+                setAuthor(data.author);
+                setReview(data.content);
+                setStartDate(data.start_date)
+                setEndDate(data.end_date);
+                setOneLine(data.memo)
+                setRating(data.rating)
+            }
+        }
+
+        fetchPost()
+    },[postId])
+
     if(!session) return;
     const userId = session.user.id;
 
@@ -53,25 +82,55 @@ export default function Write() {
         rating: number
     ) => {
         try {
-            const {data,error} = await supabase.from('reviews').insert([
-                {
-                    user_id: userId,
-                    category: category,
-                    title: title,
-                    author: author,
-                    start_date: startDate,
-                    end_date: endDate,
-                    memo: memo,
-                    content: content,
-                    rating: rating
+            if(postId) { //수정 시 update 함수
+                const {data,error} = await supabase.from('reviews').update([
+                    {
+                        user_id: userId,
+                        category: category,
+                        title: title,
+                        author: author,
+                        start_date: startDate,
+                        end_date: endDate,
+                        memo: memo,
+                        content: content,
+                        rating: rating
+                    }
+                ])
+                .eq("id", postId).select()
+
+                if(error) {
+                    console.error('수정 실패 :' + error)
+
+                } else {
+                    console.log('수정성공')
                 }
-            ])
-            if(error) {
-                console.error('등록 실패 :' + error)
+
+                const newReview:Reviews = data?.[0] //zustand 전역 상태 업로드
+                if(!newReview) return;
+                useAuthStore.getState().updateData<Reviews>("reviews",newReview)
 
             } else {
-                console.log('성공')
+                const {data,error} = await supabase.from('reviews').insert([
+                    {
+                        user_id: userId,
+                        category: category,
+                        title: title,
+                        author: author,
+                        start_date: startDate,
+                        end_date: endDate,
+                        memo: memo,
+                        content: content,
+                        rating: rating
+                    }
+                ])
+                if(error) {
+                    console.error('등록 실패 :' + error)
+
+                } else {
+                    console.log('성공')
+                }
             }
+
         } catch(err) {
             console.error('등록 실패 :' + err)
         }
@@ -83,6 +142,7 @@ export default function Write() {
                 <FieldList>
                     <FieldName>카테고리</FieldName>
                     <SelectField name="category"
+                    value={category}
                     options={['국내소설','에세이','시','자연/과학','건강','인문','역사','만화/웹툰']}
                     onChange={(e:React.ChangeEvent<HTMLSelectElement>)=>{setCategory(e.target.value)}}
                     />
