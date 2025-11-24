@@ -1,8 +1,8 @@
 "use client"
 import styled from "styled-components"
 import ModalBack from "./ModalBack"
-import { useAuthStore } from "@/app/lib/userfetch"
-
+import Link from "next/link"
+import { useParams } from "next/navigation"
 
 const ModalWrap = styled.div<{$state:boolean}>`
     position: fixed;
@@ -18,6 +18,13 @@ const ModalWrap = styled.div<{$state:boolean}>`
     border-top-right-radius: 15px;
     z-index: 200;
 `
+const Text = styled(Link)`
+    display: block;
+    width: 100%;
+    font-size: 1.8rem;
+    text-align: center;
+    cursor: pointer;
+`
 const Button = styled.button`
     width: 100%;
     font-size: 1.8rem;
@@ -26,9 +33,7 @@ const Button = styled.button`
 `
 
 export default function Modal({onClick, state}) {
-    const { reviews } = useAuthStore()
-
-    console.log(reviews)
+    const params = useParams()
 
     return (
         <>
@@ -37,7 +42,7 @@ export default function Modal({onClick, state}) {
         )}
         <ModalWrap $state={state}>
             <div>
-                <Button type="button">수정</Button>
+                <Text href={`/write?id=${params.id}`}>수정</Text>
             </div>
             <div className="mt-8">
                 <Button type="button" style={{ color: 'red' }}>삭제</Button>
