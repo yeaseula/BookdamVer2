@@ -2,6 +2,9 @@
 import styled from "styled-components"
 import Profile from "./components/Profile"
 import ReadingState from "./components/ReadingState"
+import Myinfo from "./components/Myinfo"
+import MyActivity from "./components/MyActivity"
+import Setting from "./components/Setting"
 import { useAuthStore } from "../lib/userfetch"
 import { useEffect, useState } from "react"
 import { Profiles, Reviews } from "../lib/userfetch"
@@ -51,6 +54,15 @@ export default function MyPage() {
                         <Skeleton width={258} height={28}/>
                     </>
                 }
+            </CommonBoxStyle>
+            <CommonBoxStyle>
+                <MyActivity />
+            </CommonBoxStyle>
+            <CommonBoxStyle>
+                <Setting />
+            </CommonBoxStyle>
+            <CommonBoxStyle>
+                <Myinfo />
             </CommonBoxStyle>
         </ProfileWrap>
     )
