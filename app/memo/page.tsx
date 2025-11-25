@@ -26,7 +26,7 @@ export default function MemoPage() {
     const { memo } = useAuthStore() as { memo: Memo[] | null};
     const { session } = useAuthStore()
     const supabase = createClient()
-    const {setToast} = useToastStore()
+    const setToast = useToastStore((state)=>state.setToast)
 
     useEffect(()=>{
         setCurrentMemo(memo)
@@ -34,7 +34,7 @@ export default function MemoPage() {
 
     const handleEdit = async() => {
         if(checkId.length > 1) {
-            alert('수정은 한 개씩만 선택할 수 있어요!')
+            setToast('수정은 한 개씩만 선택할 수 있습니다!','error')
             return
         }
         if(checkId.length == 1) {
@@ -51,11 +51,11 @@ export default function MemoPage() {
             .in("id", checkId);
 
         if (error) {
-            console.error("삭제 실패:", error);
+            setToast('삭제 실패했씁니다!','error')
             return;
         }
 
-        alert("삭제 완료!");
+        setToast('삭제가 완료됐습니다!','success')
         setCheckId([]);
 
         //zustand 전역상태 재업로드
@@ -77,10 +77,12 @@ export default function MemoPage() {
                     <div className="mt-[35px]">
                         <MemoContent memo={currentMemo} checkId={checkId} setCheckId={setCheckId}/>
                     </div>
-                    <div className="mt-[20px] flex gap-3 justify-end">
-                        <EditButton onClick={handleEdit} checkId={checkId}/>
-                        <DeleteButton onClick={handleDelete} checkId={checkId}/>
-                    </div>
+                    {currentMemo.length > 0 && (
+                        <div className="mt-[20px] flex gap-3 justify-end">
+                            <EditButton onClick={handleEdit} checkId={checkId}/>
+                            <DeleteButton onClick={handleDelete} checkId={checkId}/>
+                        </div>
+                    )}
                     {EditPopup &&
                         <EditModal editObj={editObj} setEditPopup={setEditPopup} setCheckId={setCheckId}/>
                     }

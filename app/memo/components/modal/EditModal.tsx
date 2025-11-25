@@ -8,6 +8,7 @@ import EditModalButton from "./EditButton"
 import EditCloseButton from "./EditCloseButton"
 import createClient from "@/utils/supabase/client"
 import { useAuthStore } from "@/app/lib/userfetch"
+import { useToastStore } from "@/app/lib/useToastStore"
 import ModalBack from "@/app/components/modal/ModalBack"
 
 const Modal = styled.section`
@@ -38,6 +39,7 @@ export default function EditModal({editObj,setEditPopup,setCheckId}:ModalProps) 
     const [modalContent,setModalContent] = useState<string>(editObj.content)
     const editingId = editObj.id
     const supabase = createClient()
+    const setToast = useToastStore((state)=>state.setToast)
 
     const handleModalEdit = async () => {
         const { data, error } = await supabase
@@ -53,7 +55,7 @@ export default function EditModal({editObj,setEditPopup,setCheckId}:ModalProps) 
 
         if (error) {
             console.error(error);
-            alert("수정 실패");
+            setToast("수정 실패했습니다!", "error")
             return;
         }
 
@@ -62,7 +64,7 @@ export default function EditModal({editObj,setEditPopup,setCheckId}:ModalProps) 
 
         // Zustand 상태 업데이트
         useAuthStore.getState().updateData<Memo>('memo',updatedMemo);
-
+        setToast("수정이 완료됐습니다!", "success")
         // setShowModal(false)
         setEditPopup(false)
         setCheckId([])

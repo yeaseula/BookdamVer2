@@ -6,6 +6,7 @@ import TextArea from "../../components/form/textarea"
 import { useEffect, useState } from "react"
 import createClient from "@/utils/supabase/client"
 import { Memo, useAuthStore } from "@/app/lib/userfetch"
+import { useToastStore } from "@/app/lib/useToastStore"
 
 const FormWrap = styled.div`
     display: flex;
@@ -15,7 +16,7 @@ const FormWrap = styled.div`
 
 export default function MemoForm({session}) {
     const supabase = createClient()
-
+    const setToast = useToastStore((state)=>state.setToast)
     const [title, setTitle] = useState<string>("")
     const [page, setPage] = useState<number | null>(null)
     const [content, setContent] = useState<string>("")
@@ -45,13 +46,13 @@ export default function MemoForm({session}) {
             //zustand 전역 업로드
             useAuthStore.getState().addData<Memo>('memo',newMemo)
 
-            alert("성공")
+            setToast("나만의 구절 업로드 성공!","success")
             //필드 초기화
             setTitle("")
             setPage(null)
             setContent("")
         } catch (error) {
-            console.error("등록 실패 :", error)
+            setToast("업로드 실패했습니다.","error")
         }
     }
 
@@ -82,7 +83,7 @@ export default function MemoForm({session}) {
                     if (/^\d+$/.test(value)) {
                         setPage(Number(value));
                     } else {
-                        alert('숫자만 입력 가능합니다!');
+                        setToast("숫자만 입력 가능합니다!","info")
                     }
                 }}
             />
