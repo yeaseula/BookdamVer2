@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled from "styled-components"
 
 const Check = styled.input`
@@ -20,16 +20,29 @@ interface CheckboxProps {
     id: string;
     value: string;
     checked: boolean;
+    interest: string[];
+    setInterest: Dispatch<SetStateAction<string[]>>
 }
 
-export default function Checkbox({name,id,value,checked}:CheckboxProps) {
+export default function Checkbox({name,id,value,checked,interest,setInterest}:CheckboxProps) {
     const [isChecked,setIsChecked] = useState(false)
+
+    useEffect(()=>{
+
+        if(isChecked === false) {
+
+            const interestList:string[] = interest.filter((m)=>m !== value )
+            setInterest(interestList)
+        } else {
+            setInterest((prev)=>[...prev,value])
+        }
+    },[isChecked])
 
     return (
         <li>
             <Label htmlFor={id} $ischecking={isChecked}>{value}</Label>
             <Check type="checkbox" value={value} name={name} id={id}
-            onClick={()=>setIsChecked(!isChecked)}
+            onChange={()=>setIsChecked(!isChecked)}
             />
         </li>
     )

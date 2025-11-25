@@ -2,7 +2,7 @@
 import styled from "styled-components"
 import Image from "next/image"
 import Link from "next/link"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import createClient from "@/utils/supabase/client"
 import InputFields from "../components/form/input"
 import SignUpButton from "./components/signupButton"
@@ -44,6 +44,7 @@ export default function SignUp() {
     const [email,setEmail] = useState<string>('');
     const [password,setPassword] = useState<string>('')
     const [nickname,setNickname] = useState<string>('')
+    const [interest,setInterest] = useState<string[]>([])
     const [loading,setLoading] = useState<boolean>(false)
     const setToast = useToastStore((state)=>state.setToast)
     const setSession = useAuthStore((state)=>state.setSession)
@@ -78,7 +79,7 @@ export default function SignUp() {
             await supabase.from('profiles').insert({
                 id: session.user?.id,
                 username: nickname,
-                interests: [], // 지금은 빈 배열, 나중에 체크박스 입력값 넣기
+                interests: interest, // 지금은 빈 배열, 나중에 체크박스 입력값 넣기
             })
 
             const UserId = session.user.id;
@@ -86,7 +87,7 @@ export default function SignUp() {
             setSession(session)
             // 프로필 정보 초기 저장
             const UserInfor = await UserInfoInitial(UserId)
-            const UserProrile = { username: UserInfor.username, interests:[] }
+            const UserProrile = { username: UserInfor.username, interests:interest }
             setProfile(UserProrile)
             // 리뷰 목록 초기 저장
             const UserReview = await UserReviewInitial(UserId)
@@ -103,6 +104,12 @@ export default function SignUp() {
             setToast('회원가입이 실패했습니다','error')
         }
     }
+
+    // useEffect(()=>{
+    // 관심사 배열 테스트 코드
+    //     interest.forEach((ele)=>console.log(ele))
+    //     console.log(interest + ': 🚀🚀')
+    // },[interest])
 
     return(
         <SignUpWrapper>
@@ -141,7 +148,9 @@ export default function SignUp() {
                 </Label>
                 <Label style={{ marginTop: '10px' }}>
                     <span>관심 카테고리</span>
-                        <InterestList></InterestList>
+                        <InterestList
+                        interest={interest}
+                        setInterest={setInterest}/>
                 </Label>
             </div>
 

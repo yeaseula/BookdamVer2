@@ -1,6 +1,6 @@
 import styled, {keyframes} from "styled-components";
 import Checkbox from "./CheckBox"
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { RiArrowDownSLine } from "@remixicon/react";
 
 
@@ -40,9 +40,11 @@ interface ToggleProps {
     label: string;
     value: string;
     sub: string[];
+    interest: string[];
+    setInterest: Dispatch<SetStateAction<string[]>>
 }
 
-export default function Toggle({label,value,sub}:ToggleProps) {
+export default function Toggle({label,value,sub,interest,setInterest}:ToggleProps) {
 
     const [openCategory,setOpenCategory] = useState(false)
 
@@ -64,7 +66,10 @@ export default function Toggle({label,value,sub}:ToggleProps) {
                     id={`${subcont}-check`}
                     name={`${subcont}-check`}
                     value={subcont}
-                    checked={false}/>
+                    checked={false}
+                    interest={interest}
+                    setInterest={setInterest}
+                    />
                 ))}
             </Ul>
         </SubList>
