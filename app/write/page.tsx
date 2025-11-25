@@ -9,6 +9,8 @@ import WriteButton from "./components/WriteButton"
 import createClient from "@/utils/supabase/client"
 import { Reviews, useAuthStore } from "../lib/userfetch"
 import { useSearchParams } from "next/navigation"
+import { useToastStore } from "../lib/useToastStore"
+import { useRouter } from "next/navigation"
 
 const FieldList = styled.div`
     margin-bottom: 20px;
@@ -36,6 +38,8 @@ export default function Write() {
     const supabase = createClient()
     const searchParams = useSearchParams()
     const postId = searchParams.get('id')
+    const setToast = useToastStore((state)=>state.setToast)
+    const router = useRouter();
 
     const handlePoint = (e:React.MouseEvent<HTMLButtonElement>) => {
         const target = e.currentTarget.dataset.score;
@@ -99,9 +103,10 @@ export default function Write() {
 
                 if(error) {
                     console.error('수정 실패 :' + error)
-
+                    setToast("리뷰 수정 실패했습니다!","error")
                 } else {
-                    console.log('수정성공')
+                    //console.log('수정성공')
+                    setToast("리뷰 수정 성공했습니다!","success",()=>router.push('/review'))
                 }
 
                 const newReview:Reviews = data?.[0] //zustand 전역 상태 업로드
@@ -121,12 +126,18 @@ export default function Write() {
                         content: content,
                         rating: rating
                     }
-                ])
+                ]).select()
+
+                const newReviewPost:Reviews = data?.[0]
+                if(!newReviewPost) return
+                useAuthStore.getState().addData<Reviews>("reviews",newReviewPost)
+
                 if(error) {
                     console.error('등록 실패 :' + error)
-
+                    setToast("리뷰 등록이 실패했습니다!","error")
                 } else {
-                    console.log('성공')
+                    //console.log('성공')
+                    setToast("리뷰를 등록했습니다!","success",()=>router.push('/review'))
                 }
             }
 

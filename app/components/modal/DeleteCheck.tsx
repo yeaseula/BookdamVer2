@@ -4,6 +4,8 @@ import DeleteButton from "@/app/memo/components/Delete"
 import { useParams } from "next/navigation"
 import { useAuthStore } from "@/app/lib/userfetch"
 import { deleteReview } from "@/app/lib/delete"
+import { useToastStore } from "@/app/lib/useToastStore"
+import { useRouter } from "next/navigation"
 
 const Container = styled.div`
     position: fixed;
@@ -40,6 +42,8 @@ export default function DeleteCheck({onClick}) {
     const { session } = useAuthStore()
     const params = useParams()
     const postId = Array.isArray(params.id) ? params.id[0] : params.id;
+    const setToast = useToastStore((state)=>state.setToast)
+    const router = useRouter()
 
     if(!session) return
     const userId = session.user.id
@@ -50,7 +54,7 @@ export default function DeleteCheck({onClick}) {
         const { error } = await deleteReview(postId, userId);
         useAuthStore.getState().removeData("reviews",postId)
         if (!error) {
-            alert("삭제 완료");
+            setToast("리뷰 삭제 성공했습니다!","success",()=>router.push('/review'))
         }
     }
 

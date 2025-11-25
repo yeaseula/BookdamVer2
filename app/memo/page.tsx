@@ -51,7 +51,7 @@ export default function MemoPage() {
             .in("id", checkId);
 
         if (error) {
-            setToast('삭제 실패했씁니다!','error')
+            setToast('삭제 실패했습니다!','error')
             return;
         }
 
