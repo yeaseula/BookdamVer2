@@ -10,21 +10,21 @@ import { useToastStore } from "../lib/useToastStore"
 import { useRouter } from "next/navigation"
 import { UserInfoInitial, UserReviewInitial, UserMemoInitial } from "../lib/readingInfo"
 import { useAuthStore, Reviews, Memo } from "../lib/userfetch"
+import InterestList from "../components/form/Interest/InterestList"
 
 const SignUpWrapper = styled.section`
-    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 0 15px;
+    padding: 50px 15px 150px;
 `
 const Letter = styled.p`
     letter-spacing: 2.4px;
     margin-top: 5px;
     font-size: 15px;
 `
-const Label = styled.label`
+const Label = styled.div`
     width: 100%;
     display: block;
     > span { font-size: 12px; color: #616161 }
@@ -138,6 +138,10 @@ export default function SignUp() {
                     placeholder={"8자 이상, 숫자/영문 조합해주세요"}
                     onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setPassword(e.currentTarget.value)}
                     />
+                </Label>
+                <Label style={{ marginTop: '10px' }}>
+                    <span>관심 카테고리</span>
+                        <InterestList></InterestList>
                 </Label>
             </div>
 
