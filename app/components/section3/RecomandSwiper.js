@@ -1,4 +1,5 @@
-"use client";
+"use client"
+
 import { useRef } from 'react';
 import Image from 'next/image';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -52,7 +53,6 @@ const BookDesc = styled.div`
     position: relative;
     width: calc(100% - 110px);
 `
-
 const BookTitle = styled.p`
     font-size: 1.6rem;
     font-weight: 700;
@@ -62,7 +62,6 @@ const BookTitle = styled.p`
     overflow: hidden;
     -webkit-line-clamp: 1;
 `
-
 const BookIntro = styled.p`
     font-size: 1.4rem;
     display: -webkit-box;
