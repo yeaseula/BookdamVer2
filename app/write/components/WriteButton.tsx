@@ -13,12 +13,13 @@ interface ButtonProps {
     oneLine: string;
     review: string;
     point: number;
+    loading: boolean;
     onClick: ()=>void;
 }
 
 export default function WriteButton({...props}:ButtonProps) {
     const isValid = props.category && props.title && props.author &&
-    props.startDate && props.endDate && props.oneLine && props.review
+    props.startDate && props.endDate && props.oneLine && props.review && !props.loading
 
     return (
         <ButtonStyle

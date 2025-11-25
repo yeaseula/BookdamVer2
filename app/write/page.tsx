@@ -11,6 +11,7 @@ import { Reviews, useAuthStore } from "../lib/userfetch"
 import { useSearchParams } from "next/navigation"
 import { useToastStore } from "../lib/useToastStore"
 import { useRouter } from "next/navigation"
+import ModalBack from "../components/modal/ModalBack"
 
 const FieldList = styled.div`
     margin-bottom: 20px;
@@ -35,6 +36,7 @@ export default function Write() {
     const [oneLine,setOneLine] = useState<string>('')
     const [review,setReview] = useState<string>('')
     const [rating,setRating] = useState<number>(0)
+    const [loading,setLoading] = useState<boolean>(false)
     const supabase = createClient()
     const searchParams = useSearchParams()
     const postId = searchParams.get('id')
@@ -84,6 +86,8 @@ export default function Write() {
         content: string,
         rating: number
     ) => {
+        if(loading) return //업로드 중일 때 중복 실행 금지
+        setLoading(true) //로딩중 상태 진입
         try {
             if(postId) { //수정 시 update 함수
                 const {data,error} = await supabase.from('reviews').update([
@@ -106,7 +110,7 @@ export default function Write() {
                     setToast("리뷰 수정 실패했습니다!","error")
                 } else {
                     //console.log('수정성공')
-                    setToast("리뷰 수정 성공했습니다!","success",()=>router.push('/review'))
+                    setToast("리뷰 수정 성공했습니다!","success",()=>{router.push('/review')})
                 }
 
                 const newReview:Reviews = data?.[0] //zustand 전역 상태 업로드
@@ -137,17 +141,21 @@ export default function Write() {
                     setToast("리뷰 등록이 실패했습니다!","error")
                 } else {
                     //console.log('성공')
-                    setToast("리뷰를 등록했습니다!","success",()=>router.push('/review'))
+                    setToast("리뷰를 등록했습니다!","success",()=>{router.push('/review')})
                 }
             }
 
         } catch(err) {
             console.error('등록 실패 :' + err)
+            setLoading(false)
         }
     }
 
     return (
         <div style={{ padding: '30px 15px 65px' }}>
+            {loading && (
+                <ModalBack onClick={()=>{}}/>
+            )}
             <form>
                 <FieldList>
                     <FieldName>카테고리</FieldName>
@@ -271,6 +279,7 @@ export default function Write() {
                 oneLine={oneLine}
                 review={review}
                 point={rating}
+                loading={loading}
                 onClick={()=>{handleSubmit(userId,category,title,author,startDate,endDate,oneLine,review,rating)}}
                 />
             </div>
