@@ -152,7 +152,7 @@ export default function Write() {
     }
 
     return (
-        <div style={{ padding: '30px 15px 65px' }}>
+        <div style={{ padding: '80px 15px 65px' }}>
             {loading && (
                 <ModalBack onClick={()=>{}}/>
             )}

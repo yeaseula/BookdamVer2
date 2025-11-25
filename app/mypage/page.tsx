@@ -1,0 +1,57 @@
+"use client"
+import styled from "styled-components"
+import Profile from "./components/Profile"
+import ReadingState from "./components/ReadingState"
+import { useAuthStore } from "../lib/userfetch"
+import { useEffect, useState } from "react"
+import { Profiles, Reviews } from "../lib/userfetch"
+import Skeleton, {SkeletonTheme} from "react-loading-skeleton"
+import 'react-loading-skeleton/dist/skeleton.css'
+
+const ProfileWrap = styled.section`
+    padding: 80px 15px 65px;
+`
+const CommonBox = styled.div`
+    position: relative;
+    background-color: var(--background-color);
+    border-radius: 12px;
+    padding: 20px 15px;
+    box-shadow: 0 2px 13px rgba(0, 0, 0, .15);
+`
+const CommonBoxStyle = styled(CommonBox)`
+    margin: 25px 0;
+`
+
+export default function MyPage() {
+
+    const {profile,reviews, isReviewLoaded} = useAuthStore()
+    const username = profile?.username
+
+    return(
+        <ProfileWrap>
+            <h2 className="sr-only">나의 프로필</h2>
+            <CommonBox>
+                {username &&
+                    <Profile username={username}/>
+                }
+                {!username &&
+                    <>
+                        <Skeleton width={150} height={22}/>
+                        <Skeleton width={258} height={22}/>
+                    </>
+                }
+            </CommonBox>
+            <CommonBoxStyle>
+                {isReviewLoaded &&
+                    <ReadingState reviews={reviews}></ReadingState>
+                }
+                {!isReviewLoaded &&
+                    <>
+                        <Skeleton width={150} height={28}/>
+                        <Skeleton width={258} height={28}/>
+                    </>
+                }
+            </CommonBoxStyle>
+        </ProfileWrap>
+    )
+}

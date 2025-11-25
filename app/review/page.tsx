@@ -74,12 +74,12 @@ const Date = styled.p`
 `
 
 export default function ReviewList() {
-    const { reviews } = useAuthStore()
+    const { reviews,isReviewLoaded } = useAuthStore()
 
     return(
         <ReivewWrap>
             <h2 className="sr-only">내가 쓴 리뷰 리스트</h2>
-            {!reviews && ( //로딩중 스켈레톤
+            {!isReviewLoaded && ( //로딩중 스켈레톤
                 <>
                     <SkeletonTheme>
                         <Skeleton width={50} height={22} borderRadius={5} />
@@ -96,7 +96,7 @@ export default function ReviewList() {
                     </div>
                 </>
             )}
-            {reviews && (
+            {isReviewLoaded && (
                 <>
                 {reviews.length > 0 && ( //리뷰가 있을 때
                     <>

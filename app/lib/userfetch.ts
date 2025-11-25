@@ -39,13 +39,15 @@ interface AuthState {
     profile: { username: string; interests: string[] } | null;
     reviews: Reviews[];
     memo: Memo[];
+    isReviewLoaded: boolean;
+    isMemoRoaded: boolean;
     setSession: (session: Session | null) => void;
     setProfile: (profile: { username: string; interests: string[] } | null) => void;
     setData: <T extends { id: string }>(key: 'memo' | 'reviews', items: T[]) => void;
     addData: <T extends { id: string }>(key: 'memo' | 'reviews', item: T) => void;
     updateData: <T extends { id: string }>(key: 'memo' | 'reviews', item: T) => void;
     removeData: (key: 'memo' | 'reviews', id: string) => void;
-    fetchSession: ()=>Promise<void>
+    fetchSession: ()=>Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set,get)=>({
@@ -54,6 +56,8 @@ export const useAuthStore = create<AuthState>((set,get)=>({
     profile: null,
     reviews: [],
     memo: [],
+    isReviewLoaded: false,
+    isMemoRoaded: false,
     setSession:(session)=>set({session, user: session?.user ?? null}),
     setProfile: (profile) => set({ profile }),
     fetchSession: async()=>{
@@ -61,9 +65,14 @@ export const useAuthStore = create<AuthState>((set,get)=>({
         const {data: {session}} = await supabase.auth.getSession()
         set({session, user: session?.user ?? null})
     },
-    setData: (key, items) => set({ [key]: items } as any),
+    setData: (key, items) => {
+        if(key === 'reviews') {
+            set({ [key]: items, isReviewLoaded: true } as any)
+        } else if(key === 'memo') {
+            set({ [key]: items, isMemoRoaded: true } as any)
+        }
+    },
     addData: (key, item) => set({ [key]: [item, ...get()[key]] } as any),
     updateData: (key, item) => set({ [key]: get()[key].map((i: any) => i.id === item.id ? item : i) } as any),
     removeData: (key, id) => set({ [key]: get()[key].filter((i: any) => i.id !== id) } as any),
-
 }))
