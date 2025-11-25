@@ -44,14 +44,17 @@ export default function SignUp() {
     const [email,setEmail] = useState<string>('');
     const [password,setPassword] = useState<string>('')
     const [nickname,setNickname] = useState<string>('')
+    const [loading,setLoading] = useState<boolean>(false)
     const setToast = useToastStore((state)=>state.setToast)
-    const router = useRouter()
-    const supabase = createClient()
     const setSession = useAuthStore((state)=>state.setSession)
     const setProfile = useAuthStore((state)=>state.setProfile)
     const setData = useAuthStore((state)=>state.setData)
+    const router = useRouter()
+    const supabase = createClient()
 
     const handleSignUp = async () => {
+        if(loading) return
+        setLoading(true)
         try {
             const { data, error } = await supabase.auth.signUp({
                 email,
@@ -68,7 +71,7 @@ export default function SignUp() {
             if (sessionError) throw sessionError
 
             if (!session?.user) {
-                alert('세션이 없어서 프로필을 생성할 수 없습니다.')
+                setToast('세션이 없어서 프로필을 생성할 수 없습니다.','error')
                 return
             }
 
@@ -78,21 +81,20 @@ export default function SignUp() {
                 interests: [], // 지금은 빈 배열, 나중에 체크박스 입력값 넣기
             })
 
-                const UserId = session.user.id;
+            const UserId = session.user.id;
 
-                setSession(session)
-                // 프로필 정보 초기 저장
-                const UserInfor = await UserInfoInitial(UserId)
-                const UserProrile = { username: UserInfor.username, interests:[] }
-                setProfile(UserProrile)
-                // 리뷰 목록 초기 저장
-                const UserReview = await UserReviewInitial(UserId)
-                setData<Reviews>('reviews',UserReview)
-                // 메모 목록 초기 저장
-                const UserMemo = await UserMemoInitial(UserId)
-                setData<Memo>('memo', UserMemo)
+            setSession(session)
+            // 프로필 정보 초기 저장
+            const UserInfor = await UserInfoInitial(UserId)
+            const UserProrile = { username: UserInfor.username, interests:[] }
+            setProfile(UserProrile)
+            // 리뷰 목록 초기 저장
+            const UserReview = await UserReviewInitial(UserId)
+            setData<Reviews>('reviews',UserReview)
+            // 메모 목록 초기 저장
+            const UserMemo = await UserMemoInitial(UserId)
+            setData<Memo>('memo', UserMemo)
 
-            console.log('회원가입 성공!')
             setToast('회원가입이 완료됐습니다!','success',()=>{router.push('/')})
 
         } catch (err) {
@@ -143,6 +145,7 @@ export default function SignUp() {
             email={email}
             password={password}
             nickname={nickname}
+            loading={loading}
             onClick={()=>handleSignUp()}
             />
 
