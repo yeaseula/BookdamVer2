@@ -7,6 +7,7 @@ const ThumbContainer = styled.div`
     height: 100%;
     background-color: #bdbdbd;
     background-size: cover;
+    background-position: center;
 `
 
 interface ThumbProps {
@@ -16,7 +17,7 @@ interface ThumbProps {
 
 export default function Thumbnail({title, author}:ThumbProps) {
 
-    const [thumbnail,setThumbnail] = useState<Promise<void> | null>(null)
+    const [thumbnail,setThumbnail] = useState<Promise<void> | string | null>(null)
 
     const fetchBookCover = async (title:string,author:string) => {
         try {
@@ -29,6 +30,7 @@ export default function Thumbnail({title, author}:ThumbProps) {
                 }
             });
             const data = await res.json();
+
             const filtered = data.documents.find((book:any) =>
                 book.title.includes(title) && book.authors.join(',').includes(author)
             );
@@ -44,8 +46,9 @@ export default function Thumbnail({title, author}:ThumbProps) {
     useEffect(()=>{
         const image = async (title:string,author:string) => {
             const Thumbnails = await fetchBookCover(title,author)
-            if(!Thumbnails) return;
-            setThumbnail(Thumbnails)
+            if(!Thumbnails) { setThumbnail('/images/noThumb.svg') } else {
+                setThumbnail(Thumbnails)
+            }
         }
         image(title,author)
     },[])
