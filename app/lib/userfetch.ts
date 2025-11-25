@@ -7,7 +7,7 @@ interface BaseType {
     created_at: string;
 }
 
-interface Profiles extends BaseType {
+export interface Profiles extends BaseType {
     username: string;
     interests: string[];
 }

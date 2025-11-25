@@ -6,6 +6,10 @@ import React, { useState } from "react"
 import createClient from "@/utils/supabase/client"
 import InputFields from "../components/form/input"
 import SignUpButton from "./components/signupButton"
+import { useToastStore } from "../lib/useToastStore"
+import { useRouter } from "next/navigation"
+import { useAuthStore } from "../lib/userfetch"
+import { Profiles } from "../lib/userfetch"
 
 const SignUpWrapper = styled.section`
     height: 100%;
@@ -39,9 +43,12 @@ const ToLoginBox = styled.div`
 export default function SignUp() {
     const [email,setEmail] = useState<string>('');
     const [password,setPassword] = useState<string>('')
-    const [nickname,setNickname] = useState<string>('');
-
-    const supabase = createClient();
+    const [nickname,setNickname] = useState<string>('')
+    const setToast = useToastStore((state)=>state.setToast)
+    const router = useRouter()
+    const supabase = createClient()
+    const setSession = useAuthStore((state)=>state.setSession)
+    const setProfile = useAuthStore((state)=>state.setProfile)
 
     const handleSignUp = async () => {
         try {
@@ -71,11 +78,12 @@ export default function SignUp() {
             })
 
             console.log('회원가입 성공!')
+            setToast('회원가입이 완료됐습니다!','success',()=>{router.push('/')})
+
         } catch (err) {
             console.error(err)
             console.log('회원가입 실패')
-        } finally {
-            console.log('뭔가했어요')
+            setToast('회원가입이 실패했습니다','error')
         }
     }
 
