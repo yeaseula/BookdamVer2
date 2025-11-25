@@ -1,6 +1,11 @@
+"use client"
+
 import { RiDraftLine, RiArrowRightSLine } from "@remixicon/react"
 import Link from "next/link"
 import styled from "styled-components"
+import { useAuthStore,Reviews,Memo } from "@/app/lib/userfetch"
+import createClient from "@/utils/supabase/client"
+import { useRouter } from "next/navigation"
 
 const MenuTitle = styled.div`
     display: flex;
@@ -32,13 +37,34 @@ const LinkStyle = styled(Link)`
 `
 
 export default function Myinfo() {
+
+    const supabase = createClient()
+    const router = useRouter()
+
+    const setSession = useAuthStore((state)=>state.setSession)
+    const setProfile = useAuthStore((state)=>state.setProfile)
+    const setData = useAuthStore((state)=>state.setData)
+
+    const handleLogout = async() => {
+
+        const { error } = await supabase.auth.signOut();
+        if (error) return console.error("로그아웃 실패:", error);
+
+        setSession(null)
+        setProfile(null)
+        setData<Reviews>('reviews',[])
+        setData<Memo>('memo',[])
+
+        router.push('/login')
+    }
+
     return (
         <>
             <h3 className="sr-only">내 정보 관리</h3>
             <MenuTitle><RiDraftLine size={24}></RiDraftLine> 내 정보</MenuTitle>
             <ul>
                 <li>
-                    <Buttonstyle>
+                    <Buttonstyle onClick={handleLogout}>
                         <span>로그아웃</span>
                         <RiArrowRightSLine size={18} />
                     </Buttonstyle>
