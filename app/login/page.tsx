@@ -7,6 +7,12 @@ import Link from "next/link";
 import { useState } from "react";
 import LoginButton from "./components/LoginButton";
 import createClient from "@/utils/supabase/client";
+import { useToastStore } from "../lib/useToastStore";
+import { useRouter } from "next/navigation";
+import { useAuthStore, Reviews,Memo } from "../lib/userfetch";
+//util function
+import { UserInfoInitial, UserReviewInitial, UserMemoInitial } from "../lib/readingInfo";
+
 
 const LoginWrapper = styled.section`
     height: 100%;
@@ -41,6 +47,12 @@ export default function Login() {
     const [email,setEmail] = useState<string>('');
     const [password,setPassword] = useState<string>('')
     const supabase = createClient()
+    const setToast = useToastStore((state)=>state.setToast)
+    const router = useRouter()
+
+    const setSession = useAuthStore((state)=>state.setSession)
+    const setProfile = useAuthStore((state)=>state.setProfile)
+    const setData = useAuthStore((state)=>state.setData)
 
     const handleLogin = async(email:string, password:string) => {
         try {
@@ -52,15 +64,31 @@ export default function Login() {
             if (error) throw error
 
             if (data.user) {
-                console.log('로그인 성공', data.user)
-                alert(`로그인 성공! 환영 ${data.user.email}`)
-                // 로그인 후 다른 페이지로 이동 가능
+                console.log("session:", JSON.parse(JSON.stringify(data.session.user)));
+
+                // 로그인 후 세션 초기 저장
+                setSession(data.session)
+
+                const UserId = data.session.user.id
+                // 프로필 정보 초기 저장
+                const UserInfor = await UserInfoInitial(UserId)
+                const UserProrile = { username: UserInfor.username, interests:[] }
+                setProfile(UserProrile)
+                // 리뷰 목록 초기 저장
+                const UserReview = await UserReviewInitial(UserId)
+                setData<Reviews>('reviews',UserReview)
+                // 메모 목록 초기 저장
+                const UserMemo = await UserMemoInitial(UserId)
+                setData<Memo>('memo', UserMemo)
+
+                setToast("로그인 성공했습니다!","success",()=>{ router.push('/'); router.refresh() })
+
             } else {
                 alert('로그인 실패: 사용자 정보 없음')
             }
         } catch (err) {
             console.error('로그인 오류:', err)
-            alert('로그인 실패')
+            setToast("로그인에 실패했습니다!","error")
         }
     }
 

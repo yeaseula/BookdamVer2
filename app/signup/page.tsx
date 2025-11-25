@@ -8,8 +8,8 @@ import InputFields from "../components/form/input"
 import SignUpButton from "./components/signupButton"
 import { useToastStore } from "../lib/useToastStore"
 import { useRouter } from "next/navigation"
-import { useAuthStore } from "../lib/userfetch"
-import { Profiles } from "../lib/userfetch"
+import { UserInfoInitial, UserReviewInitial, UserMemoInitial } from "../lib/readingInfo"
+import { useAuthStore, Reviews, Memo } from "../lib/userfetch"
 
 const SignUpWrapper = styled.section`
     height: 100%;
@@ -49,6 +49,7 @@ export default function SignUp() {
     const supabase = createClient()
     const setSession = useAuthStore((state)=>state.setSession)
     const setProfile = useAuthStore((state)=>state.setProfile)
+    const setData = useAuthStore((state)=>state.setData)
 
     const handleSignUp = async () => {
         try {
@@ -76,6 +77,20 @@ export default function SignUp() {
                 username: nickname,
                 interests: [], // 지금은 빈 배열, 나중에 체크박스 입력값 넣기
             })
+
+                const UserId = session.user.id;
+
+                setSession(session)
+                // 프로필 정보 초기 저장
+                const UserInfor = await UserInfoInitial(UserId)
+                const UserProrile = { username: UserInfor.username, interests:[] }
+                setProfile(UserProrile)
+                // 리뷰 목록 초기 저장
+                const UserReview = await UserReviewInitial(UserId)
+                setData<Reviews>('reviews',UserReview)
+                // 메모 목록 초기 저장
+                const UserMemo = await UserMemoInitial(UserId)
+                setData<Memo>('memo', UserMemo)
 
             console.log('회원가입 성공!')
             setToast('회원가입이 완료됐습니다!','success',()=>{router.push('/')})
