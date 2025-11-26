@@ -7,6 +7,7 @@ import Skeleton,{SkeletonTheme} from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
 import Thumbnail from "./components/Thumbnail"
 import { RiFileWarningFill } from "@remixicon/react"
+import { useEffect } from "react"
 
 const ReivewWrap = styled.section`
     padding: 80px 15px 65px;

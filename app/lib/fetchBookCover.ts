@@ -16,8 +16,6 @@ export const fetchBookCover = async (title:string,author:string) => {
             book.title.includes(title) && book.authors.join(',').includes(author)
         );
 
-        //console.log(filtered)
-
         return (filtered || data.documents[0])?.thumbnail || '';
 
     } catch (e) {

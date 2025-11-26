@@ -24,6 +24,7 @@ const SliderWrap = styled.div`
     padding-bottom: 5rem;
 `
 const Text = styled.div`
+    height: 74px;
     position: relative;
     font-size: 2.1rem;
     color: #fff;
@@ -65,7 +66,6 @@ const StyleSwiper = styled(Swiper)`
 
 export default function MainSwiper({slide, readingCount}) {
     const SwiperRef = useRef(null)
-    const slideLength = readingCount
     const {profile, isReviewLoaded} = useAuthStore()
     const username = profile?.username
 
@@ -80,18 +80,19 @@ export default function MainSwiper({slide, readingCount}) {
                 )}
                 {!username && (
                     <>
-                    <SkeletonTheme width={'100px'} baseColor="#bdbdbd" highlightColor="#fff">
+                    <SkeletonTheme width={'100px'}
+                    baseColor="#bdbdbd" highlightColor="#fff">
                         <Skeleton count={1} />
                     </SkeletonTheme>
-                    <SkeletonTheme width={'320px'} baseColor="#bdbdbd" highlightColor="#fff">
+                    <SkeletonTheme width={'320px'}
+                    baseColor="#bdbdbd" highlightColor="#fff">
                         <Skeleton count={1} />
                     </SkeletonTheme>
                     </>
                 )}
-
             </Text>
 
-            <div className='mt-[20px] flex justify-center'>
+            <div className='mt-[20px] flex justify-center' style={{ minHeight: '174px' }}>
                 {/* <div className='prev-main-slide'>이전 슬라이드</div>
                 <div className='next-slide-main'>다음 슬라이드</div> */}
                 {isReviewLoaded && (
@@ -112,16 +113,10 @@ export default function MainSwiper({slide, readingCount}) {
                     {slide.map((img:string,idx:string | number)=>(
                         <SwiperSlide key={idx} style={{ backgroundImage : `url(${img})` }} />
                     ))}
-                    {slideLength < 11 && Array.from({ length: 11 - slideLength }).map((_, index) => (
-                        <SwiperSlide
-                        key={`empty-${index}`}
-                        style={{ backgroundImage: `url('/images/cover-thumbnail.svg')` }}
-                        />
-                    ))}
                 </StyleSwiper>
                 )}
                 {!isReviewLoaded && (
-                    <Skeleton width={125} height={165}></Skeleton>
+                    '로딩중'
                 )}
             </div>
         </SliderWrap>

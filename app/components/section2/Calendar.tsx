@@ -2,6 +2,9 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import styled from "styled-components";
+import { useEffect, useState } from "react";
+import { useAuthStore } from "@/app/lib/userfetch";
+import Skeleton from "react-loading-skeleton";
 
 const FullCalBox = styled.div`
     padding: 15px 15px 10px 15px;
@@ -99,17 +102,36 @@ const FullCalBox = styled.div`
     }
 `
 
-export default function Calendar() {
+export default function Calendar({stampDate}: { stampDate: string[] }) {
+
+    const { isReviewLoaded } = useAuthStore()
+
     return (
         <section className="pt-8 pr-5 pl-5">
             <h2 className="sr-only">나의 독서 스탬프 캘린더</h2>
             <div id="calendar-skeleton" className="calendar-skeleton"></div>
+            {!isReviewLoaded && (
+                <Skeleton height={361} />
+            )}
+            {isReviewLoaded && (
             <FullCalBox>
                 <FullCalendar
+                    key={stampDate.join()}
                     plugins={[dayGridPlugin]}
                     initialView="dayGridMonth"
+                    dayCellDidMount={(info) => {
+                        const dateStr = info.date.toISOString().split("T")[0];
+                        const exist = stampDate.find(e => e === dateStr);
+                        if (!exist) return;
+
+                        info.el.style.backgroundImage = "url(/images/stamp.svg)";
+                        info.el.style.backgroundSize = "auto";
+                        info.el.style.backgroundRepeat = "no-repeat";
+                        info.el.style.backgroundPosition = "center";
+                    }}
                 />
             </FullCalBox>
+            )}
         </section>
     )
 }
