@@ -1,15 +1,6 @@
 "use client"
-import { useAuthStore } from "./userfetch";
 
-
-interface ThumbProps {
-    title?: string;
-    author?: string;
-    interest?: string[];
-}
-
-
-export const fetchBookCover = async ({title,author}:ThumbProps) => {
+export const fetchBookCover = async (title:string,author:string) => {
     try {
         const query = `${title} ${author}`;
         const apiUrl = `https://dapi.kakao.com/v3/search/book?target=all&query=${encodeURIComponent(query)}`;
@@ -24,6 +15,8 @@ export const fetchBookCover = async ({title,author}:ThumbProps) => {
         const filtered = data.documents.find((book:any) =>
             book.title.includes(title) && book.authors.join(',').includes(author)
         );
+
+        //console.log(filtered)
 
         return (filtered || data.documents[0])?.thumbnail || '';
 

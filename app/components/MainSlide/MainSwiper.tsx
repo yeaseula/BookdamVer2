@@ -1,8 +1,9 @@
 "use client";
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, A11y, Keyboard, Autoplay} from 'swiper/modules';
+import { Navigation, A11y, Keyboard, Autoplay, EffectCards} from 'swiper/modules';
 import 'swiper/css';
+import 'swiper/css/effect-cards';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/autoplay';
@@ -10,7 +11,6 @@ import 'swiper/css/a11y';
 import 'swiper/css/keyboard';
 import styled from 'styled-components';
 import { useAuthStore } from '../../lib/userfetch';
-import LoadingSpinner from '../common/Loading';
 import Skeleton, {SkeletonTheme} from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
 
@@ -33,33 +33,41 @@ const UserName = styled.span`
     vertical-align: inherit;
 `
 const StyleSwiper = styled(Swiper)`
-    width: calc(100% + 30px);
-    margin: 20px 0 0 -15px;
+    width: 125px;
+    aspectratio: 3/4;
     .swiper-wrapper {
         align-items: center;
     }
     .swiper-slide {
-        width: 90px;
-        aspect-ratio: 3/4;
+        width: 125px;
+        aspect-ratio: 3.3/4.6;
         margin: 0 6.5px;
         background-color: #bdbdbd;
-        opacity: 0.5;
+        opacity: 1;
         background-position: center;
         background-size: cover;
+        border-radius: 5px;
+        overflow: hidden;
     }
-    .swiper-slide-active {
-        opacity: 1 !important;
-        width: 105px !important;
+    .swiper-slide:nth-child(1n) {
+        background-color: #fffdf5;
     }
+
+    .swiper-slide:nth-child(2n) {
+        background-color: #fff7cc;
+    }
+
+    .swiper-slide:nth-child(3n) {
+        background-color: #ffef99;
+    }
+
 `
 
 export default function MainSwiper({slide, readingCount}) {
     const SwiperRef = useRef(null)
     const slideLength = readingCount
-    //const [username,setUsername] = useState(null)
-
-    const {profile} = useAuthStore()
-    const username = profile?.username;
+    const {profile, isReviewLoaded} = useAuthStore()
+    const username = profile?.username
 
     return (
         <SliderWrap>
@@ -83,35 +91,39 @@ export default function MainSwiper({slide, readingCount}) {
 
             </Text>
 
-            {/* <div className='prev-main-slide'>이전 슬라이드</div>
-            <div className='next-slide-main'>다음 슬라이드</div> */}
-            <StyleSwiper
-                modules={[Navigation, A11y, Keyboard, Autoplay]}
-                onSwiper={(swiper)=>SwiperRef.current = swiper}
-                navigation={{
-                    nextEl: '.next-slide-main',
-                    prevEl: '.prev-slide-main',
-                }}
-                centeredSlides={true}
-                autoplay={{
-                    delay: 2500,
-                    disableOnInteraction: false,
-                }}
-                loop={true}
-                a11y={{ enabled: true }}
-                slidesPerView={'auto'}
-                className='my-book-list'
-            >
-                {slide.map((img)=>(
-                    <SwiperSlide key={img} style={{ backgroundImage : `url(${img})` }} />
-                ))}
-                {slideLength < 11 && Array.from({ length: 11 - slideLength }).map((_, index) => (
-                    <SwiperSlide
-                    key={`empty-${index}`}
-                    style={{ backgroundImage: `url('/images/cover-thumbnail.svg')` }}
-                    />
-                ))}
-            </StyleSwiper>
+            <div className='mt-[20px] flex justify-center'>
+                {/* <div className='prev-main-slide'>이전 슬라이드</div>
+                <div className='next-slide-main'>다음 슬라이드</div> */}
+                {isReviewLoaded && (
+                <StyleSwiper
+                    effect={'cards'}
+                    modules={[Navigation, A11y, Keyboard, Autoplay, EffectCards]}
+                    onSwiper={(swiper)=>SwiperRef.current = swiper}
+                    navigation={{
+                        nextEl: '.next-slide-main',
+                        prevEl: '.prev-slide-main',
+                    }}
+                    centeredSlides={true}
+                    loop={true}
+                    a11y={{ enabled: true }}
+                    slidesPerView={'auto'}
+                    className='my-book-list'
+                >
+                    {slide.map((img:string,idx:string | number)=>(
+                        <SwiperSlide key={idx} style={{ backgroundImage : `url(${img})` }} />
+                    ))}
+                    {slideLength < 11 && Array.from({ length: 11 - slideLength }).map((_, index) => (
+                        <SwiperSlide
+                        key={`empty-${index}`}
+                        style={{ backgroundImage: `url('/images/cover-thumbnail.svg')` }}
+                        />
+                    ))}
+                </StyleSwiper>
+                )}
+                {!isReviewLoaded && (
+                    <Skeleton width={125} height={165}></Skeleton>
+                )}
+            </div>
         </SliderWrap>
     )
 }
