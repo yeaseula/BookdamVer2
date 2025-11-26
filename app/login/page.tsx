@@ -81,6 +81,9 @@ export default function Login() {
                 const UserMemo = await UserMemoInitial(UserId)
                 setData<Memo>('memo', UserMemo)
 
+                console.log(UserProrile + ':로그인 후 프로필')
+                console.log(UserReview + ':로그인 후 리뷰')
+                console.log(UserMemo + ':로그인 후 메모')
                 setToast("로그인 성공했습니다!","success",()=>{ router.push('/'); router.refresh() })
 
             } else {

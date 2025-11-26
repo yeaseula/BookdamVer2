@@ -18,7 +18,8 @@ export const UserReviewInitial = async (userId:string)=> {
     const { data, error } = await supabase
         .from("reviews")
         .select("*")
-        .eq("id", userId)
+        .eq("user_id", userId)
+        .order('created_at', { ascending: false })
 
     const userReviews:Reviews[] = data
     return userReviews
@@ -29,7 +30,8 @@ export const UserMemoInitial = async (userId:string) => {
     const { data, error } = await supabase
         .from("memo")
         .select("*")
-        .eq("id", userId)
+        .eq("user_id", userId)
+        .order('created_at', { ascending: false })
 
     const userMemo:Memo[] = data
     return userMemo
