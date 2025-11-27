@@ -72,7 +72,7 @@ export default function Myinfo() {
             </ul>
             <ul>
                 <li>
-                    <LinkStyle href={'/'}>
+                    <LinkStyle href={'/profileedit'}>
                         <span>내 정보 변경</span>
                         <RiArrowRightSLine size={18} />
                     </LinkStyle>

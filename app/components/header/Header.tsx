@@ -46,6 +46,9 @@ const HEADER_CONFIG = {
     '/write': { title: '리뷰 작성', type: 'normal' },
     '/memo': { title: '기억에 남는 구절', type: 'normal' },
     '/mypage': { title: '프로필', type: 'normal' },
+    '/profileedit': { title: '프로필 수정', type: 'normal' },
+    '/profileedit/email': { title: '이메일 수정', type: 'normal' },
+    '/profileedit/pass': { title: '비밀번호 수정', type: 'normal' },
 } as const
 
 export default function Header() {

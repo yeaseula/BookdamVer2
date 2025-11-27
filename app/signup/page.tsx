@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation"
 import { UserInfoInitial, UserReviewInitial, UserMemoInitial } from "../lib/readingInfo"
 import { useAuthStore, Reviews, Memo } from "../lib/userfetch"
 import InterestList from "../components/form/Interest/InterestList"
+import ProfileInfo from "../components/form/profile/ProfileInfo"
 
 const SignUpWrapper = styled.section`
     display: flex;
