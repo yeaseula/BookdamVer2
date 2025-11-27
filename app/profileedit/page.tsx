@@ -34,9 +34,8 @@ export default function ProfileEdit() {
     const [nickname,setNickname] = useState<string>('')
     const [interest,setInterest] = useState<string[]>([])
     const [loading,setLoading] = useState<boolean>(false)
-    const { session } = useAuthStore()
+    const { session, profile } = useAuthStore()
     if(!session) return
-    console.log(session)
 
     return(
         <ProfileWrap>
@@ -44,7 +43,7 @@ export default function ProfileEdit() {
             <Container>
                 <p>
                     이메일 수정<br />
-                    {session.user.email}
+                    <span className="text-xl text-gray-600">{session.user.email}</span>
                 </p>
                 <RiArrowRightSLine size={18} />
                 <Inner href={'/profileedit/email'} />
@@ -55,9 +54,12 @@ export default function ProfileEdit() {
                 <Inner href={'/profileedit/pass'} />
             </Container>
             <Container>
-                <p>닉네임 수정</p>
+                <p>
+                    닉네임 수정<br />
+                    <span className="text-xl text-gray-600">{profile.username}</span>
+                </p>
                 <RiArrowRightSLine size={18} />
-                <Inner href={'/'} />
+                <Inner href={'/profileedit/nickname'} />
             </Container>
             <Container>
                 <p>관심사 수정</p>

@@ -34,7 +34,10 @@ export default function EditButton({type,vlaue,vlaueCheck,loading,passCheck,onCl
         isValid = emailRegex.test(vlaue) && !loading
     }
     if(type == 'pass') {
-        isValid = passwordRegex.test(vlaue) && passwordRegex.test(vlaueCheck) && passCheck
+        isValid = passwordRegex.test(vlaue) && passwordRegex.test(vlaueCheck) && passCheck && !loading
+    }
+    if(type== 'nickname') {
+        isValid = !loading && vlaue.length >= 2
     }
 
 
