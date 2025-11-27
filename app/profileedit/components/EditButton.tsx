@@ -24,6 +24,12 @@ interface ButtonProps {
     onClick: ()=>void;
 }
 
+interface InterestButtonProps {
+    loading: boolean;
+    value: string[];
+    onClick: ()=>void;
+}
+
 export default function EditButton({type,vlaue,vlaueCheck,loading,passCheck,onClick}:ButtonProps) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
@@ -40,6 +46,14 @@ export default function EditButton({type,vlaue,vlaueCheck,loading,passCheck,onCl
         isValid = !loading && vlaue.length >= 2
     }
 
+    return (
+        <Button disabled={!isValid} onClick={onClick}>수정</Button>
+    )
+}
+
+export function EditButtonInterest({ value, loading, onClick}:InterestButtonProps) {
+
+    const isValid = !loading && value.length > 0
 
     return (
         <Button disabled={!isValid} onClick={onClick}>수정</Button>

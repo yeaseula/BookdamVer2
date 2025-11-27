@@ -62,9 +62,14 @@ export default function ProfileEdit() {
                 <Inner href={'/profileedit/nickname'} />
             </Container>
             <Container>
-                <p>관심사 수정</p>
+                <p>
+                    관심사 수정<br />
+                    {profile.interests.map((ele,index)=>(
+                        <span key={`${index}-${ele}`} className="text-xl text-gray-600 mr-1.5">#{ele}</span>
+                    ))}
+                </p>
                 <RiArrowRightSLine size={18} />
-                <Inner href={'/'} />
+                <Inner href={'/profileedit/interest'} />
             </Container>
             {/* <ProfileInfo
             setEmail={setEmail}
