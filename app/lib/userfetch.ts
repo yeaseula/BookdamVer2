@@ -34,20 +34,39 @@ export interface Reviews extends BaseType {
     updated_at: string;
 }
 
+export interface Books extends BaseType {
+    user_id: string;
+    title: string;
+    total_pages: number;
+    current_page: number;
+    updated_at: string;
+}
+
+export interface Log extends BaseType {
+    book_id: string;
+    user_id: string;
+    current_page: number;
+    duration_minutes: number;
+}
+
 interface AuthState {
     session: Session | null;
     user: User | null;
     profile: { username: string; interests: string[] } | null;
     reviews: Reviews[];
     memo: Memo[];
+    books: Books[];
+    log: Log[];
     isReviewLoaded: boolean;
     isMemoRoaded: boolean;
+    isBooksLoaded: boolean;
+    isLogLoaded: boolean;
     setSession: (session: Session | null) => void;
     setProfile: (profile: { username: string; interests: string[] } | null) => void;
-    setData: <T extends { id: string }>(key: 'memo' | 'reviews', items: T[]) => void;
-    addData: <T extends { id: string }>(key: 'memo' | 'reviews', item: T) => void;
-    updateData: <T extends { id: string }>(key: 'memo' | 'reviews', item: T) => void;
-    removeData: (key: 'memo' | 'reviews', id: string) => void;
+    setData: <T extends { id: string }>(key: 'memo' | 'reviews' | 'books' | 'log', items: T[]) => void;
+    addData: <T extends { id: string }>(key: 'memo' | 'reviews' | 'books' | 'log', item: T) => void;
+    updateData: <T extends { id: string }>(key: 'memo' | 'reviews' | 'books' | 'log', item: T) => void;
+    removeData: (key: 'memo' | 'reviews' | 'books' | 'log', id: string) => void;
     fetchSession: ()=>Promise<void>;
 }
 
@@ -57,8 +76,12 @@ export const useAuthStore = create<AuthState>((set,get)=>({
     profile: null,
     reviews: [],
     memo: [],
+    books: [],
+    log: [],
     isReviewLoaded: false,
     isMemoRoaded: false,
+    isBooksLoaded: false,
+    isLogLoaded: false,
     setSession:(session)=>set({session, user: session?.user ?? null}),
     setProfile: (profile) => set({ profile }),
     fetchSession: async()=>{
@@ -71,6 +94,10 @@ export const useAuthStore = create<AuthState>((set,get)=>({
             set({ [key]: items, isReviewLoaded: true } as any)
         } else if(key === 'memo') {
             set({ [key]: items, isMemoRoaded: true } as any)
+        } else if(key === 'books') {
+            set({ [key]: items, isBooksLoaded: true} as any)
+        } else if(key === 'log') {
+            set({ [key]: items, isLogLoaded: true} as any)
         }
     },
     addData: (key, item) => set({ [key]: [item, ...get()[key]] } as any),

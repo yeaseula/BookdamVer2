@@ -45,6 +45,7 @@ const HEADER_CONFIG = {
     '/review': { title: '나의 리뷰', type: 'normal' },
     '/write': { title: '리뷰 작성', type: 'normal' },
     '/memo': { title: '기억에 남는 구절', type: 'normal' },
+    '/reading': { title: '읽고있는 책', type: 'normal' },
     '/mypage': { title: '프로필', type: 'normal' },
     '/profileedit': { title: '프로필 수정', type: 'normal' },
     '/profileedit/email': { title: '이메일 수정', type: 'normal' },

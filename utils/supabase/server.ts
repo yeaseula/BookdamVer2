@@ -50,5 +50,17 @@ export default async function createClient() {
   .eq('user_id', session.user.id)
   .order('created_at', { ascending: false })
 
-  return { supabase, session, profile, reviews, memo }
+  const { data:books, error:booksError } = await supabase
+  .from('books')
+  .select('*')
+  .eq('user_id', session.user.id)
+  .order('created_at', { ascending: false })
+
+  const { data:log, error:logError } = await supabase
+  .from('reading_logs')
+  .select('*')
+  .eq('user_id', session.user.id)
+  .order('created_at', { ascending: false })
+
+  return { supabase, session, profile, reviews, memo, books, log }
 }
