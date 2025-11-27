@@ -29,13 +29,14 @@ export default function MyPage() {
 
     const {profile,reviews, isReviewLoaded} = useAuthStore()
     const username = profile?.username
+    const interests = profile?.interests
 
     return(
         <ProfileWrap>
             <h2 className="sr-only">나의 프로필</h2>
             <CommonBox>
                 {username &&
-                    <Profile username={username}/>
+                    <Profile username={username} interests={interests}/>
                 }
                 {!username &&
                     <>
