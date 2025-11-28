@@ -36,16 +36,16 @@ export default function ReadingPage() {
     const setToast = useToastStore((state)=>state.setToast)
 
     useEffect(()=>{
-        console.log(stopWatchNum)
-        if(stopWatchNum.length === 0) return
+        if(stopWatchNum.length === 0) {
+            setStopObj(null)
+            setStopPopup(false)
+        }
         if(stopWatchNum.length > 0) {
             const CheckStopObj = currentBooks.find((m)=>m.id===stopWatchNum[0])
             setStopObj(CheckStopObj)
             setStopPopup(true)
         }
     },[stopWatchNum])
-
-    useEffect(()=>{console.log(stopObj)},[stopObj])
 
     useEffect(()=>{
         setCurrentBooks(books)
@@ -112,7 +112,7 @@ export default function ReadingPage() {
                         <EditModal editObj={editObj} setEditPopup={setEditPopup} setCheckId={setCheckId}/>
                     }
                     {stopPopup &&
-                        <StopModal stopObj={stopObj} />
+                        <StopModal stopObj={stopObj} setStopWatchNum={setStopWatchNum}/>
                     }
                 </>
             )}

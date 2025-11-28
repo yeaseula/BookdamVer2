@@ -1,10 +1,12 @@
 import styled from "styled-components"
-import { useState,useRef,useEffect } from "react"
+import { useState,useRef,useEffect, Dispatch, SetStateAction } from "react"
 import { Books } from "@/app/lib/userfetch"
+import createClient from "@/utils/supabase/client"
+import { useAuthStore } from "@/app/lib/userfetch"
+import { useToastStore } from "@/app/lib/useToastStore"
 import { RiAlarmFill } from "@remixicon/react"
 import ModalBack from "@/app/components/modal/ModalBack"
 import InputFields from "@/app/components/form/input"
-import { useToastStore } from "@/app/lib/useToastStore"
 
 const StopWatchContainer = styled.section`
     position: fixed;
@@ -70,7 +72,12 @@ const Circle = styled.button`
     cursor: pointer;
 `
 
-export default function StopWatch({stopObj}:{stopObj:Books}) {
+interface StopWatchProps {
+    setStopWatchNum: Dispatch<SetStateAction<string[]>>;
+    stopObj: Books;
+}
+
+export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
 
     const [time,setTime] = useState<number>(0)
     const [running,setRunning] = useState<boolean>(false)
@@ -80,6 +87,7 @@ export default function StopWatch({stopObj}:{stopObj:Books}) {
     const [isReaded,setIsReaded] = useState(false)
     const [radingPage,setReadingPage] = useState<number | null>(null)
     const setToast = useToastStore((state)=>state.setToast)
+    const supabase = createClient()
 
     const format = (sec:number)=>{
         const h = Math.floor(sec/3600).toString().padStart(2,'0')
@@ -101,8 +109,34 @@ export default function StopWatch({stopObj}:{stopObj:Books}) {
         return ()=>interval.current && clearInterval(interval.current)
     },[running])
 
-    const handleSubmit=()=>{
+    const handleSubmit= async()=>{
+        if(!radingPage) {
+            setToast('페이지를 입력해주세요','error');
+            return
+        }
+        const { data, error } = await supabase
+            .from("books")
+            .update({
+            title: stopObj.title,
+            total_pages: stopObj.total_pages,
+            current_page: radingPage,
+            updated_at: new Date().toISOString()
+            })
+            .eq("id", stopObj.id)
+            .select();
 
+        if (error) {
+            console.error(error);
+            setToast("기록 실패했습니다!", "error")
+            return;
+        }
+
+        const updatedBooks:Books = data?.[0];
+        if (!updatedBooks) return;
+
+        useAuthStore.getState().updateData<Books>('books',updatedBooks);
+        setToast("기록됐습니다!", "success")
+        setStopWatchNum([])
     }
 
     return(
@@ -135,25 +169,25 @@ export default function StopWatch({stopObj}:{stopObj:Books}) {
                     </BtnWrap>
                     {isReaded &&
                     <>
-                    <InputFields
-                        type="text"
-                        placeholder="읽은 페이지"
-                        name="bookpage-read"
-                        value={radingPage ?? ""}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
-                            const value = e.target.value;
-                            if (value === '') {
-                                setReadingPage(null);
-                                return;
-                            }
-                            if (/^\d+$/.test(value)) {
-                                setReadingPage(Number(value));
-                            } else {
-                                setToast("숫자만 입력 가능합니다!","info")
-                            }
-                        }}
-                    />
-                    <Btn color="#6ac8d8" onClick={handleSubmit}>기록하기</Btn>
+                        <InputFields
+                            type="text"
+                            placeholder="읽은 페이지"
+                            name="bookpage-read"
+                            value={radingPage ?? ""}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
+                                const value = e.target.value;
+                                if (value === '') {
+                                    setReadingPage(null);
+                                    return;
+                                }
+                                if (/^\d+$/.test(value)) {
+                                    setReadingPage(Number(value));
+                                } else {
+                                    setToast("숫자만 입력 가능합니다!","info")
+                                }
+                            }}
+                        />
+                        <Btn color="#6ac8d8" onClick={handleSubmit}>기록하기</Btn>
                     </>
                     }
                 </Card>
