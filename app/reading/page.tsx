@@ -1,17 +1,18 @@
 "use client"
 import styled from "styled-components"
-import ReadingForm from "./components/readingForm"
-import createClient from "@/utils/supabase/client"
-import EditButton from "./components/Edit"
-import DeleteButton from "./components/Delete"
 import { useAuthStore } from "../lib/userfetch"
 import { Books, Log } from "../lib/userfetch"
 import { useEffect, useState } from "react"
 import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
 import { useToastStore } from "../lib/useToastStore"
+import ReadingForm from "./components/readingForm"
+import createClient from "@/utils/supabase/client"
+import EditButton from "./components/Edit"
+import DeleteButton from "./components/Delete"
 import ReadingContent from "./components/readingContent"
 import EditModal from "./components/modal/EditModal"
+import StopModal from "./components/stopwatch/StopModal"
 
 const MemoWrap = styled.section`
     padding: 80px 15px 65px;
@@ -21,12 +22,30 @@ export default function ReadingPage() {
     const [EditPopup,setEditPopup] = useState(false)
     const [checkId,setCheckId] = useState<string[]>([])
     const [editObj,setEditObj] = useState<Books | null>(null) // 수정 할 값 객체
+
+    //stop watch state
+    const [stopPopup,setStopPopup] = useState(false)
+    const [stopWatchNum,setStopWatchNum] = useState<string[]>([]) //스톱워치 해당 인덱스
+    const [stopObj,setStopObj] = useState<Books | null>(null)
+
     //data first access point
     const [currentBooks,setCurrentBooks] = useState<Books[] | null>(null)
     const { books } = useAuthStore() as { books: Books[] | null};
     const { session } = useAuthStore()
     const supabase = createClient()
     const setToast = useToastStore((state)=>state.setToast)
+
+    useEffect(()=>{
+        console.log(stopWatchNum)
+        if(stopWatchNum.length === 0) return
+        if(stopWatchNum.length > 0) {
+            const CheckStopObj = currentBooks.find((m)=>m.id===stopWatchNum[0])
+            setStopObj(CheckStopObj)
+            setStopPopup(true)
+        }
+    },[stopWatchNum])
+
+    useEffect(()=>{console.log(stopObj)},[stopObj])
 
     useEffect(()=>{
         setCurrentBooks(books)
@@ -75,7 +94,13 @@ export default function ReadingPage() {
                 <>
                     <ReadingForm session={session}/>
                     <div className="mt-[35px]">
-                        <ReadingContent books={books} checkId={checkId} setCheckId={setCheckId} />
+                        <ReadingContent
+                        books={books}
+                        checkId={checkId}
+                        setCheckId={setCheckId}
+                        stopWatchNum={stopWatchNum}
+                        setStopWatchNum={setStopWatchNum}
+                        />
                     </div>
                     {currentBooks.length > 0 && (
                         <div className="mt-[20px] flex gap-3 justify-end">
@@ -85,6 +110,9 @@ export default function ReadingPage() {
                     )}
                     {EditPopup &&
                         <EditModal editObj={editObj} setEditPopup={setEditPopup} setCheckId={setCheckId}/>
+                    }
+                    {stopPopup &&
+                        <StopModal stopObj={stopObj} />
                     }
                 </>
             )}

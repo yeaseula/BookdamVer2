@@ -3,8 +3,10 @@ import styled from "styled-components"
 import InputCheck from "../../components/form/inputCheck"
 import { Books, Log } from "@/app/lib/userfetch"
 import { RiAlarmFill } from "@remixicon/react"
-import { RiListView } from "@remixicon/react"
+import RecoardButton from "./RecoardButton"
 import ProgressBar from "./ProgressBar"
+import { useState } from "react"
+import StopModal from "./stopwatch/StopModal"
 
 const List = styled.div`
     width: 100%;
@@ -26,32 +28,20 @@ const ListInfo = styled.div`
 const EmptyMessage = styled.p`
     padding-bottom: 10px;
 `
-const Stop = styled.button`
-    border-radius: 50%;
-    background-color: var(--sub_color);
-    position: absolute;
-    top: 5px;
-    right: 0;
-    z-index: 20;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-`
-const LogView = styled(Stop)`
-    right: 38px;
-`
 
-export default function ReadingContent({books,checkId,setCheckId}) {
+
+export default function ReadingContent({
+    books, checkId, setCheckId,
+    stopWatchNum, setStopWatchNum
+}) {
+
     return (
         <>
             {!books && <EmptyMessage>등록된 글이 없습니다</EmptyMessage>}
             {books && (
                 books.map((m:Books,idx:number)=>(
-                <div className="mb-8">
-                <List key={`${m.title}-${idx}`}>
+                <div className="mb-8" key={`${m.title}-${idx}`}>
+                <List>
                     <div>
                         <InputCheck type={'checkbox'} name={'list-check'} index={m.id} checkId={checkId} setCheckId={setCheckId} />
                     </div>
@@ -60,15 +50,14 @@ export default function ReadingContent({books,checkId,setCheckId}) {
                             <p className="font-bold">{m.title}</p>
                             <span className="text-xl font-medium"> 전체 {m.total_pages} 페이지 / 현재 {m.current_page} page</span>
                         </div>
-                        <LogView type="button" aria-label="기록 보기 버튼">
-                            <RiListView size={16} color="#fff" />
-                        </LogView>
-                        <Stop type="button" aria-label="스톱워치 버튼">
-                            <RiAlarmFill size={18} color="#fff" />
-                        </Stop>
+                        <RecoardButton
+                        index={m.id}
+                        stopWatchNum={stopWatchNum}
+                        setStopWatchNum={setStopWatchNum}
+                        ></RecoardButton>
                     </ListInfo>
                 </List>
-                <ProgressBar total={m.total_pages} current={m.current_page}></ProgressBar>
+                <ProgressBar total={m.total_pages} current={m.current_page} />
                 </div>
                 ))
             )}
