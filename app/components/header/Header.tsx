@@ -21,7 +21,7 @@ const Container = styled.header`
     background-color: #fff;
     border-bottom: 1px solid #e0e0e0;
     box-shadow: 0 0 16px rgba(0, 0, 0, .15);
-    z-index: 100;
+    z-index: 99;
 `
 const Depth = styled.div`
     width: 100%;

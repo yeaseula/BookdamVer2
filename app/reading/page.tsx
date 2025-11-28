@@ -37,8 +37,8 @@ export default function ReadingPage() {
 
     useEffect(()=>{
         if(stopWatchNum.length === 0) {
-            setStopObj(null)
-            setStopPopup(false)
+            setStopObj(null) //스탑워치 관리 대상 객체 사라짐
+            setStopPopup(false) //팝업 사라짐
         }
         if(stopWatchNum.length > 0) {
             const CheckStopObj = currentBooks.find((m)=>m.id===stopWatchNum[0])

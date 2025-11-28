@@ -4,7 +4,7 @@ import { Books } from "@/app/lib/userfetch"
 import createClient from "@/utils/supabase/client"
 import { useAuthStore } from "@/app/lib/userfetch"
 import { useToastStore } from "@/app/lib/useToastStore"
-import { RiAlarmFill } from "@remixicon/react"
+import { RiAlarmFill, RiCloseLine } from "@remixicon/react"
 import ModalBack from "@/app/components/modal/ModalBack"
 import InputFields from "@/app/components/form/input"
 
@@ -27,6 +27,13 @@ const Card = styled.div`
     display:flex;
     flex-direction:column;
     gap:14px;
+`
+const Close = styled.button`
+    position:absolute;
+    top: 20px;
+    right: 20px;
+    color: #fff;
+    cursor: pointer;
 `
 const Title = styled.h3`
     font-size: 1.8rem;
@@ -146,6 +153,7 @@ export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
             <ModalBack onClick={()=>{}}></ModalBack>
             <StopWatchContainer>
                 <Card>
+                    <Close><RiCloseLine onClick={()=>setStopWatchNum([])}/></Close>
                     <Title>{stopObj.title}</Title>
                     <Timer>{format(time)}</Timer>
 
