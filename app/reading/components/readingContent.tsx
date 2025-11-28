@@ -4,12 +4,13 @@ import InputCheck from "../../components/form/inputCheck"
 import { Books, Log } from "@/app/lib/userfetch"
 import { RiAlarmFill } from "@remixicon/react"
 import { RiListView } from "@remixicon/react"
+import ProgressBar from "./ProgressBar"
 
 const List = styled.div`
     width: 100%;
     display: flex;
     align-items: start;
-    padding-top: 10px;
+    padding: 10px 0 0 0;
     gap: 10px;
     border-bottom: 1px solid #e0e0e0;
 `
@@ -21,20 +22,6 @@ const ListInfo = styled.div`
     flex-direction: column;
     align-items: start;
     justify-content: start;
-`
-const Cite = styled.cite`
-    display: block;
-    margin-top: 10px;
-    width: 100%;
-    text-align: right;
-`
-const BookTitle = styled.span`
-    font-size: 1.6rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
 `
 const EmptyMessage = styled.p`
     padding-bottom: 10px;
@@ -58,12 +45,12 @@ const LogView = styled(Stop)`
 `
 
 export default function ReadingContent({books,checkId,setCheckId}) {
-
     return (
         <>
             {!books && <EmptyMessage>등록된 글이 없습니다</EmptyMessage>}
             {books && (
                 books.map((m:Books,idx:number)=>(
+                <div className="mb-8">
                 <List key={`${m.title}-${idx}`}>
                     <div>
                         <InputCheck type={'checkbox'} name={'list-check'} index={m.id} checkId={checkId} setCheckId={setCheckId} />
@@ -81,6 +68,8 @@ export default function ReadingContent({books,checkId,setCheckId}) {
                         </Stop>
                     </ListInfo>
                 </List>
+                <ProgressBar total={m.total_pages} current={m.current_page}></ProgressBar>
+                </div>
                 ))
             )}
         </>

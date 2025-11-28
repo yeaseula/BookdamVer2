@@ -11,6 +11,7 @@ import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
 import { useToastStore } from "../lib/useToastStore"
 import ReadingContent from "./components/readingContent"
+import EditModal from "./components/modal/EditModal"
 
 const MemoWrap = styled.section`
     padding: 80px 15px 65px;
@@ -74,7 +75,7 @@ export default function ReadingPage() {
                 <>
                     <ReadingForm session={session}/>
                     <div className="mt-[35px]">
-                        <ReadingContent books={books} checkId={checkId} setCheckId={setCheckId}></ReadingContent>
+                        <ReadingContent books={books} checkId={checkId} setCheckId={setCheckId} />
                     </div>
                     {currentBooks.length > 0 && (
                         <div className="mt-[20px] flex gap-3 justify-end">
@@ -82,10 +83,9 @@ export default function ReadingPage() {
                             <DeleteButton onClick={handleDelete} checkId={checkId}/>
                         </div>
                     )}
-                    {/*
                     {EditPopup &&
                         <EditModal editObj={editObj} setEditPopup={setEditPopup} setCheckId={setCheckId}/>
-                    } */}
+                    }
                 </>
             )}
             {(!session || !currentBooks) && (
