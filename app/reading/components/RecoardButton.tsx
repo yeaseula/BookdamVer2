@@ -2,9 +2,9 @@ import styled from "styled-components"
 import { RiListView,RiAlarmFill } from "@remixicon/react"
 
 
-const Stop = styled.button<{disabled:boolean}>`
+const Stop = styled.button`
     border-radius: 50%;
-    background-color: ${(p)=>p.disabled ? '#bdbdbd' : 'var(--sub_color)'};
+    background-color:var(--sub_color);
     position: absolute;
     top: 5px;
     right: 0;
@@ -14,7 +14,7 @@ const Stop = styled.button<{disabled:boolean}>`
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: ${(p)=>p.disabled ? 'initial' : 'pointer'};
+    cursor: pointer;
 `
 const LogView = styled(Stop)`
     right: 38px;
@@ -33,21 +33,21 @@ export default function RecoardButton({index,logWatchNum,setLogWatchNum,stopWatc
 
     return (
     <>
-            <LogView
-            type="button"
-            aria-label="기록 보기 버튼"
-            data-target={index}
-            disabled={!logIsValid}
-            onClick={()=>handleLog(index)}>
-                <RiListView size={16} color="#fff" />
-            </LogView>
-            <Stop
-            type="button"
-            aria-label="스톱워치 버튼"
-            data-target={index}
-            disabled={!stopIsValid}
-            onClick={()=>handleWatch(index)}>
-                <RiAlarmFill size={18} color="#fff" />
-            </Stop>
+        <LogView
+        type="button"
+        aria-label="기록 보기 버튼"
+        data-target={index}
+
+        onClick={()=>handleLog(index)}>
+            <RiListView size={16} color="#fff" />
+        </LogView>
+        <Stop
+        type="button"
+        aria-label="스톱워치 버튼"
+        data-target={index}
+
+        onClick={()=>handleWatch(index)}>
+            <RiAlarmFill size={18} color="#fff" />
+        </Stop>
     </>
 )}

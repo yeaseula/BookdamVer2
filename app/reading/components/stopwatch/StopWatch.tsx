@@ -21,6 +21,7 @@ export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
     const [running,setRunning] = useState<boolean>(false)
     const interval = useRef<NodeJS.Timeout | null>(null)
     const [isValid,setIsValid] = useState(false)
+    const [isValidLoading,setIsValidLoading] = useState(false)
     const [minimalize,setMinimalize] = useState(false)
     const [isReaded,setIsReaded] = useState(false)
     const [radingPage,setReadingPage] = useState<number | null>(null)
@@ -92,10 +93,11 @@ export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
         const updatedLogs:Log = data?.[0];
         if (!updatedLogs) return;
 
-        useAuthStore.getState().updateData<Log>('log',updatedLogs);
+        useAuthStore.getState().addData<Log>('log',updatedLogs);
     }
 
     const handleSubmit= async()=>{
+        if(isValidLoading) return
         if(time === 0) {
             setToast('기록을 측정해주세요','info')
             return
@@ -105,12 +107,15 @@ export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
             return
         }
 
+        setIsValidLoading(true)
+
         try {
             await handleBooksTable();
             await handleLogTable();
 
             setToast("기록이 저장됐습니다","success")
             setStopWatchNum([]);
+            setIsValidLoading(false)
 
         } catch(error) {
             console.error('Submit 실패:', error);
@@ -132,7 +137,7 @@ export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
                         <Btn color="#6ac8d8" disabled={isValid} onClick={start}>▶ Start</Btn>
                         <Btn color="#108377" disabled={isValid} onClick={pause}>⏸ Pause</Btn>
                         <Btn color="#f48c6a"
-
+                        disabled={isValidLoading}
                         onClick={()=>{
                             if(time === 0) {
                                 setToast('기록을 시작해주세요!','info')
@@ -170,7 +175,7 @@ export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
                                 }
                             }}
                         />
-                        <Btn color="#6ac8d8" onClick={handleSubmit}>기록하기</Btn>
+                        <Btn color="#6ac8d8" disabled={isValidLoading} onClick={handleSubmit}>기록하기</Btn>
                     </>
                     }
                 </Card>
