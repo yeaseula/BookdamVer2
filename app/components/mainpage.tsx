@@ -1,7 +1,7 @@
 "use client"
 import MainSlide from "./mainSlide/MainBanner"
 import SectionPageThree from "./section3/SectionPage"
-import { useAuthStore, Reviews } from "../lib/userfetch"
+import { useAuthStore, Reviews, Books } from "../lib/userfetch"
 import { useEffect, useRef, useState } from "react"
 import { fetchBookCover,fetchBookAI } from "../lib/fetchBookCover"
 import SectionPageOne from "./section1/SectionPage"
@@ -13,7 +13,7 @@ export default function MainPage() {
     const [AithumbArr,setAiThumbArr] = useState<string[]>([])
     const [stampDate,setStampDate] = useState<string[]>([])
 
-    const { profile, reviews, isReviewLoaded } = useAuthStore()
+    const { profile, reviews, isReviewLoaded, books } = useAuthStore()
     const nickname = profile?.username
     const interest = profile?.interests
 
@@ -45,12 +45,9 @@ export default function MainPage() {
                 setStampDate((prev)=>[...prev,ele.end_date])
             })
         }
-
         return () => {
             isCancelled = true
-            //console.log('클린업입니다요')
         }
-
     },[isReviewLoaded])
 
 
@@ -68,7 +65,7 @@ export default function MainPage() {
     return(
         <>
         <MainSlide slide={reviewThumb} readingCount={reviewThumb.length}></MainSlide>
-        <SectionPageOne readingCount={reviewThumb.length}></SectionPageOne>
+        <SectionPageOne readingCount={reviewThumb.length} books={books}></SectionPageOne>
         <Calendar stampDate={stampDate}/>
         <SectionPageThree username={nickname} books={AithumbArr}></SectionPageThree>
         </>
