@@ -17,5 +17,6 @@ export const AddButtonstyle = styled.button<{disabled: boolean}>`
         background-color: #bdbdbd;
         border: 1px solid #bdbdbd;
         color: #e0e0e0;
+        cursor: initial;
     }
 `

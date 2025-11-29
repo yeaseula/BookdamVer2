@@ -49,6 +49,14 @@ export interface Log extends BaseType {
     duration_minutes: number;
 }
 
+export interface Wish extends BaseType {
+    user_id: string;
+    title: string;
+    author: string;
+    price: number;
+    updated_at: string;
+}
+
 interface AuthState {
     session: Session | null;
     user: User | null;
@@ -57,16 +65,18 @@ interface AuthState {
     memo: Memo[];
     books: Books[];
     log: Log[];
+    wish: Wish[];
     isReviewLoaded: boolean;
     isMemoRoaded: boolean;
     isBooksLoaded: boolean;
     isLogLoaded: boolean;
+    isWishLoaded: boolean
     setSession: (session: Session | null) => void;
     setProfile: (profile: { username: string; interests: string[] } | null) => void;
-    setData: <T extends { id: string }>(key: 'memo' | 'reviews' | 'books' | 'log', items: T[]) => void;
-    addData: <T extends { id: string }>(key: 'memo' | 'reviews' | 'books' | 'log', item: T) => void;
-    updateData: <T extends { id: string }>(key: 'memo' | 'reviews' | 'books' | 'log', item: T) => void;
-    removeData: (key: 'memo' | 'reviews' | 'books' | 'log', id: string) => void;
+    setData: <T extends { id: string }>(key: 'memo' | 'reviews' | 'books' | 'log' | 'wish', items: T[]) => void;
+    addData: <T extends { id: string }>(key: 'memo' | 'reviews' | 'books' | 'log' | 'wish', item: T) => void;
+    updateData: <T extends { id: string }>(key: 'memo' | 'reviews' | 'books' | 'log' | 'wish', item: T) => void;
+    removeData: (key: 'memo' | 'reviews' | 'books' | 'log' | 'wish', id: string) => void;
     fetchSession: ()=>Promise<void>;
 }
 
@@ -78,10 +88,12 @@ export const useAuthStore = create<AuthState>((set,get)=>({
     memo: [],
     books: [],
     log: [],
+    wish: [],
     isReviewLoaded: false,
     isMemoRoaded: false,
     isBooksLoaded: false,
     isLogLoaded: false,
+    isWishLoaded: false,
     setSession:(session)=>set({session, user: session?.user ?? null}),
     setProfile: (profile) => set({ profile }),
     fetchSession: async()=>{
@@ -98,6 +110,8 @@ export const useAuthStore = create<AuthState>((set,get)=>({
             set({ [key]: items, isBooksLoaded: true} as any)
         } else if(key === 'log') {
             set({ [key]: items, isLogLoaded: true} as any)
+        } else if(key === 'wish') {
+            set({ [key]: items, isWishLoaded: true} as any)
         }
     },
     addData: (key, item) => set({ [key]: [item, ...get()[key]] } as any),
@@ -114,6 +128,9 @@ export const useAuthStore = create<AuthState>((set,get)=>({
             updated.sort((a:any,b:any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
         }
         if(key === 'log') {
+            updated.sort((a:any,b:any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        }
+        if(key === 'wish') {
             updated.sort((a:any,b:any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
         }
         set({ [key]: updated } as any)

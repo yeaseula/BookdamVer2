@@ -51,6 +51,7 @@ const HEADER_CONFIG = {
     '/profileedit/email': { title: '이메일 수정', type: 'normal' },
     '/profileedit/pass': { title: '비밀번호 수정', type: 'normal' },
     '/profileedit/interest': { title: '관심사 수정', type: 'normal' },
+    '/wish': { title: '읽고싶은 책', type: 'normal' },
 } as const
 
 export default function Header() {

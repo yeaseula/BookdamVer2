@@ -26,7 +26,7 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const { session, profile, reviews, memo, books, log } = await createClient()
+  const { session, profile, reviews, memo, books, log, wish } = await createClient()
 
   return (
     <html lang="en" className={AppleSDGothicNeo.className}>
@@ -39,6 +39,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           initialMemo={memo}
           initialBooks={books}
           initialLog={log}
+          initialWish={wish}
           >
             <ToastContainer></ToastContainer>
             <Toast></Toast>

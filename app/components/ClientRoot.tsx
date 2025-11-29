@@ -3,7 +3,7 @@ import { useEffect } from "react"
 import { useAuthStore } from "../lib/userfetch"
 import { Session } from "@supabase/supabase-js"
 import { Reviews } from "../lib/userfetch"
-import { Memo, Books, Log } from "../lib/userfetch"
+import { Memo, Books, Log, Wish } from "../lib/userfetch"
 
 interface Props {
   initialSession: Session | null
@@ -12,6 +12,7 @@ interface Props {
   initialMemo: any
   initialBooks: any
   initialLog: any
+  initialWish: any
   children: React.ReactNode
 }
 
@@ -19,7 +20,7 @@ export default function ClientRoot({
   initialSession,
   initialProfile,
   initialReview,
-  initialMemo,initialBooks, initialLog, children}:Props) {
+  initialMemo,initialBooks, initialLog,initialWish, children}:Props) {
 
     const setSession = useAuthStore((state)=>state.setSession)
     const setProfile = useAuthStore((state)=>state.setProfile)
@@ -32,6 +33,7 @@ export default function ClientRoot({
       setData<Memo>('memo',initialMemo)
       setData<Books>('books',initialBooks)
       setData<Log>('log',initialLog)
+      setData<Wish>('wish',initialWish)
     },[])
 
     return <>{children}</>
