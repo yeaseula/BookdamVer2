@@ -101,6 +101,23 @@ export const useAuthStore = create<AuthState>((set,get)=>({
         }
     },
     addData: (key, item) => set({ [key]: [item, ...get()[key]] } as any),
-    updateData: (key, item) => set({ [key]: get()[key].map((i: any) => i.id === item.id ? item : i) } as any),
+    updateData: (key, item) => {
+        const updated = get()[key].map((i: any) => i.id === item.id ? item : i)
+        //books는 updated_at 기준
+        if(key === 'books') {
+            updated.sort((a:any,b:any) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
+        }
+        if(key === 'reviews') {
+            updated.sort((a:any,b:any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        }
+        if(key === 'memo') {
+            updated.sort((a:any,b:any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        }
+        if(key === 'log') {
+            updated.sort((a:any,b:any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        }
+        set({ [key]: updated } as any)
+    },
+
     removeData: (key, id) => set({ [key]: get()[key].filter((i: any) => i.id !== id) } as any),
 }))

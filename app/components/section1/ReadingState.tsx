@@ -44,7 +44,7 @@ export default function ReadingState({books}:{books:Books[]}) {
                     <ReadBoxP>
                         현재
                         <span className="reading-name font-bold"> {books[0].title}</span>을 읽고 계시네요!<br />
-                        <span className="reading-page font-bold">000 페이지</span>까지 읽었어요.
+                        <span className="reading-page font-bold">{books[0].current_page} 페이지</span>까지 읽었어요.
                     </ReadBoxP>
                 )}
                 </>
