@@ -165,8 +165,12 @@ export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
     }
 
     const handleSubmit= async()=>{
+        if(time === 0) {
+            setToast('기록을 측정해주세요','info')
+            return
+        }
         if(!radingPage) {
-            setToast('페이지를 입력해주세요','error');
+            setToast('페이지를 입력해주세요','info');
             return
         }
 
@@ -196,17 +200,21 @@ export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
                     <BtnWrap>
                         <Btn color="#6ac8d8" disabled={isValid} onClick={start}>▶ Start</Btn>
                         <Btn color="#108377" disabled={isValid} onClick={pause}>⏸ Pause</Btn>
-                        <Btn color="#f48c6a" disabled={isValid} onClick={stop}>■ Stop</Btn>
-                    </BtnWrap>
-                    <BtnWrap>
-                        <Btn color="#424242"
+                        <Btn color="#f48c6a"
+
                         onClick={()=>{
+                            if(time === 0) {
+                                setToast('기록을 시작해주세요!','info')
+                                return
+                            }
                             setIsReaded(!isReaded)
                             setIsValid(!isValid)
                             setRunning(!running)
-
                         }}
-                        >{isReaded? '다시 시작' : '독서 종료'}</Btn>
+                        >{isReaded? '▶ RePlay' : '■ Stop'}</Btn>
+                    </BtnWrap>
+                    <BtnWrap>
+                        <Btn color="#424242" disabled={isValid} onClick={stop}>초기화</Btn>
                         <Btn color="#757575"
                         onClick={()=>{setMinimalize(!minimalize)}}
                         >작게보기</Btn>
