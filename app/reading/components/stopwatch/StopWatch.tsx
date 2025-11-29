@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import { useState,useRef,useEffect, Dispatch, SetStateAction } from "react"
-import { Books } from "@/app/lib/userfetch"
+import { Books, Log } from "@/app/lib/userfetch"
 import createClient from "@/utils/supabase/client"
 import { useAuthStore } from "@/app/lib/userfetch"
 import { useToastStore } from "@/app/lib/useToastStore"
@@ -116,11 +116,7 @@ export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
         return ()=>interval.current && clearInterval(interval.current)
     },[running])
 
-    const handleSubmit= async()=>{
-        if(!radingPage) {
-            setToast('페이지를 입력해주세요','error');
-            return
-        }
+    const handleBooksTable = async() => {
         const { data, error } = await supabase
             .from("books")
             .update({
@@ -142,8 +138,48 @@ export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
         if (!updatedBooks) return;
 
         useAuthStore.getState().updateData<Books>('books',updatedBooks);
-        setToast("기록됐습니다!", "success")
-        setStopWatchNum([])
+    }
+
+    const handleLogTable = async() => {
+        const { data, error } = await supabase
+        .from("reading_logs")
+        .insert([
+            {
+                book_id: stopObj.id,
+                user_id:stopObj.user_id,
+                current_page:radingPage,
+                duration_minutes: time
+            },
+        ]).select();
+
+        if (error) {
+            console.error(error)
+            setToast("로그 저장 실패했습니다!","error")
+            return;
+        }
+
+        const updatedLogs:Log = data?.[0];
+        if (!updatedLogs) return;
+
+        useAuthStore.getState().updateData<Log>('log',updatedLogs);
+    }
+
+    const handleSubmit= async()=>{
+        if(!radingPage) {
+            setToast('페이지를 입력해주세요','error');
+            return
+        }
+
+        try {
+            await handleBooksTable();
+            await handleLogTable();
+
+            setToast("기록이 저장됐습니다","success")
+            setStopWatchNum([]);
+
+        } catch(error) {
+            console.error('Submit 실패:', error);
+        }
     }
 
     return(
@@ -167,8 +203,8 @@ export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
                         onClick={()=>{
                             setIsReaded(!isReaded)
                             setIsValid(!isValid)
-                            setRunning(false)
-                            setTime(0)
+                            setRunning(!running)
+
                         }}
                         >{isReaded? '다시 시작' : '독서 종료'}</Btn>
                         <Btn color="#757575"
