@@ -19,11 +19,16 @@ const Stop = styled.button<{disabled:boolean}>`
 const LogView = styled(Stop)`
     right: 38px;
 `
-export default function RecoardButton({index,stopWatchNum,setStopWatchNum}) {
+export default function RecoardButton({index,logWatchNum,setLogWatchNum,stopWatchNum,setStopWatchNum}) {
 
     const stopIsValid = stopWatchNum.length === 0
-    const handleWatch = (index) => {
+    const logIsValid = logWatchNum.length === 0
+
+    const handleWatch = (index:string) => {
         setStopWatchNum(prev=>[...prev,index])
+    }
+    const handleLog = (index:string) => {
+        setLogWatchNum(prev=>[...prev,index])
     }
 
     return (
@@ -31,9 +36,9 @@ export default function RecoardButton({index,stopWatchNum,setStopWatchNum}) {
             <LogView
             type="button"
             aria-label="기록 보기 버튼"
-            data-target={''}
-
-            onClick={()=>{}}>
+            data-target={index}
+            disabled={!logIsValid}
+            onClick={()=>handleLog(index)}>
                 <RiListView size={16} color="#fff" />
             </LogView>
             <Stop

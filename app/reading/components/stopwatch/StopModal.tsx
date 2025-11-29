@@ -14,8 +14,6 @@ interface StopWatchProps {
 export default function StopModal({setStopWatchNum,stopObj}:StopWatchProps) {
     return(
         <>
-
-
         <StopWatch stopObj={stopObj} setStopWatchNum={setStopWatchNum}></StopWatch>
         </>
     )

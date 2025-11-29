@@ -13,6 +13,7 @@ import DeleteButton from "./components/Delete"
 import ReadingContent from "./components/readingContent"
 import EditModal from "./components/modal/EditModal"
 import StopModal from "./components/stopwatch/StopModal"
+import LogModal from "./components/log/LogModal"
 
 const MemoWrap = styled.section`
     padding: 80px 15px 65px;
@@ -28,9 +29,16 @@ export default function ReadingPage() {
     const [stopWatchNum,setStopWatchNum] = useState<string[]>([]) //스톱워치 해당 인덱스
     const [stopObj,setStopObj] = useState<Books | null>(null)
 
+    //log state
+    const [logPopup,setLogPopup] = useState(false)
+    const [logWatchNum,setLogWatchNum] = useState<string[]>([])
+    const [logObj,setLogObj] = useState<Log[] | null>(null)
+
     //data first access point
     const [currentBooks,setCurrentBooks] = useState<Books[] | null>(null)
+    const [currentLogs,setCurrentLogs] = useState<Log[] | null>(null)
     const { books } = useAuthStore() as { books: Books[] | null};
+    const { log } = useAuthStore() as { log: Log[] | null };
     const { session } = useAuthStore()
     const supabase = createClient()
     const setToast = useToastStore((state)=>state.setToast)
@@ -48,8 +56,26 @@ export default function ReadingPage() {
     },[stopWatchNum])
 
     useEffect(()=>{
+        if(logWatchNum.length === 0) {
+            setLogObj(null)
+            setLogPopup(false)
+        }
+        if(logWatchNum.length > 0) {
+            const CheckLogObj = currentLogs.filter((m)=>m.book_id===logWatchNum[0])
+            setLogObj(CheckLogObj)
+            setLogPopup(true)
+        }
+    },[logWatchNum])
+
+    useEffect(()=>{
+        console.log(books)
         setCurrentBooks(books)
     },[books])
+
+    useEffect(()=>{
+        console.log(log)
+        setCurrentLogs(log)
+    },[log])
 
     const handleEdit = async() => {
         if(checkId.length > 1) {
@@ -98,6 +124,8 @@ export default function ReadingPage() {
                         books={books}
                         checkId={checkId}
                         setCheckId={setCheckId}
+                        logWatchNum={logWatchNum}
+                        setLogWatchNum={setLogWatchNum}
                         stopWatchNum={stopWatchNum}
                         setStopWatchNum={setStopWatchNum}
                         />
@@ -113,6 +141,9 @@ export default function ReadingPage() {
                     }
                     {stopPopup &&
                         <StopModal stopObj={stopObj} setStopWatchNum={setStopWatchNum}/>
+                    }
+                    {logPopup &&
+                        <LogModal logObj={logObj} setLogWatchNum={setLogWatchNum}/>
                     }
                 </>
             )}

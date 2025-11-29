@@ -7,77 +7,8 @@ import { useToastStore } from "@/app/lib/useToastStore"
 import { RiAlarmFill, RiCloseLine } from "@remixicon/react"
 import ModalBack from "@/app/components/modal/ModalBack"
 import InputFields from "@/app/components/form/input"
+import { Container, Card, Close, Title, Timer, BtnWrap, Btn, Circle } from "../Modal.styled"
 
-const StopWatchContainer = styled.section`
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    z-index: 999;
-    transform: translate(-50%,-50%);
-    max-width: 380px;
-    width: 100%;
-`
-const Card = styled.div`
-    position: relative;
-    background:#3a3967;
-    width:100%;
-    padding:20px;
-    border-radius:14px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.24);
-    display:flex;
-    flex-direction:column;
-    gap:14px;
-`
-const Close = styled.button`
-    position:absolute;
-    top: 20px;
-    right: 20px;
-    color: #fff;
-    cursor: pointer;
-`
-const Title = styled.h3`
-    font-size: 1.8rem;
-    text-align: center;
-    font-weight: 600;
-    color:#fff;
-`
-const Timer = styled.div`
-    font-size:36px;
-    text-align:center;
-    font-weight:800;
-    margin:8px 0;
-    color:#fff4ba;
-`
-const BtnWrap = styled.div`
-    display:flex;
-    justify-content:space-between;
-    gap:10px;
-`
-const Btn = styled.button<{color:string,disabled?:boolean}>`
-    flex:1;
-    background:${p=>p.disabled ? '#bdbdbd' : p.color} ;
-    border:none;
-    padding:10px 0;
-    border-radius:10px;
-    font-weight:700;
-    font-size:14px;
-    color:${p=>p.disabled ? '#e0e0e0' : '#fff4ba'};
-    cursor:${p=>p.disabled ? 'initial' : 'pointer'};
-`
-const Circle = styled.button`
-    position: fixed;
-    bottom: 80px;
-    right: calc((100% - 420px) / 2);
-    z-index: 99;
-    background-color: var(--sub_color);
-    border-radius: 50%;
-    width: 45px;
-    height: 45px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-`
 
 interface StopWatchProps {
     setStopWatchNum: Dispatch<SetStateAction<string[]>>;
@@ -191,7 +122,7 @@ export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
         {!minimalize && (
             <>
             <ModalBack onClick={()=>{}}></ModalBack>
-            <StopWatchContainer>
+            <Container>
                 <Card>
                     <Close><RiCloseLine onClick={()=>setStopWatchNum([])}/></Close>
                     <Title>{stopObj.title}</Title>
@@ -243,7 +174,7 @@ export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
                     </>
                     }
                 </Card>
-            </StopWatchContainer>
+            </Container>
             </>
         )}
         {minimalize &&

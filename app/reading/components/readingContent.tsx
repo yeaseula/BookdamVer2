@@ -32,6 +32,7 @@ const EmptyMessage = styled.p`
 
 export default function ReadingContent({
     books, checkId, setCheckId,
+    logWatchNum, setLogWatchNum,
     stopWatchNum, setStopWatchNum
 }) {
 
@@ -52,9 +53,11 @@ export default function ReadingContent({
                         </div>
                         <RecoardButton
                         index={m.id}
+                        logWatchNum={logWatchNum}
+                        setLogWatchNum={setLogWatchNum}
                         stopWatchNum={stopWatchNum}
                         setStopWatchNum={setStopWatchNum}
-                        ></RecoardButton>
+                        />
                     </ListInfo>
                 </List>
                 <ProgressBar total={m.total_pages} current={m.current_page} />
