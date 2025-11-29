@@ -73,7 +73,6 @@ export default function ReadingPage() {
     },[books])
 
     useEffect(()=>{
-        console.log(log)
         setCurrentLogs(log)
     },[log])
 

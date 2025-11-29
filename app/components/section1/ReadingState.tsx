@@ -38,7 +38,7 @@ export default function ReadingState({books}:{books:Books[]}) {
             {isBooksLoaded && (
                 <>
                 {books.length === 0 &&
-                    <p>읽고있는 책이 없네요🤔</p>
+                    <p className="mt-8 font-medium">읽고있는 책이 없네요🤔</p>
                 }
                 {books.length !== 0 && (
                     <ReadBoxP>

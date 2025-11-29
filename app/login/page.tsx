@@ -9,9 +9,11 @@ import LoginButton from "./components/LoginButton";
 import createClient from "@/utils/supabase/client";
 import { useToastStore } from "../lib/useToastStore";
 import { useRouter } from "next/navigation";
-import { useAuthStore, Reviews,Memo } from "../lib/userfetch";
+import { useAuthStore, Reviews, Memo, Books, Log, Wish } from "../lib/userfetch";
 //util function
-import { UserInfoInitial, UserReviewInitial, UserMemoInitial } from "../lib/readingInfo";
+import { UserInfoInitial, UserReviewInitial, UserMemoInitial,
+    UserBooksInitial, UserLogInitial, UserWishInitial
+ } from "../lib/readingInfo";
 
 
 const LoginWrapper = styled.section`
@@ -64,7 +66,7 @@ export default function Login() {
             if (error) throw error
 
             if (data.user) {
-                console.log("session:", JSON.parse(JSON.stringify(data.session.user)));
+                //console.log("session:", JSON.parse(JSON.stringify(data.session.user)));
 
                 // 로그인 후 세션 초기 저장
                 setSession(data.session)
@@ -80,6 +82,15 @@ export default function Login() {
                 // 메모 목록 초기 저장
                 const UserMemo = await UserMemoInitial(UserId)
                 setData<Memo>('memo', UserMemo)
+                // 북 목록 초기 저장
+                const UserBooks = await UserBooksInitial(UserId)
+                setData<Books>('books', UserBooks)
+                //로그 목록 초기 저장
+                const UserLog = await UserLogInitial(UserId)
+                setData<Log>('log', UserLog)
+                //wish 목록 초기 저장
+                const UserWish = await UserWishInitial(UserId)
+                setData<Wish>('wish',UserWish)
                 //첫 로드인지 아닌지 (로그인/회원가입에서 이미 첫 로드)
 
 
