@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, A11y, Keyboard, Autoplay} from 'swiper/modules';
 import 'swiper/css';
@@ -77,7 +78,7 @@ const ButtonWrap = styled.div`
     gap: 5px;
     align-items: center;
 `
-const Button = styled.button`
+const Button = styled(Link)`
     min-width: 76px;
     justify-content: center;
     display: flex;
@@ -89,12 +90,10 @@ const Button = styled.button`
     text-align: center;
     font-size: 1.1rem;
     border-radius: 500px;
-    background-color: #bdbdbd;
+    background-color: #757575;
+    color: #fff
 `
-const ButtonDark = styled(Button)`
-    background-color:var(--sub_color);
-    color:#fff;
-`
+
 
 export default function RecomandSwiper({books}){
     const SwiperRef = useRef(null);
@@ -125,7 +124,7 @@ export default function RecomandSwiper({books}){
                             {book.thumbnail ? (
                                 <Image src={`${book.thumbnail}`}
                                 alt={book.title}
-                                width={'120'} height={'174'}></Image>
+                                width={'120'} height={'174'} />
                             ) : (
                                 <EmptyBox></EmptyBox>
                             )}
@@ -134,8 +133,10 @@ export default function RecomandSwiper({books}){
                             <BookTitle>{book.title}</BookTitle>
                             <BookIntro>{book.contents ? book.contents.substring(0, 200) + '...' : '설명이 없습니다.'}</BookIntro>
                             <ButtonWrap>
-                                <Button>Wish</Button>
-                                <ButtonDark>More View</ButtonDark>
+                                <Button href={'/'}>Wish</Button>
+                                <Button
+                                style={{ backgroundColor: 'var(--sub_color)' }}
+                                href={`https://www.yes24.com/product/search?domain=ALL&query=${encodeURIComponent(book.title)}`} target='_blank'>More View</Button>
                             </ButtonWrap>
                         </BookDesc>
                     </SwiperDepth>
