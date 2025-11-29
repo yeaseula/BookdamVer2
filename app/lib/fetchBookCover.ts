@@ -39,6 +39,7 @@ export const fetchBookAI = async(interest:string[]) => {
         const data = await response.json();
 
         const books:string[] = data?.documents || [];
+        //console.log(JSON.parse(JSON.stringify(books[0])) + ':😭')
 
         return books
 

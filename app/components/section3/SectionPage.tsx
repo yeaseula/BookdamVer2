@@ -40,7 +40,7 @@ export default function SectionPageThree({username, books }) {
                         <button className="sr-only next-slide" aria-label="다음 슬라이드">다음 슬라이드</button>
                     </div>
                 </TitleSection>
-                <RecomandSwiper books={books}></RecomandSwiper>
+                <RecomandSwiper books={books} />
         </section>
     )
 }

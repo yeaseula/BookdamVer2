@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -12,6 +12,9 @@ import 'swiper/css/autoplay';
 import 'swiper/css/a11y';
 import 'swiper/css/keyboard';
 import styled from 'styled-components';
+import createClient from '@/utils/supabase/client';
+import { useToastStore } from '@/app/lib/useToastStore';
+import { useAuthStore, Wish } from '@/app/lib/userfetch';
 
 const SliderWrap = styled.div`
     margin-top: 13px;
@@ -78,7 +81,7 @@ const ButtonWrap = styled.div`
     gap: 5px;
     align-items: center;
 `
-const Button = styled(Link)`
+const DefaultBtnStyle = styled.button`
     min-width: 76px;
     justify-content: center;
     display: flex;
@@ -91,12 +94,60 @@ const Button = styled(Link)`
     font-size: 1.1rem;
     border-radius: 500px;
     background-color: #757575;
+    color: #fff;
+    cursor: pointer;
+`
+const Button = styled(Link)`
+    min-width: 76px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    height: 24px;
+    line-height: 24px;
+    padding: 0 4px;
+    border-radius: 150px;
+    text-align: center;
+    font-size: 1.1rem;
+    border-radius: 500px;
+    background-color: var(--sub_color);
     color: #fff
 `
 
-
 export default function RecomandSwiper({books}){
     const SwiperRef = useRef(null);
+    const supabase = createClient()
+    const {session} = useAuthStore()
+    const setToast = useToastStore((state)=>state.setToast)
+    const [isWorking,setIsWorking] = useState(false)
+
+    const handleWishAdd = async(title:string,author:string,price:number) => {
+
+        if(isWorking) return
+        setIsWorking(true)
+        try {
+            const { data, error } = await supabase.from("wish").insert([
+                {
+                    user_id: session.user.id,
+                    title,
+                    author,
+                    price,
+                },
+            ]).select();
+
+            if (error) throw error;
+
+            const newWish: Wish = data?.[0]
+            if(!newWish) return;
+
+            //zustand 전역 업로드
+            useAuthStore.getState().addData<Wish>('wish',newWish)
+            setToast("읽고싶은 책 업로드 성공!","success")
+        } catch(error) {
+            setToast("읽고싶은 책 업로드 실패","error")
+        } finally {
+            setIsWorking(false)
+        }
+    }
 
     return (
         <SliderWrap>
@@ -114,7 +165,7 @@ export default function RecomandSwiper({books}){
                 spaceBetween={'15'}
                 loop={true}
                 a11y={{ enabled: true }}
-                slidesPerView={'1.15'}
+                slidesPerView={1.15}
                 className='my-recomand-book'
             >
             {books.map((book)=>(
@@ -126,16 +177,17 @@ export default function RecomandSwiper({books}){
                                 alt={book.title}
                                 width={'120'} height={'174'} />
                             ) : (
-                                <EmptyBox></EmptyBox>
+                                <EmptyBox />
                             )}
                         </BookCover>
                         <BookDesc>
                             <BookTitle>{book.title}</BookTitle>
                             <BookIntro>{book.contents ? book.contents.substring(0, 200) + '...' : '설명이 없습니다.'}</BookIntro>
                             <ButtonWrap>
-                                <Button href={'/'}>Wish</Button>
+                                <DefaultBtnStyle
+                                onClick={()=>handleWishAdd(book.title,book.authors[0],book.price)}
+                                >Wish</DefaultBtnStyle>
                                 <Button
-                                style={{ backgroundColor: 'var(--sub_color)' }}
                                 href={`https://www.yes24.com/product/search?domain=ALL&query=${encodeURIComponent(book.title)}`} target='_blank'>More View</Button>
                             </ButtonWrap>
                         </BookDesc>
