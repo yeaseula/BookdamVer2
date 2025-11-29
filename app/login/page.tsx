@@ -48,6 +48,7 @@ const ToSignupBox = styled.div`
 export default function Login() {
     const [email,setEmail] = useState<string>('');
     const [password,setPassword] = useState<string>('')
+    const [isWorking,setIsWorking] = useState<boolean>(false)
     const supabase = createClient()
     const setToast = useToastStore((state)=>state.setToast)
     const router = useRouter()
@@ -57,6 +58,8 @@ export default function Login() {
     const setData = useAuthStore((state)=>state.setData)
 
     const handleLogin = async(email:string, password:string) => {
+        if(isWorking) return
+        setIsWorking(true)
         try {
             const { data, error } = await supabase.auth.signInWithPassword({
                 email,
@@ -100,7 +103,7 @@ export default function Login() {
                 setToast("로그인 성공했습니다!","success",()=>{ router.push('/')})
 
             } else {
-                alert('로그인 실패: 사용자 정보 없음')
+                setToast('사용자 정보가 없습니다','error')
             }
         } catch (err) {
             console.error('로그인 오류:', err)
@@ -139,6 +142,7 @@ export default function Login() {
             <LoginButton
             email={email}
             password={password}
+            isWorking={isWorking}
             onClick={()=>handleLogin(email,password)}
             />
 
