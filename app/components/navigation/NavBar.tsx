@@ -1,7 +1,7 @@
 "use client"
 import Link from "next/link"
-import Lottie from 'lottie-react';
-import { useEffect, useState, useRef } from "react";
+import Lottie, {LottieRefCurrentProps} from 'lottie-react';
+import { useEffect, useState, useRef, RefObject } from "react";
 import { usePathname } from "next/navigation";
 import styled from "styled-components";
 
@@ -53,9 +53,11 @@ export default function NavBar() {
         {pages:'mypage', name: mypage},
     ]
 
-    const lottieRef = useRef({});
+    const lottieRef = useRef<LottieRefCurrentProps>(null);
     const pathname = usePathname();
     const currentPath = pathname.slice(0) || '/'
+
+    const useNavigation = pathname !== '/signup' && pathname !== '/login'
 
     useEffect(() => {
         if (!lottieRef.current) return;
@@ -72,6 +74,8 @@ export default function NavBar() {
 
 
     return(
+        <>
+        {useNavigation &&
         <NavWrap>
             <NavCont key={pathname}>
                 {animIcons.map((icon,idx)=>{
@@ -93,5 +97,7 @@ export default function NavBar() {
                 })}
             </NavCont>
         </NavWrap>
+        }
+        </>
     )
 }
