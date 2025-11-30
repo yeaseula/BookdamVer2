@@ -123,10 +123,12 @@ export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
     }
 
     return(
-        < >
-        {!minimalize &&
-            <ModalBack onClick={()=>{}} />
-        }
+        <>
+        <AnimatePresence>
+            {!minimalize &&
+                <ModalBack onClick={()=>{}} />
+            }
+        </AnimatePresence>
         <div style={{
             position: 'fixed',
             top: minimalize ? 'unset' : '0',
