@@ -1,17 +1,16 @@
 import styled from "styled-components";
 
 export const Container = styled.section`
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    z-index: 999;
-    transform: translate(-50%,-50%);
-    max-width: 380px;
     width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `
 export const Card = styled.div`
     position: relative;
     background:#3a3967;
+    max-width: 380px;
     width:100%;
     padding:20px;
     border-radius:14px;
@@ -19,6 +18,7 @@ export const Card = styled.div`
     display:flex;
     flex-direction:column;
     gap:14px;
+    z-index: 100;
 `
 export const Close = styled.button`
     position:absolute;
@@ -57,10 +57,10 @@ export const Btn = styled.button<{color:string,disabled?:boolean}>`
     cursor:${p=>p.disabled ? 'initial' : 'pointer'};
 `
 export const Circle = styled.button`
-    position: fixed;
-    bottom: 80px;
-    right: calc((100% - 420px) / 2);
-    z-index: 99;
+    // position: fixed;
+    // bottom: 80px;
+    // right: calc((100% - 420px) / 2);
+    // z-index: 99;
     background-color: var(--sub_color);
     border-radius: 50%;
     width: 45px;
