@@ -123,27 +123,10 @@ export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
     }
 
     return(
-        <AnimatePresence >
+        < >
         {!minimalize &&
-        <motion.div
-            key="modal"
-            initial={{ y: -100, height: 0, opacity:0 }}
-            animate={{ y: 0, height: '100vh', opacity: 1 }}
-            exit={{ y: -100, height: 0, opacity: 0 }}
-            transition={{ ease: "easeOut", duration: 0.3 }}
-            style={{
-                width: '100%',
-                height: '100vh',
-                position: 'fixed',
-                top:0,
-                left:0,
-                zIndex: 99,
-            }}
-        >
             <ModalBack onClick={()=>{}} />
-        </motion.div>
         }
-
         <div style={{
             position: 'fixed',
             top: minimalize ? 'unset' : '0',
@@ -227,6 +210,6 @@ export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
             }
             </motion.div>
         </div>
-        </AnimatePresence>
+        </>
     )
 }

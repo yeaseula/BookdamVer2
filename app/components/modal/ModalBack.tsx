@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import { motion, AnimatePresence } from "framer-motion";
 
 const Container = styled.div`
     width: 100%;
@@ -14,6 +15,22 @@ const Container = styled.div`
 
 export default function ModalBack({onClick}) {
     return (
-        <Container onClick={onClick}/>
+        <motion.div
+            key="modal"
+            initial={{ y: -100, height: 0, opacity:0 }}
+            animate={{ y: 0, height: '100vh', opacity: 1 }}
+            exit={{ y: -100, height: 0, opacity: 0 }}
+            transition={{ ease: "easeOut", duration: 0.3 }}
+            style={{
+                width: '100%',
+                height: '100vh',
+                position: 'fixed',
+                top:0,
+                left:0,
+                zIndex: 99,
+            }}
+        >
+            <Container onClick={onClick}/>
+        </motion.div>
     )
 }

@@ -68,7 +68,7 @@ export default function ReadingPage() {
     },[logWatchNum])
 
     useEffect(()=>{
-        console.log(books)
+        //console.log(books)
         setCurrentBooks(books)
     },[books])
 

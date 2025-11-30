@@ -28,9 +28,16 @@ body {
   color: var(--foreground);
 }
 
+.scrollWrapper {
+  overflow: auto;
+  -ms-overflow-style: none;  /* IE, Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+.scrollWrapper::-webkit-scrollbar {
+  display: none;
+}
+
 .sub-wrap {
-  max-width: 450px;
   width: 100%;
-  overflow-y: auto;
   background-color: #fff;
 }
