@@ -120,10 +120,9 @@ export default function Calendar({stampDate}: { stampDate: string[] }) {
                     plugins={[dayGridPlugin]}
                     initialView="dayGridMonth"
                     dayCellDidMount={(info) => {
-                        const dateStr = info.date.toISOString().split("T")[0];
+                        const dateStr = info.date.toLocaleDateString("en-CA");
                         const exist = stampDate.find(e => e === dateStr);
                         if (!exist) return;
-
                         info.el.style.backgroundImage = "url(/images/stamp.svg)";
                         info.el.style.backgroundSize = "auto";
                         info.el.style.backgroundRepeat = "no-repeat";
