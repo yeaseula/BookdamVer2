@@ -11,7 +11,8 @@ const WriteButton = styled.div<{$isContent:boolean}>`
     height: ${(p)=>p.$isContent ? '100%' : '70%'};
 `
 
-export default function BannerButton({isContent}) {
+export default function BannerButton({isContent,onClick}) {
+
     return (
         <WriteButton $isContent={isContent}>
             <Button
@@ -22,7 +23,8 @@ export default function BannerButton({isContent}) {
             isContent={isContent}
             />
             <Button
-            type={'button'}
+            type={'link'}
+            href={'/reading'}
             title={'읽고있는 책이 있나요?'}
             buttonText={'등록 하러 가기'}
             isContent={isContent}

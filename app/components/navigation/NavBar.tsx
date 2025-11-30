@@ -1,14 +1,14 @@
 "use client"
 import Link from "next/link"
 import Lottie, {LottieRefCurrentProps} from 'lottie-react';
-import { useEffect, useState, useRef, RefObject } from "react";
+import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import styled from "styled-components";
 
 import home from '../../nav-animation/home.json'
 import review from '../../nav-animation/review.json'
 import memo from '../../nav-animation/memo.json'
-import reading from '../../nav-animation/reading.json'
+import wish from '../../nav-animation/wish.json'
 import mypage from '../../nav-animation/mypage.json'
 
 const NavWrap = styled.nav`
@@ -49,7 +49,7 @@ export default function NavBar() {
         {pages:'home', name: home},
         {pages:'review',name: review},
         {pages:'memo', name: memo},
-        {pages:'reading', name: reading},
+        {pages:'wish', name: wish},
         {pages:'mypage', name: mypage},
     ]
 

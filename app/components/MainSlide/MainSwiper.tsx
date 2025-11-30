@@ -80,6 +80,10 @@ export default function MainSwiper({slide, readingCount}) {
         }
     },[slide])
 
+    const handleBookPlus = () => {
+
+    }
+
     return (
         <SliderWrap>
             <Text>
@@ -128,7 +132,7 @@ export default function MainSwiper({slide, readingCount}) {
                             ))}
                         </StyleSwiper>
                     }
-                    <BannerButton isContent={isContent} />
+                    <BannerButton isContent={isContent} onClick={handleBookPlus} />
                 </>
                 )}
                 {!isReviewLoaded && (
