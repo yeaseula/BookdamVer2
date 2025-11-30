@@ -8,15 +8,21 @@ export default function Transition({ children}: { children: React.ReactNode }) {
     const pathname = usePathname()
 
     return (
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
             <motion.div
                 key={pathname}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ ease: "easeInOut", duration: 0.5 }}
-                className="scrollWrapper"
-                style={{ maxWidth: '450px', width: '100%', height: '100vh', overflowY:'auto' }}
-            > {children}
+                transition={{ ease: "linear", duration: 0.35 }}
+                style={{ maxWidth: '450px', width: '100%',  }}
+            >
+            <div
+            className="scrollWrapper"
+            style={{
+                height: '100vh',
+                overflowY:'auto' }}>
+            {children}
+            </div>
             </motion.div>
         </AnimatePresence>
     );

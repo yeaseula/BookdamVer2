@@ -8,7 +8,6 @@ body {
   max-width: 450px;
   width: 100%;
   margin: auto;
-  height: 100vh;
   background-color: #fafafa;
 }
 
@@ -18,9 +17,6 @@ body {
   background-color: #fff;
   box-shadow: 0 -2px 15px 0 rgba(0, 0, 0, 0.1);
   overflow-x: hidden;
-  /* firefox scroll width */
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
 }
 main {
   position: relative;
