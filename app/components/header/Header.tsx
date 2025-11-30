@@ -42,6 +42,7 @@ const Title = styled.p`
 `
 
 const HEADER_CONFIG = {
+    '/' : {title: 'home' , type: 'none'},
     '/review': { title: '나의 리뷰', type: 'normal' },
     '/write': { title: '리뷰 작성', type: 'normal' },
     '/memo': { title: '기억에 남는 구절', type: 'normal' },
@@ -89,5 +90,7 @@ export default function Header() {
             </Container>
         )
     }
-
+    if(type === 'none') {
+        return null
+    }
 }

@@ -9,6 +9,7 @@ import { AppleSDGothicNeo } from "@/public/fonts/fonts";
 import { ToastContainer } from "react-toastify";
 import Toast from "./components/modal/Toast";
 import Transition from "./components/Transition";
+import Header from "./components/header/Header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,9 +45,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           >
               <ToastContainer></ToastContainer>
               <Toast></Toast>
-              <Transition>
+              <Header />
+
               {children}
-              </Transition>
+
             <NavBar />
           </ClientRoot>
         </StyledComponentsRegistry>

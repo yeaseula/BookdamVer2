@@ -1,6 +1,4 @@
 import styled from "styled-components"
-import Link from "next/link"
-import { RiAddLargeLine } from "@remixicon/react"
 import Button from "./Button"
 
 const WriteButton = styled.div<{$isContent:boolean}>`
@@ -11,7 +9,7 @@ const WriteButton = styled.div<{$isContent:boolean}>`
     height: ${(p)=>p.$isContent ? '100%' : '70%'};
 `
 
-export default function BannerButton({isContent,onClick}) {
+export default function BannerButton({isContent}) {
 
     return (
         <WriteButton $isContent={isContent}>

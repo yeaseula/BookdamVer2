@@ -15,7 +15,6 @@ export default function RootLayout({ children }: LayoutProps){
 
     return(
         <div className="sub-wrap">
-            <Header />
             <main>{children}</main>
             <Footer />
         </div>
