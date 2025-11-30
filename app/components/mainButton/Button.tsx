@@ -4,7 +4,6 @@ import { RiAddLargeLine } from "@remixicon/react";
 import { useState } from "react";
 
 interface Props{
-    type: 'link' | 'button';
     href?: string;
     title: string;
     buttonText: string;
@@ -22,20 +21,6 @@ const GoReview = styled(Link)<{$isContent:boolean}>`
     justify-content: center;
     padding-left: 15px;
     border-radius: 10px;
-`
-const PlusReading = styled.button<{$isContent:boolean}>`
-    position: relative;
-    overflow: hidden;
-    width: ${(p)=>p.$isContent ? '100%' : 'calc(50% - 10px)'};
-    height: ${(p)=>p.$isContent ? 'calc(50% - 10px)' : 'auto'};
-    background: var(--main-color-light);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: start;
-    padding-left: 15px;
-    border-radius: 10px;
-    cursor: pointer;
 `
 const BackImage = styled.div<{$isActive:boolean}>`
     width: ${(p)=>p.$isActive ? '100%' :'72px'};
@@ -56,33 +41,18 @@ const Icon = styled(RiAddLargeLine)<{$isActive:boolean}>`
 `
 
 
-export default function Button({type,href,title,buttonText,isContent,onClick}:Props) {
+export default function Button({href,title,buttonText,isContent,onClick}:Props) {
 
     const [isActive,setIsActive] = useState(false)
 
-    if(type === 'link') {
-        return (
+    return (
         <GoReview href={href} $isContent={isContent}>
-            <p className="text-xl">{title}</p>
-            <span className="font-bold">{buttonText}</span>
-            <BackImage
-            onMouseEnter={()=>setIsActive(true)}
-            onMouseLeave={()=>setIsActive(false)}
-            $isActive={isActive}><Icon $isActive={isActive}/></BackImage>
-        </GoReview>
-        )
-    }
-    if(type === 'button') {
-        return(
-            <PlusReading onClick={onClick} $isContent={isContent}>
                 <p className="text-xl">{title}</p>
                 <span className="font-bold">{buttonText}</span>
                 <BackImage
                 onMouseEnter={()=>setIsActive(true)}
                 onMouseLeave={()=>setIsActive(false)}
-                $isActive={isActive}
-                ><Icon $isActive={isActive}/></BackImage>
-            </PlusReading>
-        )
-    }
+                $isActive={isActive}><Icon $isActive={isActive}/></BackImage>
+        </GoReview>
+    )
 }

@@ -46,9 +46,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <ToastContainer></ToastContainer>
               <Toast></Toast>
               <Header />
-
+              <Transition>
               {children}
-
+              </Transition>
             <NavBar />
           </ClientRoot>
         </StyledComponentsRegistry>

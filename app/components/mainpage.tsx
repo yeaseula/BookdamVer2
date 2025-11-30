@@ -12,7 +12,6 @@ export default function MainPage() {
     const [reviewThumb,setReviewThumb] = useState<string[]>([])
     const [AithumbArr,setAiThumbArr] = useState<string[]>([])
     const [stampDate,setStampDate] = useState<string[]>([])
-
     const { profile, reviews, isReviewLoaded, books } = useAuthStore()
     const nickname = profile?.username
     const interest = profile?.interests

@@ -66,19 +66,28 @@ const StyleSwiper = styled(Swiper)`
 `
 
 
-export default function MainSwiper({slide, readingCount}) {
+export default function MainSwiper({slide,readingCount}) {
     const SwiperRef = useRef(null)
     const {profile, isReviewLoaded} = useAuthStore()
-    const [isContent,setIsContent] = useState(false)
     const username = profile?.username
+    const [isContent,setIsContent] = useState<boolean>(null)
+    const [ready,setReady] = useState<boolean>(false)
 
     useEffect(()=>{
         if(slide.length > 0) {
             setIsContent(true)
+            setTimeout(()=>{
+                setReady(true)
+            },500)
         } else {
             setIsContent(false)
+            setTimeout(()=>{
+                setReady(true)
+            },500)
         }
+
     },[slide])
+
 
     return (
         <SliderWrap>
@@ -102,41 +111,41 @@ export default function MainSwiper({slide, readingCount}) {
                     </>
                 )}
             </Text>
-
             <div className='mt-[20px] flex justify-center' style={{ alignItems:'center',height: '174px' }}>
                 {/* <div className='prev-main-slide'>이전 슬라이드</div>
                 <div className='next-slide-main'>다음 슬라이드</div> */}
-                {isReviewLoaded && (
+                {isReviewLoaded && ready && (
                     <>
                     {isContent &&
-                        <StyleSwiper
-                            effect={'cards'}
-                            modules={[Navigation, A11y, Keyboard, Autoplay, EffectCards]}
-                            onSwiper={(swiper)=>SwiperRef.current = swiper}
-                            navigation={{
-                                nextEl: '.next-slide-main',
-                                prevEl: '.prev-slide-main',
-                            }}
-                            centeredSlides={true}
-                            loop={true}
-                            a11y={{ enabled: true }}
-                            slidesPerView={'auto'}
-                            className='my-book-list'
-                        >
-                            {slide.map((img:string,idx:string | number)=>(
-                                <SwiperSlide key={idx} style={{ backgroundImage : `url(${img})` }} />
-                            ))}
-                        </StyleSwiper>
+                    <StyleSwiper
+                        effect={'cards'}
+                        modules={[Navigation, A11y, Keyboard, Autoplay, EffectCards]}
+                        onSwiper={(swiper)=>SwiperRef.current = swiper}
+                        navigation={{
+                            nextEl: '.next-slide-main',
+                            prevEl: '.prev-slide-main',
+                        }}
+                        centeredSlides={true}
+                        loop={true}
+                        a11y={{ enabled: true }}
+                        slidesPerView={'auto'}
+                        className='my-book-list'
+                    >
+                        {slide.map((img:string,idx:string | number)=>(
+                            <SwiperSlide key={idx} style={{ backgroundImage : `url(${img})` }} />
+                        ))}
+                    </StyleSwiper>
                     }
                     <BannerButton isContent={isContent}/>
-                </>
+                    </>
                 )}
-                {!isReviewLoaded && (
+                {!isReviewLoaded || !ready && (
                     <div className="relative w-8 h-8">
                         <div className="absolute inset-0 border-4 border-amber-300 rounded-full"></div>
                         <div className="absolute inset-0 border-4 border-blue-950 border-t-transparent rounded-full animate-spin"></div>
                     </div>
                 )}
+
             </div>
         </SliderWrap>
     )
