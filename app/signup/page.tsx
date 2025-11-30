@@ -2,7 +2,7 @@
 import styled from "styled-components"
 import Image from "next/image"
 import Link from "next/link"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useRef } from "react"
 import createClient from "@/utils/supabase/client"
 import InputFields from "../components/form/input"
 import SignUpButton from "./components/signupButton"
@@ -44,6 +44,10 @@ const ToLoginBox = styled.div`
 export default function SignUp() {
     const [email,setEmail] = useState<string>('');
     const [password,setPassword] = useState<string>('')
+    const [password2,setPassword2] = useState<string>('')
+    const [passCheck, setPassCheck] = useState<boolean>(true)
+    const newPassRef = useRef('')
+    const newPass2Ref = useRef('')
     const [nickname,setNickname] = useState<string>('')
     const [interest,setInterest] = useState<string[]>([])
     const [loading,setLoading] = useState<boolean>(false)
@@ -105,6 +109,13 @@ export default function SignUp() {
             setToast('회원가입이 실패했습니다','error')
         }
     }
+    const handlePassCheck = () => {
+        if(newPassRef.current === newPass2Ref.current) {
+            setPassCheck(true)
+        } else {
+            setPassCheck(false)
+        }
+    }
 
     // useEffect(()=>{
     // 관심사 배열 테스트 코드
@@ -144,8 +155,24 @@ export default function SignUp() {
                     <InputFields type={"password"}
                     name={"login-pass"}
                     placeholder={"8자 이상, 숫자/영문 조합해주세요"}
-                    onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setPassword(e.currentTarget.value)}
-                    />
+                    onBlur={handlePassCheck}
+                    onChange={(e:React.ChangeEvent<HTMLInputElement>)=>{
+                        newPassRef.current = e.currentTarget.value
+                        handlePassCheck
+                    }
+                    }/>
+                </Label>
+                <Label style={{ marginTop: '10px' }}>
+                    <span>비밀번호 확인</span>
+                    <InputFields type={"password"}
+                    name={"login-pass-check"}
+                    placeholder={"8자 이상, 숫자/영문 조합해주세요"}
+                    onBlur={handlePassCheck}
+                    onChange={(e:React.ChangeEvent<HTMLInputElement>)=>{
+                        newPass2Ref.current = e.currentTarget.value
+                        handlePassCheck()
+                    }}/>
+                    {!passCheck && <span style={{fontSize:'1rem', color: 'red'}}>비밀번호를 정확하게 입력해주세요.</span>}
                 </Label>
                 <Label style={{ marginTop: '10px' }}>
                     <span>관심 카테고리</span>
@@ -157,9 +184,11 @@ export default function SignUp() {
 
             <SignUpButton
             email={email}
-            password={password}
+            password={newPassRef.current}
+            passCheck={passCheck}
             nickname={nickname}
             loading={loading}
+            interest={interest}
             onClick={()=>handleSignUp()}
             />
 
