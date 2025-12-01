@@ -19,16 +19,16 @@ interface StopWatchProps {
 
 export default function StopWatch() {
 
-    const [time,setTime] = useState<number>(0)
+    const { timer, isTimer, timeObj, isMinimalize} = useAuthStore()
+    const [time,setTime] = useState<number>(timer) //초기값:zustand
     const [running,setRunning] = useState<boolean>(false)
     const interval = useRef<NodeJS.Timeout | null>(null)
     const [isValid,setIsValid] = useState(false)
     const [isValidLoading,setIsValidLoading] = useState(false)
-    const [minimalize,setMinimalize] = useState(false)
+    const [minimalize,setMinimalize] = useState(isMinimalize) //초기값:zustand
     const [isReaded,setIsReaded] = useState(false)
     const [radingPage,setReadingPage] = useState<number | null>(null)
 
-    const { timer, isTimer, timeObj} = useAuthStore()
     const setTimerObj = useAuthStore((state)=>state.setTimerObj)
 
     const setToast = useToastStore((state)=>state.setToast)
@@ -41,7 +41,7 @@ export default function StopWatch() {
         return `${h}:${m}:${s}`
     }
 
-    const start=()=>{ setRunning(true); setTimerObj("timer",time) }
+    const start=()=>{ setRunning(true); }
     const pause=()=>{ setRunning(false) }
     const stop=()=>{ setRunning(false); setTime(0) }
 
@@ -53,6 +53,13 @@ export default function StopWatch() {
         }
         return ()=>interval.current && clearInterval(interval.current)
     },[running])
+
+    useEffect(()=>{
+        setTimerObj("timer",time)
+        //console.log(timer + ':주스탠드 타이머')
+    },[time])
+
+    useEffect(()=> {setTimerObj("isMinimalize",minimalize)},[minimalize])
 
     const handleClose = () => {
         setTimerObj("isTimer",false) //timer 종료
@@ -140,19 +147,19 @@ export default function StopWatch() {
     return(
         <>
         <AnimatePresence>
-            {!minimalize &&
+            {!isMinimalize &&
                 <ModalBack onClick={()=>{}} />
             }
         </AnimatePresence>
         <div style={{
             position: 'fixed',
-            top: minimalize ? 'unset' : '0',
-            left: minimalize ? 'unset' : '0',
-            bottom: minimalize ? '100px' : 'unset',
-            right: minimalize ? 'calc((100% - 420px) / 2)' : 'unset',
-            width: minimalize ? 'auto' :'100%',
-            height: minimalize? 'auto' : '100%',
-            display:minimalize ? "block" : "flex",
+            top: isMinimalize ? 'unset' : '0',
+            left: isMinimalize ? 'unset' : '0',
+            bottom: isMinimalize ? '100px' : 'unset',
+            right: isMinimalize ? 'calc((100% - 420px) / 2)' : 'unset',
+            width: isMinimalize ? 'auto' :'100%',
+            height: isMinimalize? 'auto' : '100%',
+            display:isMinimalize ? "block" : "flex",
             alignItems: "center",
             justifyContent: "center",
             zIndex: '101'
@@ -160,15 +167,15 @@ export default function StopWatch() {
             <motion.div
                 layout
                 style={{
-                    maxWidth: minimalize ? '45px' : '380px',
+                    maxWidth: isMinimalize ? '45px' : '380px',
                     width: '100%',
-                    height: minimalize ? '45px' : '',
+                    height: isMinimalize ? '45px' : '',
                     zIndex: 99,
                 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
-                {minimalize ?
-                <Circle onClick={()=>setMinimalize(!minimalize)}>
+                {isMinimalize ?
+                <Circle onClick={()=>setMinimalize(!isMinimalize)}>
                     <RiAlarmFill size={28} color="#fff" />
                 </Circle>
             :
