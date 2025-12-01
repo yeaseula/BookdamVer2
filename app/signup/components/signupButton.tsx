@@ -16,23 +16,14 @@ const Button = styled.button<{disabled:boolean}>`
 `
 
 interface ButtonProps {
-    email: string;
-    password: string;
-    passCheck: boolean;
-    nickname: string;
+    button: boolean;
     loading: boolean;
     interest: string[];
     onClick: ()=>void;
 }
 
-export default function SignUpButton({email,password,passCheck,nickname,interest,loading,onClick}:ButtonProps) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    const isValid = emailRegex.test(email) &&
-                    passwordRegex.test(password) &&
-                    passCheck &&
-                    interest.length > 0 &&
-                    nickname.length >= 2 && !loading
+export default function SignUpButton({button,loading,onClick}:ButtonProps) {
+    const isValid = button && !loading
 
     return (
         <Button disabled={!isValid} onClick={onClick}>회원가입</Button>

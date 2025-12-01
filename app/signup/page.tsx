@@ -12,6 +12,7 @@ import { UserInfoInitial, UserReviewInitial, UserMemoInitial } from "../lib/read
 import { useAuthStore, Reviews, Memo } from "../lib/userfetch"
 import InterestList from "../components/form/Interest/InterestList"
 import ProfileInfo from "../components/form/profile/ProfileInfo"
+import { motion, AnimatePresence } from "framer-motion"
 
 const SignUpWrapper = styled.section`
     display: flex;
@@ -40,16 +41,28 @@ const ToLoginBox = styled.div`
         text-decoration: underline;
     }
 `
+const WarningMsg = styled.p`
+    display: inline-block;
+    font-size: 1.2rem;
+    color: red;
+    margin-top: 5px;
+    font-weight: 400;
+`
 
 export default function SignUp() {
     const [email,setEmail] = useState<string>('');
-    const [password,setPassword] = useState<string>('')
-    const [password2,setPassword2] = useState<string>('')
-    const [passCheck, setPassCheck] = useState<boolean>(true)
+    const [emailValid,setEmailValid] = useState<boolean | null>(null)
+    const [nickname,setNickname] = useState<string>('')
+    const [nicknameValue,setNicknameValue] = useState<boolean | null>(null)
+
+    const [passValue,setPassValue] = useState<boolean | null>(null) //pass 유효성
+    const [passCheck, setPassCheck] = useState<boolean | null>(null) //pass 일치
     const newPassRef = useRef('')
     const newPass2Ref = useRef('')
-    const [nickname,setNickname] = useState<string>('')
+
     const [interest,setInterest] = useState<string[]>([])
+
+    const [button,setButton] = useState<boolean>(false) // button 활성화 상태
     const [loading,setLoading] = useState<boolean>(false)
     const setToast = useToastStore((state)=>state.setToast)
     const setSession = useAuthStore((state)=>state.setSession)
@@ -57,6 +70,18 @@ export default function SignUp() {
     const setData = useAuthStore((state)=>state.setData)
     const router = useRouter()
     const supabase = createClient()
+
+    useEffect(()=>{
+        if(emailValid === true &&
+            nicknameValue === true &&
+            passValue === true &&
+            passCheck === true &&
+            interest.length > 0
+        ) {
+            setButton(true)
+        } else { setButton(false) }
+
+    },[emailValid,nicknameValue,passValue,passCheck,interest])
 
     const handleSignUp = async () => {
         if(loading) return
@@ -109,19 +134,43 @@ export default function SignUp() {
             setToast('회원가입이 실패했습니다','error')
         }
     }
-    const handlePassCheck = () => {
-        if(newPassRef.current === newPass2Ref.current) {
-            setPassCheck(true)
-        } else {
-            setPassCheck(false)
-        }
+    const handlePassCheck = () => { //비밀번호+비밀번호 재확인값 확인
+        if(!newPass2Ref.current) { setPassCheck(null); return }
+        setPassCheck(newPassRef.current === newPass2Ref.current);
     }
 
-    // useEffect(()=>{
-    // 관심사 배열 테스트 코드
-    //     interest.forEach((ele)=>console.log(ele))
-    //     console.log(interest + ': 🚀🚀')
-    // },[interest])
+    const CheckEmail = (value:string) => {
+        if(!value) {
+            setEmailValid(null)
+            return
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const isValid = emailRegex.test(value);
+        if(isValid) {setEmailValid(true)} else {setEmailValid(false)}
+    }
+
+    const CheckNickname = (value:string) => {
+        if(!value) {
+            setNicknameValue(null)
+            return
+        }
+        console.log(value.length)
+
+        const valueRegex = value.length >= 2;
+        const isValid = valueRegex;
+        if(isValid) { setNicknameValue(true) } else {setNicknameValue(false)}
+    }
+
+    const CheckPassword = (value: string) => {
+        if(!value) {
+            setPassValue(null)
+            return
+        }
+
+        const valueRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        const isValid = valueRegex.test(value)
+        if(isValid) { setPassValue(true) } else {setPassValue(false)}
+    }
 
     return(
         <SignUpWrapper>
@@ -135,47 +184,81 @@ export default function SignUp() {
 
             <div style={{ width: '100%', marginTop: '20px' }}>
                 <Label>
-                    <span>이메일</span>
+                    <span>이메일 <b className="text-red-800">*</b></span>
                     <InputFields type={"email"}
                     name={"login-emapl"}
                     placeholder={"이메일을 입력해주세요"}
+                    onBlur={(e:React.ChangeEvent<HTMLInputElement>)=>CheckEmail(e.currentTarget.value)}
                     onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setEmail(e.currentTarget.value)}
                     />
+                    <AnimatePresence>
+                    {emailValid === false &&
+                        <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -10, opacity: 0 }} transition={{ duration: 0.2 }}>
+                            <WarningMsg>이메일 형식을 확인해주세요. <br /> ex) book@naver.com</WarningMsg>
+                        </motion.div>
+                    }
+                    </AnimatePresence>
                 </Label>
                 <Label style={{ marginTop: '10px' }}>
-                    <span>닉네임</span>
+                    <span>닉네임 <b className="text-red-800">*</b></span>
                     <InputFields type={"text"}
                     name={"login-nickname"}
-                    placeholder={"닉네임을 입력해주세요"}
+                    placeholder={"닉네임을 입력해주세요 (2글자 이상)"}
+                    onBlur={(e:React.ChangeEvent<HTMLInputElement>)=>CheckNickname(e.currentTarget.value)}
                     onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setNickname(e.currentTarget.value)}
                     />
+                    <AnimatePresence>
+                    {nicknameValue === false &&
+                        <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -10, opacity: 0 }} transition={{ duration: 0.2 }}>
+                            <WarningMsg>닉네임은 두 글자 이상 입력해주세요. </WarningMsg>
+                        </motion.div>
+                    }
+                    </AnimatePresence>
                 </Label>
                 <Label style={{ marginTop: '10px' }}>
-                    <span>비밀번호</span>
+                    <span>비밀번호 <b className="text-red-800">*</b></span>
                     <InputFields type={"password"}
                     name={"login-pass"}
                     placeholder={"8자 이상, 숫자/영문 조합해주세요"}
-                    onBlur={handlePassCheck}
+                    onBlur={(e:React.ChangeEvent<HTMLInputElement>)=>{
+                        CheckPassword(e.currentTarget.value);
+                        handlePassCheck()
+                    }}
                     onChange={(e:React.ChangeEvent<HTMLInputElement>)=>{
-                        newPassRef.current = e.currentTarget.value
-                        handlePassCheck
+                        newPassRef.current = e.currentTarget.value;
+                        handlePassCheck()
                     }
                     }/>
+                    <AnimatePresence>
+                    {passValue === false &&
+                        <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -10, opacity: 0 }} transition={{ duration: 0.2 }}>
+                            <WarningMsg>비밀번호는 문자+숫자 8자리 이상입니다 </WarningMsg>
+                        </motion.div>
+                    }
+                    </AnimatePresence>
                 </Label>
                 <Label style={{ marginTop: '10px' }}>
-                    <span>비밀번호 확인</span>
+                    <span>비밀번호 확인 <b className="text-red-800">*</b></span>
                     <InputFields type={"password"}
                     name={"login-pass-check"}
-                    placeholder={"8자 이상, 숫자/영문 조합해주세요"}
+                    placeholder={"비밀번호를 한번 더 입력해주세요"}
                     onBlur={handlePassCheck}
                     onChange={(e:React.ChangeEvent<HTMLInputElement>)=>{
                         newPass2Ref.current = e.currentTarget.value
                         handlePassCheck()
                     }}/>
-                    {!passCheck && <span style={{fontSize:'1rem', color: 'red'}}>비밀번호를 정확하게 입력해주세요.</span>}
+                    <AnimatePresence>
+                        {passCheck === false &&
+                        <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -10, opacity: 0 }} transition={{ duration: 0.2 }}>
+                            <WarningMsg>비밀번호를 정확하게 입력해주세요 </WarningMsg>
+                        </motion.div>
+                        }
+                    </AnimatePresence>
                 </Label>
                 <Label style={{ marginTop: '10px' }}>
-                    <span>관심 카테고리</span>
+                    <span>관심 카테고리
+                        <b className="text-red-800"> * {interest.length == 0 && <WarningMsg>관심 카테고리를 선택하고 책을 추천받으세요!</WarningMsg>}</b>
+                    </span>
                         <InterestList
                         interest={interest}
                         setInterest={setInterest}/>
@@ -183,10 +266,7 @@ export default function SignUp() {
             </div>
 
             <SignUpButton
-            email={email}
-            password={newPassRef.current}
-            passCheck={passCheck}
-            nickname={nickname}
+            button={button}
             loading={loading}
             interest={interest}
             onClick={()=>handleSignUp()}
