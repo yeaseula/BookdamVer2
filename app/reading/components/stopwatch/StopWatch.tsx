@@ -176,7 +176,7 @@ export default function StopWatch() {
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
                 {isMinimalize ?
-                <Circle onClick={()=>setMinimalize(!isMinimalize)}>
+                <Circle onClick={()=>setMinimalize(!isMinimalize)} $minimal={isMinimalize}>
                     <RiAlarmFill size={28} color="#fff" />
                 </Circle>
             :

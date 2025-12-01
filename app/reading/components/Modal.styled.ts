@@ -1,21 +1,34 @@
 import styled, {keyframes, css} from "styled-components";
 
 const pulse = keyframes`
-  0% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgb(106 200 216 / 20%);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.06);
-    box-shadow: 0 8px 20px 6px rgb(106 200 216 / 10%);
-    opacity: 0.95;
-  }
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgb(106 200 216 / 20%);
-    opacity: 1;
-  }
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgb(106 200 216 / 20%);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.06);
+        box-shadow: 0 8px 20px 6px rgb(106 200 216 / 10%);
+        opacity: 0.95;
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgb(106 200 216 / 20%);
+        opacity: 1;
+    }
+`;
+export const shake = keyframes`
+    0% { transform: rotate(0deg); }
+    10% { transform: rotate(-15deg); }
+    20% { transform: rotate(15deg); }
+    30% { transform: rotate(-10deg); }
+    40% { transform: rotate(10deg); }
+    50% { transform: rotate(-5deg); }
+    60% { transform: rotate(5deg); }
+    70% { transform: rotate(-3deg); }
+    80% { transform: rotate(3deg); }
+    90% { transform: rotate(-1deg); }
+    100% { transform: rotate(0deg); }
 `;
 
 export const Container = styled.section`
@@ -79,7 +92,7 @@ export const Btn = styled.button<{color:string,disabled?:boolean,$pulse?:boolean
         animation: ${pulse} 1200ms ease-in-out infinite;
     `}
 `
-export const Circle = styled.button`
+export const Circle = styled.button<{$minimal:boolean}>`
     background-color: var(--sub_color);
     border-radius: 50%;
     width: 45px;
@@ -88,4 +101,11 @@ export const Circle = styled.button`
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    ${({ $minimal }) => $minimal === true && css`
+        animation: ${shake} 0.8s linear infinite;
+        animation-delay: 0s;
+        animation-iteration-count: infinite;
+        animation-fill-mode: forwards;
+        animation-duration: 2s;
+    `}
 `
