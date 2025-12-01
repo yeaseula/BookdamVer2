@@ -1,0 +1,56 @@
+"use client"
+import createClient from "@/utils/supabase/client"
+
+const supabase = createClient()
+
+export const CheckEmail = (value:string, setState:(v: boolean | null) => void) => {
+    if(!value) {
+        setState(null)
+        return
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValid = emailRegex.test(value);
+    if(isValid) {setState(true)} else {setState(false)}
+}
+
+export const checkEmailExistence = async (email:string, setState2:(v:boolean)=>void , setState:(v:boolean)=>void) => {
+    setState2(true);
+    const { data, error } = await supabase
+        .from('profiles')
+        .select('email')
+        .eq('email', email)
+        .maybeSingle();
+
+    setState(!!data);
+};
+
+export const CheckNickname = (value:string,setState:(v:boolean | null)=>void) => {
+    if(!value) {
+        setState(null)
+        return
+    }
+
+    const valueRegex = value.length >= 2;
+    const isValid = valueRegex;
+    if(isValid) { setState(true) } else {setState(false)}
+}
+
+export const CheckPassword = (value: string,setState:(v:boolean | null)=>void) => {
+    if(!value) {
+        setState(null)
+        return
+    }
+
+    const valueRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    const isValid = valueRegex.test(value)
+    if(isValid) { setState(true) } else {setState(false)}
+}
+
+export const handlePassCheck = (
+    value:React.RefObject<string>,
+    value2:React.RefObject<string>,
+    setState:(v:boolean | null)=>void) => {
+
+    if(!value2?.current) { setState(null); return } //비밀번호 재확인값 없을 시 비교하지 않음
+    setState(value.current === value2.current);
+}

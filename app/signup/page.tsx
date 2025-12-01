@@ -11,8 +11,8 @@ import { useRouter } from "next/navigation"
 import { UserInfoInitial, UserReviewInitial, UserMemoInitial, UserBooksInitial, UserLogInitial, UserWishInitial } from "../lib/readingInfo"
 import { useAuthStore, Reviews, Memo, Books, Log, Wish } from "../lib/userfetch"
 import InterestList from "../components/form/Interest/InterestList"
-import ProfileInfo from "../components/form/profile/ProfileInfo"
 import { motion, AnimatePresence } from "framer-motion"
+import { CheckEmail, checkEmailExistence, CheckNickname, CheckPassword, handlePassCheck } from "./Valid"
 
 const SignUpWrapper = styled.section`
     display: flex;
@@ -52,8 +52,8 @@ const WarningMsg = styled.p`
 export default function SignUp() {
     const [email,setEmail] = useState<string>('');
     const [emailValid,setEmailValid] = useState<boolean | null>(null)
-    const [emailExists, setEmailExists] = useState(false) // 가입된 이메일인지
-    const [emailTouched, setEmailTouched] = useState(false);
+    const [emailExists, setEmailExists] = useState<boolean>() // 가입된 이메일인지
+    const [emailTouched, setEmailTouched] = useState<boolean>(false); // 가입이메일 check await 방어
 
     const [nickname,setNickname] = useState<string>('')
     const [nicknameValue,setNicknameValue] = useState<boolean | null>(null)
@@ -79,12 +79,15 @@ export default function SignUp() {
             nicknameValue === true &&
             passValue === true &&
             passCheck === true &&
+            !emailExists &&
             interest.length > 0
         ) {
             setButton(true)
         } else { setButton(false) }
 
-    },[emailValid,nicknameValue,passValue,passCheck,interest])
+        console.log(emailExists)
+
+    },[emailValid,emailExists, nicknameValue,passValue,passCheck,interest])
 
     const handleSignUp = async () => {
         if(loading) return
@@ -147,56 +150,6 @@ export default function SignUp() {
             setToast('회원가입이 실패했습니다','error')
         }
     }
-    const handlePassCheck = () => { //비밀번호+비밀번호 재확인값 확인
-        if(!newPass2Ref.current) { setPassCheck(null); return } //비밀번호 재확인값 없을 시 비교하지 않음
-        setPassCheck(newPassRef.current === newPass2Ref.current);
-    }
-
-    const CheckEmail = (value:string) => {
-        if(!value) {
-            setEmailValid(null)
-            return
-        }
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const isValid = emailRegex.test(value);
-        if(isValid) {setEmailValid(true)} else {setEmailValid(false)}
-    }
-
-    const checkEmailExistence = async () => {
-        console.log('dfalsdkfjladljkf')
-        setEmailTouched(true);
-        const { data, error } = await supabase
-            .from('profiles')
-            .select('email')
-            .eq('email', email)
-            .maybeSingle();
-
-        setEmailExists(!!data);
-        console.log(data)
-    };
-
-    const CheckNickname = (value:string) => {
-        if(!value) {
-            setNicknameValue(null)
-            return
-        }
-
-        const valueRegex = value.length >= 2;
-        const isValid = valueRegex;
-        if(isValid) { setNicknameValue(true) } else {setNicknameValue(false)}
-    }
-
-    const CheckPassword = (value: string) => {
-        if(!value) {
-            setPassValue(null)
-            return
-        }
-
-        const valueRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-        const isValid = valueRegex.test(value)
-        if(isValid) { setPassValue(true) } else {setPassValue(false)}
-    }
-
     return(
         <SignUpWrapper>
             <h2 className="sr-only">회원가입</h2>
@@ -214,10 +167,11 @@ export default function SignUp() {
                     name={"login-emapl"}
                     placeholder={"이메일을 입력해주세요"}
                     onBlur={(e:React.ChangeEvent<HTMLInputElement>)=>{
-                        CheckEmail(e.currentTarget.value);
-                        checkEmailExistence();
+                        CheckEmail(e.currentTarget.value, setEmailValid);
+                        checkEmailExistence(e.currentTarget.value,setEmailTouched, setEmailExists);
                     }}
-                    onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setEmail(e.currentTarget.value)}
+                    onChange={(e:React.ChangeEvent<HTMLInputElement>)=>
+                        setEmail(e.currentTarget.value)}
                     />
                     <AnimatePresence>
                     {emailValid === false &&
@@ -237,8 +191,14 @@ export default function SignUp() {
                     <InputFields type={"text"}
                     name={"login-nickname"}
                     placeholder={"닉네임을 입력해주세요 (2글자 이상)"}
-                    onBlur={(e:React.ChangeEvent<HTMLInputElement>)=>CheckNickname(e.currentTarget.value)}
-                    onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setNickname(e.currentTarget.value)}
+                    onBlur={
+                        (e:React.ChangeEvent<HTMLInputElement>)=>
+                        CheckNickname(e.currentTarget.value, setNicknameValue)
+                    }
+                    onChange={
+                        (e:React.ChangeEvent<HTMLInputElement>)=>
+                        setNickname(e.currentTarget.value)
+                    }
                     />
                     <AnimatePresence>
                     {nicknameValue === false &&
@@ -254,12 +214,12 @@ export default function SignUp() {
                     name={"login-pass"}
                     placeholder={"8자 이상, 숫자/영문 조합해주세요"}
                     onBlur={(e:React.ChangeEvent<HTMLInputElement>)=>{
-                        CheckPassword(e.currentTarget.value);
-                        handlePassCheck()
+                        CheckPassword(e.currentTarget.value,setPassValue);
+                        handlePassCheck(newPassRef, newPass2Ref ,setPassCheck )
                     }}
                     onChange={(e:React.ChangeEvent<HTMLInputElement>)=>{
                         newPassRef.current = e.currentTarget.value;
-                        handlePassCheck()
+                        handlePassCheck(newPassRef, newPass2Ref ,setPassCheck )
                     }
                     }/>
                     <AnimatePresence>
@@ -275,10 +235,10 @@ export default function SignUp() {
                     <InputFields type={"password"}
                     name={"login-pass-check"}
                     placeholder={"비밀번호를 한번 더 입력해주세요"}
-                    onBlur={handlePassCheck}
+                    onBlur={()=>handlePassCheck(newPassRef, newPass2Ref ,setPassCheck )}
                     onChange={(e:React.ChangeEvent<HTMLInputElement>)=>{
                         newPass2Ref.current = e.currentTarget.value
-                        handlePassCheck()
+                        handlePassCheck(newPassRef, newPass2Ref ,setPassCheck )
                     }}/>
                     <AnimatePresence>
                         {passCheck === false &&
