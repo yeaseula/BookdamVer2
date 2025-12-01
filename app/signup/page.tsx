@@ -8,8 +8,8 @@ import InputFields from "../components/form/input"
 import SignUpButton from "./components/signupButton"
 import { useToastStore } from "../lib/useToastStore"
 import { useRouter } from "next/navigation"
-import { UserInfoInitial, UserReviewInitial, UserMemoInitial } from "../lib/readingInfo"
-import { useAuthStore, Reviews, Memo } from "../lib/userfetch"
+import { UserInfoInitial, UserReviewInitial, UserMemoInitial, UserBooksInitial, UserLogInitial, UserWishInitial } from "../lib/readingInfo"
+import { useAuthStore, Reviews, Memo, Books, Log, Wish } from "../lib/userfetch"
 import InterestList from "../components/form/Interest/InterestList"
 import ProfileInfo from "../components/form/profile/ProfileInfo"
 import { motion, AnimatePresence } from "framer-motion"
@@ -52,6 +52,9 @@ const WarningMsg = styled.p`
 export default function SignUp() {
     const [email,setEmail] = useState<string>('');
     const [emailValid,setEmailValid] = useState<boolean | null>(null)
+    const [emailExists, setEmailExists] = useState(false) // 가입된 이메일인지
+    const [emailTouched, setEmailTouched] = useState(false);
+
     const [nickname,setNickname] = useState<string>('')
     const [nicknameValue,setNicknameValue] = useState<boolean | null>(null)
 
@@ -89,7 +92,7 @@ export default function SignUp() {
         try {
             const { data, error } = await supabase.auth.signUp({
                 email,
-                password,
+                password : newPassRef.current,
             })
 
             if (error) throw error
@@ -109,7 +112,8 @@ export default function SignUp() {
             await supabase.from('profiles').insert({
                 id: session.user?.id,
                 username: nickname,
-                interests: interest, // 지금은 빈 배열, 나중에 체크박스 입력값 넣기
+                interests: interest,
+                email: email,
             })
 
             const UserId = session.user.id;
@@ -125,6 +129,15 @@ export default function SignUp() {
             // 메모 목록 초기 저장
             const UserMemo = await UserMemoInitial(UserId)
             setData<Memo>('memo', UserMemo)
+            // 읽고있는 책 초기 저장
+            const UserBooks = await UserBooksInitial(UserId)
+            setData<Books>('books', UserBooks)
+            //로그 목록 초기 저장
+            const UserLog = await UserLogInitial(UserId)
+            setData<Log>('log', UserLog)
+            //wish 목록 초기 저장
+            const UserWish = await UserWishInitial(UserId)
+            setData<Wish>('wish',UserWish)
 
             setToast('회원가입이 완료됐습니다!','success',()=>{router.push('/')})
 
@@ -135,7 +148,7 @@ export default function SignUp() {
         }
     }
     const handlePassCheck = () => { //비밀번호+비밀번호 재확인값 확인
-        if(!newPass2Ref.current) { setPassCheck(null); return }
+        if(!newPass2Ref.current) { setPassCheck(null); return } //비밀번호 재확인값 없을 시 비교하지 않음
         setPassCheck(newPassRef.current === newPass2Ref.current);
     }
 
@@ -149,12 +162,24 @@ export default function SignUp() {
         if(isValid) {setEmailValid(true)} else {setEmailValid(false)}
     }
 
+    const checkEmailExistence = async () => {
+        console.log('dfalsdkfjladljkf')
+        setEmailTouched(true);
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('email')
+            .eq('email', email)
+            .maybeSingle();
+
+        setEmailExists(!!data);
+        console.log(data)
+    };
+
     const CheckNickname = (value:string) => {
         if(!value) {
             setNicknameValue(null)
             return
         }
-        console.log(value.length)
 
         const valueRegex = value.length >= 2;
         const isValid = valueRegex;
@@ -188,13 +213,21 @@ export default function SignUp() {
                     <InputFields type={"email"}
                     name={"login-emapl"}
                     placeholder={"이메일을 입력해주세요"}
-                    onBlur={(e:React.ChangeEvent<HTMLInputElement>)=>CheckEmail(e.currentTarget.value)}
+                    onBlur={(e:React.ChangeEvent<HTMLInputElement>)=>{
+                        CheckEmail(e.currentTarget.value);
+                        checkEmailExistence();
+                    }}
                     onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setEmail(e.currentTarget.value)}
                     />
                     <AnimatePresence>
                     {emailValid === false &&
                         <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -10, opacity: 0 }} transition={{ duration: 0.2 }}>
                             <WarningMsg>이메일 형식을 확인해주세요. <br /> ex) book@naver.com</WarningMsg>
+                        </motion.div>
+                    }
+                    {emailTouched && emailExists &&
+                        <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -10, opacity: 0 }} transition={{ duration: 0.2 }}>
+                            <WarningMsg>이미 사용 중인 이메일입니다.</WarningMsg>
                         </motion.div>
                     }
                     </AnimatePresence>

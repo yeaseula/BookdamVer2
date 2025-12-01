@@ -154,14 +154,12 @@ export const useAuthStore = create<AuthState>()(
             setTimerObj: (key,item) => set({ [key] : item })
         }),
         {
-        name: "auth-store",      // localStorage key
+        name: "auth-store",    // localStorage key
         partialize: (state) => ({
-            // ⚠ 모든 걸 저장하면 용량↑ → 저장할 것만 선택
             timer: state.timer,
             timeObj: state.timeObj,
             isTimer: state.isTimer,
             isMinimalize: state.isMinimalize,
-            // 나머지는 서버에서 불러오면 되니까 굳이 저장 X
         })
         }
     )
