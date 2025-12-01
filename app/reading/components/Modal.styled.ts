@@ -1,4 +1,22 @@
-import styled from "styled-components";
+import styled, {keyframes, css} from "styled-components";
+
+const pulse = keyframes`
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgb(106 200 216 / 20%);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 8px 20px 6px rgb(106 200 216 / 10%);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgb(106 200 216 / 20%);
+    opacity: 1;
+  }
+`;
 
 export const Container = styled.section`
     width: 100%;
@@ -41,11 +59,12 @@ export const Timer = styled.div`
     color:#fff4ba;
 `
 export const BtnWrap = styled.div`
+    position: relative;
     display:flex;
     justify-content:space-between;
     gap:10px;
 `
-export const Btn = styled.button<{color:string,disabled?:boolean}>`
+export const Btn = styled.button<{color:string,disabled?:boolean,$pulse?:boolean}>`
     flex:1;
     background:${p=>p.disabled ? '#bdbdbd' : p.color} ;
     border:none;
@@ -55,12 +74,12 @@ export const Btn = styled.button<{color:string,disabled?:boolean}>`
     font-size:14px;
     color:${p=>p.disabled ? '#e0e0e0' : '#fff4ba'};
     cursor:${p=>p.disabled ? 'initial' : 'pointer'};
+    animation: none;
+    ${({ $pulse }) => $pulse === true && css`
+        animation: ${pulse} 1200ms ease-in-out infinite;
+    `}
 `
 export const Circle = styled.button`
-    // position: fixed;
-    // bottom: 80px;
-    // right: calc((100% - 420px) / 2);
-    // z-index: 99;
     background-color: var(--sub_color);
     border-radius: 50%;
     width: 45px;

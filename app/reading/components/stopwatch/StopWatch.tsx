@@ -28,6 +28,7 @@ export default function StopWatch() {
     const [minimalize,setMinimalize] = useState(isMinimalize) //초기값:zustand
     const [isReaded,setIsReaded] = useState(false)
     const [radingPage,setReadingPage] = useState<number | null>(null)
+    const [isPulse,setIsPulse] = useState<boolean>(true)
 
     const setTimerObj = useAuthStore((state)=>state.setTimerObj)
 
@@ -41,8 +42,8 @@ export default function StopWatch() {
         return `${h}:${m}:${s}`
     }
 
-    const start=()=>{ setRunning(true); }
-    const pause=()=>{ setRunning(false) }
+    const start=()=>{ setRunning(true); setIsPulse(false) }
+    const pause=()=>{ setRunning(false); setIsPulse(true) }
     const stop=()=>{ setRunning(false); setTime(0) }
 
     useEffect(()=>{
@@ -185,7 +186,10 @@ export default function StopWatch() {
                         <Title>{timeObj.title}</Title>
                         <Timer>{format(time)}</Timer>
                         <BtnWrap>
-                            <Btn color="#6ac8d8" disabled={isValid} onClick={start}>▶ Start</Btn>
+
+                            <Btn color="#6ac8d8" disabled={isValid} onClick={start} $pulse={isPulse}>
+                                ▶ Start
+                            </Btn>
                             <Btn color="#108377" disabled={isValid} onClick={pause}>⏸ Pause</Btn>
                             <Btn color="#f48c6a"
                             disabled={isValidLoading}
@@ -196,7 +200,13 @@ export default function StopWatch() {
                                 }
                                 setIsReaded(!isReaded)
                                 setIsValid(!isValid)
-                                setRunning(!running)
+                                setRunning(false)
+
+                                if(isReaded === true) { // 아직 독서중이면 pulse 작동
+                                    setIsPulse(true)
+                                } else {
+                                    setIsPulse(false)
+                                }
                             }}
                             >{isReaded? '▶ RePlay' : '■ Stop'}</Btn>
                         </BtnWrap>
