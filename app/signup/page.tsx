@@ -92,56 +92,86 @@ export default function SignUp() {
                 password : newPassRef.current,
             })
 
-            if (error) throw error
+            if (error) {
+                    //  console.log('===== 에러 상세 정보 =====')
+                    //  console.log('error:', error)
+                    //  console.log('error.message:', error.message)
+                    //  console.log('error.code:', error.code)
+                    //  console.log('error.status:', error.status)
+                    //  console.log('========================')
+                if(error.message === 'User already registered') {
+                    throw new Error('이미 가입된 이메일입니다.')
+                } else if(error.code === 'weak_password') {
+                    throw new Error('비밀번호는 8자 이상, 문자+숫자 조합으로 설정해주세요.')
+                } else if(error.code === 'validation_failed') {
+                    throw new Error('이메일 형식이 올바르지 않습니다.')
+                } else {
+                    throw new Error('회원가입 중 오류가 발생했습니다. 다시 시도해주세요')
+                }
 
+            }
+            //세션 확인
             const {
                 data: { session },
                 error: sessionError
             } = await supabase.auth.getSession()
 
-            if (sessionError) throw sessionError
-
-            if (!session?.user) {
-                setToast('세션이 없어서 프로필을 생성할 수 없습니다.','error')
-                return
+            if (sessionError || !session?.user) {
+                throw new Error('로그인 세션 생성에 실패했습니다')
             }
-
-            await supabase.from('profiles').insert({
+            //프로필 테이블 생성
+            const {error: profileError} = await supabase.from('profiles').insert({
                 id: session.user?.id,
                 username: nickname,
                 interests: interest,
                 email: email,
             })
-
+            if(profileError) {
+                throw new Error('프로필 생성에 실패했습니다')
+            }
             const UserId = session.user.id;
 
-            setSession(session)
-            // 프로필 정보 초기 저장
-            const UserInfor = await UserInfoInitial(UserId)
-            const UserProrile = { username: UserInfor.username, interests:interest }
-            setProfile(UserProrile)
-            // 리뷰 목록 초기 저장
-            const UserReview = await UserReviewInitial(UserId)
-            setData<Reviews>('reviews',UserReview)
-            // 메모 목록 초기 저장
-            const UserMemo = await UserMemoInitial(UserId)
-            setData<Memo>('memo', UserMemo)
-            // 읽고있는 책 초기 저장
-            const UserBooks = await UserBooksInitial(UserId)
-            setData<Books>('books', UserBooks)
-            //로그 목록 초기 저장
-            const UserLog = await UserLogInitial(UserId)
-            setData<Log>('log', UserLog)
-            //wish 목록 초기 저장
-            const UserWish = await UserWishInitial(UserId)
-            setData<Wish>('wish',UserWish)
+            //초기 데이터 로딩
+            try {
+                const [UserInfor,
+                    UserReview,
+                    UserMemo,
+                    UserBooks,
+                    UserLog,
+                    UserWish] = await Promise.all([
+                        UserInfoInitial(UserId),
+                        UserReviewInitial(UserId),
+                        UserMemoInitial(UserId),
+                        UserBooksInitial(UserId),
+                        UserLogInitial(UserId),
+                        UserWishInitial(UserId)
+                    ])
+                    setSession(session)
+                    const UserProrile = { username: UserInfor.username, interests:interest }
+                    setProfile(UserProrile)
 
-            setToast('회원가입이 완료됐습니다!','success',()=>{router.push('/')})
+                    setData<Reviews>('reviews',UserReview)
+                    setData<Memo>('memo', UserMemo)
+                    setData<Books>('books', UserBooks)
+                    setData<Log>('log', UserLog)
+                    setData<Wish>('wish',UserWish)
+                    setToast('회원가입이 완료됐습니다!','success',()=>{router.push('/')})
+
+            } catch (dataError) {
+                console.error('초기 데이터 로딩 실패:', dataError)
+                setToast('회원가입은 완료되었으나 일부 데이터 로딩에 실패했습니다', "info", () => {
+                    router.push('/')
+                })
+            }
 
         } catch (err) {
             console.error(err)
-            console.log('회원가입 실패')
-            setToast('회원가입이 실패했습니다','error')
+            const errorMessage = err instanceof Error
+                ? err.message
+                : '회원가입 중 오류가 발생했습니다'
+            setToast(errorMessage, "error")
+        } finally {
+            setLoading(false)
         }
     }
     return(
@@ -225,14 +255,12 @@ export default function SignUp() {
                         setInterest={setInterest}/>
                 </Label>
             </div>
-
             <SignUpButton
             button={button}
             loading={loading}
             interest={interest}
             onClick={()=>handleSignUp()}
             />
-
             <ToLoginBox>
                 <p>회원이신가요?
                 <Link href={'/login'}>로그인 하러가기</Link>
