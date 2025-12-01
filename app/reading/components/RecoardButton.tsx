@@ -1,6 +1,7 @@
 import styled from "styled-components"
 import { RiListView,RiAlarmFill } from "@remixicon/react"
-
+import { useAuthStore } from "@/app/lib/userfetch"
+import { Books } from "@/app/lib/userfetch"
 
 const Stop = styled.button`
     border-radius: 50%;
@@ -19,13 +20,21 @@ const Stop = styled.button`
 const LogView = styled(Stop)`
     right: 38px;
 `
-export default function RecoardButton({index,logWatchNum,setLogWatchNum,stopWatchNum,setStopWatchNum}) {
+export default function RecoardButton({index,logWatchNum,currentBooks,setLogWatchNum}) {
 
-    const stopIsValid = stopWatchNum.length === 0
-    const logIsValid = logWatchNum.length === 0
+
+    const { isTimer } = useAuthStore()
+    const setTimerObj = useAuthStore((state)=>state.setTimerObj)
 
     const handleWatch = (index:string) => {
-        setStopWatchNum(prev=>[...prev,index])
+        if(!isTimer) {
+            const CheckStopObj:Books = currentBooks.find((m)=>m.id===index)
+
+            setTimerObj("isTimer", true) // timer open
+            setTimerObj("timeObj", CheckStopObj) //스톱워치 대상 book_id
+        } else {
+            alert('타이머를 사용중이에요!')
+        }
     }
     const handleLog = (index:string) => {
         setLogWatchNum(prev=>[...prev,index])

@@ -24,11 +24,6 @@ export default function ReadingPage() {
     const [checkId,setCheckId] = useState<string[]>([])
     const [editObj,setEditObj] = useState<Books | null>(null) // 수정 할 값 객체
 
-    //stop watch state
-    const [stopPopup,setStopPopup] = useState(false)
-    const [stopWatchNum,setStopWatchNum] = useState<string[]>([]) //스톱워치 해당 인덱스
-    const [stopObj,setStopObj] = useState<Books | null>(null)
-
     //log state
     const [logPopup,setLogPopup] = useState(false)
     const [logWatchNum,setLogWatchNum] = useState<string[]>([])
@@ -44,18 +39,6 @@ export default function ReadingPage() {
     const setToast = useToastStore((state)=>state.setToast)
 
     useEffect(()=>{
-        if(stopWatchNum.length === 0) {
-            setStopObj(null) //스탑워치 관리 대상 객체 사라짐
-            setStopPopup(false) //팝업 사라짐
-        }
-        if(stopWatchNum.length > 0) {
-            const CheckStopObj = currentBooks.find((m)=>m.id===stopWatchNum[0])
-            setStopObj(CheckStopObj)
-            setStopPopup(true)
-        }
-    },[stopWatchNum])
-
-    useEffect(()=>{
         if(logWatchNum.length === 0) {
             setLogObj(null)
             setLogPopup(false)
@@ -68,7 +51,6 @@ export default function ReadingPage() {
     },[logWatchNum])
 
     useEffect(()=>{
-        //console.log(books)
         setCurrentBooks(books)
     },[books])
 
@@ -123,10 +105,9 @@ export default function ReadingPage() {
                         books={books}
                         checkId={checkId}
                         setCheckId={setCheckId}
+                        currentBooks={currentBooks}
                         logWatchNum={logWatchNum}
                         setLogWatchNum={setLogWatchNum}
-                        stopWatchNum={stopWatchNum}
-                        setStopWatchNum={setStopWatchNum}
                         />
                     </div>
                     {currentBooks.length > 0 && (
@@ -137,9 +118,6 @@ export default function ReadingPage() {
                     )}
                     {EditPopup &&
                         <EditModal editObj={editObj} setEditPopup={setEditPopup} setCheckId={setCheckId}/>
-                    }
-                    {stopPopup &&
-                        <StopModal stopObj={stopObj} setStopWatchNum={setStopWatchNum}/>
                     }
                     {logPopup &&
                         <LogModal logObj={logObj} setLogWatchNum={setLogWatchNum}/>

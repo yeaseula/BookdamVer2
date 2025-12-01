@@ -1,3 +1,5 @@
+"use client"
+
 
 import { useState,useRef,useEffect, Dispatch, SetStateAction } from "react"
 import { Books, Log } from "@/app/lib/userfetch"
@@ -15,7 +17,7 @@ interface StopWatchProps {
     stopObj: Books;
 }
 
-export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
+export default function StopWatch() {
 
     const [time,setTime] = useState<number>(0)
     const [running,setRunning] = useState<boolean>(false)
@@ -25,6 +27,10 @@ export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
     const [minimalize,setMinimalize] = useState(false)
     const [isReaded,setIsReaded] = useState(false)
     const [radingPage,setReadingPage] = useState<number | null>(null)
+
+    const { timer, isTimer, timeObj} = useAuthStore()
+    const setTimerObj = useAuthStore((state)=>state.setTimerObj)
+
     const setToast = useToastStore((state)=>state.setToast)
     const supabase = createClient()
 
@@ -35,7 +41,7 @@ export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
         return `${h}:${m}:${s}`
     }
 
-    const start=()=>{ setRunning(true) }
+    const start=()=>{ setRunning(true); setTimerObj("timer",time) }
     const pause=()=>{ setRunning(false) }
     const stop=()=>{ setRunning(false); setTime(0) }
 
@@ -48,16 +54,22 @@ export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
         return ()=>interval.current && clearInterval(interval.current)
     },[running])
 
+    const handleClose = () => {
+        setTimerObj("isTimer",false) //timer 종료
+        setTimerObj("timeObj",null) //timer 대상 객체 클린
+        setTimerObj("timer",0) //timer 시간 제거
+    }
+
     const handleBooksTable = async() => {
         const { data, error } = await supabase
             .from("books")
             .update({
-            title: stopObj.title,
-            total_pages: stopObj.total_pages,
+            title: timeObj.title,
+            total_pages: timeObj.total_pages,
             current_page: radingPage,
             updated_at: new Date().toISOString()
             })
-            .eq("id", stopObj.id)
+            .eq("id", timeObj.id)
             .select();
 
         if (error) {
@@ -77,8 +89,8 @@ export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
         .from("reading_logs")
         .insert([
             {
-                book_id: stopObj.id,
-                user_id:stopObj.user_id,
+                book_id: timeObj.id,
+                user_id: timeObj.user_id,
                 current_page:radingPage,
                 duration_minutes: time
             },
@@ -114,13 +126,16 @@ export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
             await handleLogTable();
 
             setToast("기록이 저장됐습니다","success")
-            setStopWatchNum([]);
-            setIsValidLoading(false)
+            handleClose()
 
         } catch(error) {
             console.error('Submit 실패:', error);
+
+        } finally {
+            setIsValidLoading(false)
         }
     }
+
 
     return(
         <>
@@ -159,8 +174,8 @@ export default function StopWatch({stopObj,setStopWatchNum}:StopWatchProps) {
             :
                 <Container>
                     <Card>
-                        <Close><RiCloseLine onClick={()=>setStopWatchNum([])}/></Close>
-                        <Title>{stopObj.title}</Title>
+                        <Close><RiCloseLine onClick={handleClose}/></Close>
+                        <Title>{timeObj.title}</Title>
                         <Timer>{format(time)}</Timer>
                         <BtnWrap>
                             <Btn color="#6ac8d8" disabled={isValid} onClick={start}>▶ Start</Btn>

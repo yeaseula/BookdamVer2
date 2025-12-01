@@ -66,11 +66,16 @@ interface AuthState {
     books: Books[];
     log: Log[];
     wish: Wish[];
+
+    timer: number;
+    timeObj: Books | null;
+    isTimer: boolean;
+
     isReviewLoaded: boolean;
     isMemoRoaded: boolean;
     isBooksLoaded: boolean;
     isLogLoaded: boolean;
-    isWishLoaded: boolean
+    isWishLoaded: boolean;
     setSession: (session: Session | null) => void;
     setProfile: (profile: { username: string; interests: string[] } | null) => void;
     setData: <T extends { id: string }>(key: 'memo' | 'reviews' | 'books' | 'log' | 'wish', items: T[]) => void;
@@ -78,6 +83,7 @@ interface AuthState {
     updateData: <T extends { id: string }>(key: 'memo' | 'reviews' | 'books' | 'log' | 'wish', item: T) => void;
     removeData: (key: 'memo' | 'reviews' | 'books' | 'log' | 'wish', id: string) => void;
     fetchSession: ()=>Promise<void>;
+    setTimerObj: (key: 'timer' | 'timeObj' | 'isTimer', item: any)=> void;
 }
 
 export const useAuthStore = create<AuthState>((set,get)=>({
@@ -89,6 +95,9 @@ export const useAuthStore = create<AuthState>((set,get)=>({
     books: [],
     log: [],
     wish: [],
+    timer: 0,
+    timeObj: null,
+    isTimer: false,
     isReviewLoaded: false,
     isMemoRoaded: false,
     isBooksLoaded: false,
@@ -137,4 +146,13 @@ export const useAuthStore = create<AuthState>((set,get)=>({
     },
 
     removeData: (key, id) => set({ [key]: get()[key].filter((i: any) => i.id !== id) } as any),
+    setTimerObj: (key,item) => {
+        if(key === 'timeObj') {
+            set({ timeObj : item })
+        } else if (key === 'timer') {
+            set({ timer : item})
+        } else if (key === 'isTimer') {
+            set({ isTimer : item })
+        }
+    }
 }))

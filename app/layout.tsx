@@ -8,7 +8,6 @@ import createClient from "@/utils/supabase/server";
 import { AppleSDGothicNeo } from "@/public/fonts/fonts";
 import { ToastContainer } from "react-toastify";
 import Toast from "./components/modal/Toast";
-import Transition from "./components/Transition";
 import Header from "./components/header/Header";
 
 const geistSans = Geist({
@@ -28,7 +27,10 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const { session, profile, reviews, memo, books, log, wish } = await createClient()
+  const {
+    session, profile,
+    reviews, memo, books, log, wish,
+  } = await createClient()
 
   return (
     <html lang="en" className={AppleSDGothicNeo.className}>

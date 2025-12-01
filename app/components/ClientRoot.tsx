@@ -4,6 +4,8 @@ import { useAuthStore } from "../lib/userfetch"
 import { Session } from "@supabase/supabase-js"
 import { Reviews } from "../lib/userfetch"
 import { Memo, Books, Log, Wish } from "../lib/userfetch"
+import StopWatch from "../reading/components/stopwatch/StopWatch"
+import { usePathname } from "next/navigation"
 
 interface Props {
   initialSession: Session | null
@@ -22,9 +24,13 @@ export default function ClientRoot({
   initialReview,
   initialMemo,initialBooks, initialLog,initialWish, children}:Props) {
 
+    const pathname = usePathname()
     const setSession = useAuthStore((state)=>state.setSession)
     const setProfile = useAuthStore((state)=>state.setProfile)
     const setData = useAuthStore((state)=>state.setData)
+
+    const { isTimer } = useAuthStore()
+    const useTimer = pathname !== '/login' && pathname !== '/sign'
 
     useEffect(()=>{
       setSession(initialSession)
@@ -36,5 +42,12 @@ export default function ClientRoot({
       setData<Wish>('wish',initialWish)
     },[])
 
-    return <>{children}</>
+    return (
+    <>
+      {children}
+        {isTimer && useTimer &&
+          <StopWatch />
+        }
+    </>
+    )
 }

@@ -33,7 +33,7 @@ const EmptyMessage = styled.p`
 export default function ReadingContent({
     books, checkId, setCheckId,
     logWatchNum, setLogWatchNum,
-    stopWatchNum, setStopWatchNum
+    currentBooks
 }) {
 
     return (
@@ -55,8 +55,7 @@ export default function ReadingContent({
                         index={m.id}
                         logWatchNum={logWatchNum}
                         setLogWatchNum={setLogWatchNum}
-                        stopWatchNum={stopWatchNum}
-                        setStopWatchNum={setStopWatchNum}
+                        currentBooks={currentBooks}
                         />
                     </ListInfo>
                 </List>
