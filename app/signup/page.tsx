@@ -13,6 +13,7 @@ import { useAuthStore, Reviews, Memo, Books, Log, Wish } from "../lib/userfetch"
 import InterestList from "../components/form/Interest/InterestList"
 import { motion, AnimatePresence } from "framer-motion"
 import { CheckEmail, checkEmailExistence, CheckNickname, CheckPassword, handlePassCheck } from "./Valid"
+import { WarningMessage } from "./warningMsg"
 
 const SignUpWrapper = styled.section`
     display: flex;
@@ -40,13 +41,6 @@ const ToLoginBox = styled.div`
         margin-left: 5px;
         text-decoration: underline;
     }
-`
-const WarningMsg = styled.p`
-    display: inline-block;
-    font-size: 1.2rem;
-    color: red;
-    margin-top: 5px;
-    font-weight: 400;
 `
 
 export default function SignUp() {
@@ -173,18 +167,8 @@ export default function SignUp() {
                     onChange={(e:React.ChangeEvent<HTMLInputElement>)=>
                         setEmail(e.currentTarget.value)}
                     />
-                    <AnimatePresence>
-                    {emailValid === false &&
-                        <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -10, opacity: 0 }} transition={{ duration: 0.2 }}>
-                            <WarningMsg>이메일 형식을 확인해주세요. <br /> ex) book@naver.com</WarningMsg>
-                        </motion.div>
-                    }
-                    {emailTouched && emailExists &&
-                        <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -10, opacity: 0 }} transition={{ duration: 0.2 }}>
-                            <WarningMsg>이미 사용 중인 이메일입니다.</WarningMsg>
-                        </motion.div>
-                    }
-                    </AnimatePresence>
+                    <WarningMessage state={emailValid} text="이메일 형식을 확인해주세요. ex)book@naver.com" />
+                    <WarningMessage state={!emailTouched || !emailExists} text="이미 사용중인 이메일입니다." />
                 </Label>
                 <Label style={{ marginTop: '10px' }}>
                     <span>닉네임 <b className="text-red-800">*</b></span>
@@ -200,13 +184,7 @@ export default function SignUp() {
                         setNickname(e.currentTarget.value)
                     }
                     />
-                    <AnimatePresence>
-                    {nicknameValue === false &&
-                        <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -10, opacity: 0 }} transition={{ duration: 0.2 }}>
-                            <WarningMsg>닉네임은 두 글자 이상 입력해주세요. </WarningMsg>
-                        </motion.div>
-                    }
-                    </AnimatePresence>
+                <WarningMessage state={nicknameValue} text="닉네임은 두 글자 이상 입력해주세요." />
                 </Label>
                 <Label style={{ marginTop: '10px' }}>
                     <span>비밀번호 <b className="text-red-800">*</b></span>
@@ -222,13 +200,7 @@ export default function SignUp() {
                         handlePassCheck(newPassRef, newPass2Ref ,setPassCheck )
                     }
                     }/>
-                    <AnimatePresence>
-                    {passValue === false &&
-                        <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -10, opacity: 0 }} transition={{ duration: 0.2 }}>
-                            <WarningMsg>비밀번호는 문자+숫자 8자리 이상입니다 </WarningMsg>
-                        </motion.div>
-                    }
-                    </AnimatePresence>
+                    <WarningMessage state={passValue} text="비밀번호는 문자+숫자 8자리 이상입니다." />
                 </Label>
                 <Label style={{ marginTop: '10px' }}>
                     <span>비밀번호 확인 <b className="text-red-800">*</b></span>
@@ -240,17 +212,13 @@ export default function SignUp() {
                         newPass2Ref.current = e.currentTarget.value
                         handlePassCheck(newPassRef, newPass2Ref ,setPassCheck )
                     }}/>
-                    <AnimatePresence>
-                        {passCheck === false &&
-                        <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -10, opacity: 0 }} transition={{ duration: 0.2 }}>
-                            <WarningMsg>비밀번호를 정확하게 입력해주세요 </WarningMsg>
-                        </motion.div>
-                        }
-                    </AnimatePresence>
+                        <WarningMessage state={passCheck} text="비밀번호를 정확하게 입력해주세요." />
                 </Label>
                 <Label style={{ marginTop: '10px' }}>
                     <span>관심 카테고리
-                        <b className="text-red-800"> * {interest.length == 0 && <WarningMsg>관심 카테고리를 선택하고 책을 추천받으세요!</WarningMsg>}</b>
+                        <b className="text-red-800"> *
+                            {interest.length == 0 &&
+                            <p className="inline-block text-[1.2rem] text-green-700 ml-4.5">관심 카테고리를 선택하고 책을 추천받으세요!</p>}</b>
                     </span>
                         <InterestList
                         interest={interest}
