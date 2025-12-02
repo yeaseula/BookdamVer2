@@ -91,12 +91,6 @@ export default function SignUp() {
             })
 
             if (error) {
-                    //  console.log('===== 에러 상세 정보 =====')
-                    //  console.log('error:', error)
-                    //  console.log('error.message:', error.message)
-                    //  console.log('error.code:', error.code)
-                    //  console.log('error.status:', error.status)
-                    //  console.log('========================')
                 if(error.message === 'User already registered') {
                     setToast('이미 가입된 이메일입니다.', 'error')
                     throw new Error('이미 가입된 이메일입니다.')
@@ -166,6 +160,8 @@ export default function SignUp() {
                 })
             }
 
+            router.push('/')
+
         } catch (err) {
             console.error(err)
             const errorMessage = err instanceof Error
@@ -174,7 +170,7 @@ export default function SignUp() {
             setToast(errorMessage, "error")
             setLoading(false)
         } finally {
-            router.push('/')
+
         }
     }
     return(

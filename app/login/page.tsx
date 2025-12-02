@@ -14,7 +14,7 @@ import { useAuthStore, Reviews, Memo, Books, Log, Wish } from "../lib/userfetch"
 import { UserInfoInitial, UserReviewInitial, UserMemoInitial,
     UserBooksInitial, UserLogInitial, UserWishInitial
  } from "../lib/readingInfo";
-
+import SpinnerArea from "../components/spinner/SpinnerArea";
 
 const LoginWrapper = styled.section`
     height: 100vh;
@@ -48,7 +48,7 @@ const ToSignupBox = styled.div`
 export default function Login() {
     const [email,setEmail] = useState<string>('');
     const [password,setPassword] = useState<string>('')
-    const [isWorking,setIsWorking] = useState<boolean>(false)
+    const [loading,setIsLoading] = useState<boolean>(false)
     const supabase = createClient()
     const setToast = useToastStore((state)=>state.setToast)
     const router = useRouter()
@@ -58,62 +58,66 @@ export default function Login() {
     const setData = useAuthStore((state)=>state.setData)
 
     const handleLogin = async(email:string, password:string) => {
-        if(isWorking) return
-        setIsWorking(true)
+        if(loading) return
+        setIsLoading(true)
         try {
             const { data, error } = await supabase.auth.signInWithPassword({
                 email,
                 password,
             })
 
-            if (error) throw error
-
-            if (data.user) {
-                //console.log("session:", JSON.parse(JSON.stringify(data.session.user)));
-
-                // 로그인 후 세션 초기 저장
-                setSession(data.session)
-
-                const UserId = data.session.user.id
-                // 프로필 정보 초기 저장
-                const UserInfor = await UserInfoInitial(UserId)
-                const UserProrile = { username: UserInfor.username, interests:[] }
-                setProfile(UserProrile)
-                // 리뷰 목록 초기 저장
-                const UserReview = await UserReviewInitial(UserId)
-                setData<Reviews>('reviews',UserReview)
-                // 메모 목록 초기 저장
-                const UserMemo = await UserMemoInitial(UserId)
-                setData<Memo>('memo', UserMemo)
-                // 북 목록 초기 저장
-                const UserBooks = await UserBooksInitial(UserId)
-                setData<Books>('books', UserBooks)
-                //로그 목록 초기 저장
-                const UserLog = await UserLogInitial(UserId)
-                setData<Log>('log', UserLog)
-                //wish 목록 초기 저장
-                const UserWish = await UserWishInitial(UserId)
-                setData<Wish>('wish',UserWish)
-                //첫 로드인지 아닌지 (로그인/회원가입에서 이미 첫 로드)
-
-
-                //console.log(UserProrile + ':로그인 후 프로필')
-                //console.log(UserReview + ':로그인 후 리뷰')
-                //console.log(UserMemo + ':로그인 후 메모')
-                setToast("로그인 성공했습니다!","success",()=>{ router.push('/')})
-
-            } else {
-                setToast('사용자 정보가 없습니다','error')
+            if (error || !data.user) {
+                throw new Error("회원 정보를 확인해주세요.")
             }
+
+            setSession(data.session)
+            const UserId = data.session.user.id
+
+            try {
+                const [UserInfor,
+                    UserReview,
+                    UserMemo,
+                    UserBooks,
+                    UserLog,
+                    UserWish] = await Promise.all([
+                        UserInfoInitial(UserId),
+                        UserReviewInitial(UserId),
+                        UserMemoInitial(UserId),
+                        UserBooksInitial(UserId),
+                        UserLogInitial(UserId),
+                        UserWishInitial(UserId)
+                    ])
+
+                    const UserProrile = { username: UserInfor.username, interests:UserInfor.interests }
+                    setProfile(UserProrile)
+                    setData<Reviews>('reviews',UserReview)
+                    setData<Memo>('memo', UserMemo)
+                    setData<Books>('books', UserBooks)
+                    setData<Log>('log', UserLog)
+                    setData<Wish>('wish',UserWish)
+
+            } catch (dataError) {
+                console.error('초기 데이터 로딩 실패:', dataError)
+                setToast('로그인은 완료되었으나 일부 데이터 로딩에 실패했습니다', "info", () => {
+                    router.push('/')
+                })
+            }
+            router.push('/')
+
         } catch (err) {
             console.error('로그인 오류:', err)
-            setToast("로그인에 실패했습니다!","error")
+            const errorMessage = err instanceof Error
+                ? err.message
+                : '로그인 중 오류가 발생했습니다'
+            setToast(errorMessage,"error")
+            setIsLoading(false)
         }
     }
 
     return (
         <LoginWrapper>
             <h2 className="sr-only">로그인</h2>
+            {loading && <SpinnerArea text="로그인 진행중.."></SpinnerArea>}
             <Image
             src={'/images/main-logo.svg'}
             alt="로고"
@@ -126,7 +130,7 @@ export default function Login() {
                     <span>이메일</span>
                     <InputFields type={"email"}
                     name={"login-emapl"}
-                    placeholder={"이메일을 입력해주세요"}
+                    placeholder={"이메일을 입력해주세요."}
                     onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setEmail(e.currentTarget.value)}
                     />
                 </Label>
@@ -134,7 +138,7 @@ export default function Login() {
                     <span>비밀번호</span>
                     <InputFields type={"password"}
                     name={"login-pass"}
-                    placeholder={"비밀번호를 입력해주세요"}
+                    placeholder={"비밀번호를 입력해주세요."}
                     onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setPassword(e.currentTarget.value)}
                     />
                 </Label>
@@ -142,7 +146,7 @@ export default function Login() {
             <LoginButton
             email={email}
             password={password}
-            isWorking={isWorking}
+            isWorking={loading}
             onClick={()=>handleLogin(email,password)}
             />
 
