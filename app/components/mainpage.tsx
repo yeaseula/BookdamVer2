@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react"
 import { fetchBookCover,fetchBookAI } from "../lib/fetchBookCover"
 import SectionPageOne from "./section1/SectionPage"
 import Calendar from "./section2/Calendar"
+import SpinnerArea from "./spinner/SpinnerArea"
 
 export default function MainPage() {
 
@@ -63,10 +64,15 @@ export default function MainPage() {
 
     return(
         <>
-        <MainSlide slide={reviewThumb} readingCount={reviewThumb.length}></MainSlide>
-        <SectionPageOne readingCount={reviewThumb.length} books={books}></SectionPageOne>
-        <Calendar stampDate={stampDate}/>
-        <SectionPageThree username={nickname} books={AithumbArr}></SectionPageThree>
+        {!profile && <SpinnerArea text="로딩중 .."/>}
+        {profile && (
+            <>
+                <MainSlide slide={reviewThumb} readingCount={reviewThumb.length}></MainSlide>
+                <SectionPageOne readingCount={reviewThumb.length} books={books}></SectionPageOne>
+                <Calendar stampDate={stampDate}/>
+                <SectionPageThree username={nickname} books={AithumbArr}></SectionPageThree>
+            </>
+        )}
         </>
     )
 }
