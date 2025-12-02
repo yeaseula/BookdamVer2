@@ -8,11 +8,12 @@ import EditModal from "./components/modal/EditModal"
 import createClient from "@/utils/supabase/client"
 import { useAuthStore } from "../lib/userfetch"
 import { Memo } from "../lib/userfetch"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
 import { useToastStore } from "../lib/useToastStore"
-
+import SpinnerArea from "../components/spinner/SpinnerArea"
+import Modal from "../components/modal/Modal"
 const MemoWrap = styled.section`
     padding: 80px 15px 65px;
 `
@@ -20,7 +21,13 @@ const MemoWrap = styled.section`
 export default function MemoPage() {
     const [EditPopup,setEditPopup] = useState(false)
     const [checkId,setCheckId] = useState<string[]>([])
-    const [editObj,setEditObj] = useState<Memo | null>(null) // 수정 할 memo 값 객체
+
+    const checkIdRef = useRef<string[]>([])
+    const editObjRef = useRef<Memo | null>(null)
+
+    const [modal,setModal] = useState(false)
+    const [deleteModal,setDeleteModal] = useState(false)
+
     //data first access point
     const [currentMemo,setCurrentMemo] = useState<Memo[] | null>(null)
     const { memo } = useAuthStore() as { memo: Memo[] | null};
@@ -33,58 +40,51 @@ export default function MemoPage() {
     },[memo])
 
     const handleEdit = async() => {
-        if(checkId.length > 1) {
-            setToast('수정은 한 개씩만 선택할 수 있습니다!','error')
-            return
-        }
-        if(checkId.length == 1) {
-            const CheckEdit = currentMemo.find((m)=>m.id===checkId[0])
-            setEditObj(CheckEdit)
-            setEditPopup(true)
-        }
+        const CheckEdit = currentMemo.find((m)=>m.id===checkIdRef.current[0])
+        editObjRef.current = CheckEdit //변경
+        setEditPopup(true) // 수정 폼 팝업 오픈
+        setModal(false) // 수정/삭제버튼 딜리트
     }
 
-    const handleDelete = async() => {
-        const { error } = await supabase
-            .from("memo")
-            .delete()
-            .in("id", checkId);
 
-        if (error) {
-            setToast('삭제 실패했습니다!','error')
-            return;
-        }
-
-        setToast('삭제가 완료됐습니다!','success')
-        setCheckId([]);
-
-        //zustand 전역상태 재업로드
-        useAuthStore.setState({
-            memo: useAuthStore.getState().memo.filter(item => !checkId.includes(item.id))
-        });
-
-        checkId.map((number)=>(
-            useAuthStore.getState().removeData('memo',number)
-        ))
-    }
 
     return(
         <MemoWrap>
+            <Modal
+            state={modal}
+            setModal={setModal}
+            checkIdRef={checkIdRef}
+            deleteModal={deleteModal}
+            setDeleteModal={setDeleteModal}
+            EditPopup={EditPopup}
+            setEditPopup={setEditPopup}
+            onClickEdit={handleEdit}
+            />
+
             <h2 className="sr-only">기억에 남는 구절</h2>
             {session && currentMemo && (
                 <>
                     <MemoForm session={session}/>
                     <div className="mt-[35px]">
-                        <MemoContent memo={currentMemo} checkId={checkId} setCheckId={setCheckId}/>
+                        <MemoContent
+                        memo={currentMemo}
+                        checkId={checkIdRef}
+                        modal={modal}
+                        setModal={setModal}
+                        />
                     </div>
-                    {currentMemo.length > 0 && (
-                        <div className="mt-[20px] flex gap-3 justify-end">
+                    {/* {currentMemo.length > 0 && (
+                        <div className="sticky bottom-[100px] w-fit ml-auto mt-[20px] flex gap-3 justify-end">
                             <EditButton onClick={handleEdit} checkId={checkId}/>
                             <DeleteButton onClick={handleDelete} checkId={checkId}/>
                         </div>
-                    )}
+                    )} */}
                     {EditPopup &&
-                        <EditModal editObj={editObj} setEditPopup={setEditPopup} setCheckId={setCheckId}/>
+                        <EditModal
+                        editObj={editObjRef.current}
+                        setEditPopup={setEditPopup}
+                        checkId={checkIdRef}
+                        />
                     }
                 </>
             )}

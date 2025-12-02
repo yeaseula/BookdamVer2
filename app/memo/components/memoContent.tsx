@@ -3,7 +3,9 @@ import styled from "styled-components"
 import InputCheck from "../../components/form/inputCheck"
 import { Memo } from "@/app/lib/userfetch"
 
+
 const List = styled.div`
+    position: relative;
     width: 100%;
     display: flex;
     align-items: start;
@@ -12,7 +14,7 @@ const List = styled.div`
     border-bottom: 1px solid #e0e0e0;
 `
 const ListInfo = styled.div`
-    width: 90%;
+    width: 100%;
     padding-bottom: 10px;
     display: flex;
     flex-direction: column;
@@ -35,19 +37,33 @@ const BookTitle = styled.span`
 `
 const EmptyMessage = styled.p`
     padding-bottom: 10px;
+    text-align: center;
+`
+const CheckBox = styled.div`
+    position: absolute;
+    right: 5px;
+    top: 10px;
+    z-index: 10;
 `
 
-export default function MemoContent({memo,checkId,setCheckId}) {
+export default function MemoContent({memo,setModal,modal,checkId}) {
 
     return (
         <>
-            {!memo && <EmptyMessage>등록된 글이 없습니다</EmptyMessage>}
-            {memo && (
+            {memo.length === 0 && <EmptyMessage>등록된 글이 없습니다.</EmptyMessage>}
+            {memo.length > 0 && (
                 memo.map((m:Memo,idx:number)=>(
                 <List key={`${m.title}-${idx}`}>
-                    <div>
-                        <InputCheck type={'checkbox'} name={'list-check'} index={m.id} checkId={checkId} setCheckId={setCheckId} />
-                    </div>
+                    <CheckBox>
+                        <InputCheck
+                        type={'checkbox'}
+                        name={'list-check'}
+                        index={m.id}
+                        checkId={checkId}
+                        modal={modal}
+                        setModal={setModal}
+                        />
+                    </CheckBox>
                     <ListInfo>
                         <blockquote className="w-[100%]">
                             <p className="text-[1.6rem;]">{m.content}</p>

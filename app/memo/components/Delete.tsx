@@ -8,7 +8,7 @@ interface DeleteProps {
 export default function DeleteButton({onClick,checkId}:DeleteProps) {
     const active = checkId.length > 0 ? true : false;
     return (
-        <ButtonStyle $width={60} $height={30} disabled={!active} onClick={onClick}>
+        <ButtonStyle $width={60} $height={30} disabled={false} onClick={onClick}>
             <span style={{ fontSize: '1.4rem' }}>삭제</span>
         </ButtonStyle>
     )

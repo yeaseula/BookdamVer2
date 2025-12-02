@@ -7,6 +7,8 @@ import { deleteReview } from "@/app/lib/delete"
 import { useToastStore } from "@/app/lib/useToastStore"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { usePathname } from "next/navigation"
+import createClient from "@/utils/supabase/client"
 
 const Container = styled.div`
     position: fixed;
@@ -48,19 +50,27 @@ const ButtonStyleDark = styled(ButtonStyle)`
     color: #fff;
 `
 
-export default function DeleteCheck({onClick}) {
+export default function DeleteCheck({onClick,checkIdRef,setDeleteModal}) {
     const [loading,setLoading] = useState<boolean>(false)
     const { session } = useAuthStore()
+    const removeData = useAuthStore((state)=>state.removeData)
     const params = useParams()
     const postId = Array.isArray(params.id) ? params.id[0] : params.id;
     const setToast = useToastStore((state)=>state.setToast)
     const router = useRouter()
+    const supabase = createClient()
+
+    const pathname = usePathname()
+
+    let debounce:boolean = false;
 
     if(!session) return
     const userId = session.user.id
 
     //console.log(postId + ':🚀' + userId + ':🤔🤔🤔')
 
+
+    //삭제는 해당 컴포넌트에서 처리합니다
     const handleReviewDelete = async() => {
         if(loading) return
         setLoading(true)
@@ -84,14 +94,65 @@ export default function DeleteCheck({onClick}) {
         }
     }
 
+    const handleDelete = async() => {
+        if(debounce || loading) return
+
+        debounce = true
+        setLoading(true)
+
+        try {
+            const { error } = await supabase
+                .from("memo")
+                .delete()
+                .in("id", checkIdRef.current);
+
+            if (error) {
+                setToast('삭제 실패했습니다!','error')
+                return;
+            }
+
+            setToast('삭제가 완료됐습니다!','success')
+            removeData("memo", checkIdRef.current[0])
+            checkIdRef.current = []
+            setDeleteModal(false)
+
+            checkIdRef.current.map((number)=>(
+                useAuthStore.getState().removeData('memo',number)
+            ))
+
+        } catch(err) {
+            const errorMessage = err instanceof Error
+                ? err.message
+                : '삭제 중 오류가 발생했습니다'
+            setToast(errorMessage, "error")
+
+        } finally {
+            debounce = false
+            setLoading(false)
+        }
+    }
+
     return (
         <>
         {!loading &&
         <Container>
             <h2 className="text-3xl font-bold">게시물을 삭제할까요?</h2>
             <div className="flex justify-center gap-3 mt-10">
-                <ButtonStyle type="button" disabled={loading} onClick={handleReviewDelete}>예</ButtonStyle>
-                <ButtonStyleDark type="button" disabled={loading} onClick={onClick}>아니오</ButtonStyleDark>
+                {pathname === '/memo' ? (
+                    <ButtonStyle
+                    type="button"
+                    disabled={loading}
+                    onClick={handleDelete}>예</ButtonStyle>
+                ) : (
+                    <ButtonStyle
+                    type="button"
+                    disabled={loading}
+                    onClick={handleReviewDelete}>예</ButtonStyle>
+                )}
+                <ButtonStyleDark
+                type="button"
+                disabled={loading}
+                onClick={onClick}>아니오</ButtonStyleDark>
             </div>
         </Container>
         }

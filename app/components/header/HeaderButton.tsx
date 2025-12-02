@@ -26,7 +26,7 @@ export default function HeaderButton() {
             <Modal
             state={modal}
             setModal={setModal}
-            deleteModalState={deleteModal}
+            deleteModal={deleteModal}
             setDeleteModal={setDeleteModal}/>
         </>
     )

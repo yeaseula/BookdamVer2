@@ -29,50 +29,73 @@ const Modal = styled.section`
 
 interface ModalProps {
     setEditPopup: Dispatch<SetStateAction<boolean>>
-    setCheckId: Dispatch<SetStateAction<string[]>>
+    checkId: React.RefObject<string[]>
     editObj: Memo
 }
 
-export default function EditModal({editObj,setEditPopup,setCheckId}:ModalProps) {
+export default function EditModal({editObj,setEditPopup,checkId}:ModalProps) {
+    const supabase = createClient()
+    const editingId = editObj.id
     const [modalTitle,setModalTitle] = useState<string>(editObj.title)
     const [modalPage,setModalPage] = useState<number | null>(editObj.page)
     const [modalContent,setModalContent] = useState<string>(editObj.content)
-    const editingId = editObj.id
-    const supabase = createClient()
+    const [isLoading,setIsLoading] = useState<boolean>(false)
     const setToast = useToastStore((state)=>state.setToast)
 
-    const handleModalEdit = async () => {
-        const { data, error } = await supabase
-            .from("memo")
-            .update({
-            title: modalTitle,
-            page: modalPage,
-            content: modalContent,
-            updated_at: new Date().toISOString()
-            })
-            .eq("id", editingId)
-            .select();
+    let debounce:boolean = false;
 
-        if (error) {
-            console.error(error);
-            setToast("수정 실패했습니다!", "error")
-            return;
+    const handleModalEdit = async () => {
+
+        if(debounce || isLoading) return
+        debounce = true
+        setIsLoading(true)
+
+        try {
+            if(!modalTitle) throw new Error("제목을 입력해주세요.")
+            else if(!modalPage) throw new Error("페이지를 입력해주세요.")
+            else if(!modalContent) throw new Error("내용을 입력해주세요.")
+
+            const { data, error } = await supabase
+                .from("memo")
+                .update({
+                title: modalTitle,
+                page: modalPage,
+                content: modalContent,
+                updated_at: new Date().toISOString()
+                })
+                .eq("id", editingId)
+                .select();
+
+            if (error) {
+                console.error(error);
+                throw new Error ('메모 수정에 실패했습니다.')
+            }
+
+            const updatedMemo:Memo = data?.[0];
+            if (!updatedMemo) return;
+
+            // Zustand 상태 업데이트
+            useAuthStore.getState().updateData<Memo>('memo',updatedMemo);
+            setToast("수정이 완료됐습니다!", "success")
+
+            setEditPopup(false)
+            checkId.current = []
+
+        } catch (err) {
+            const errorMessage = err instanceof Error
+                ? err.message
+                : '메모 수정 중 오류가 발생했습니다'
+            setToast(errorMessage, "error")
+        } finally {
+            debounce = false;
+            setIsLoading(false)
         }
 
-        const updatedMemo:Memo = data?.[0];
-        if (!updatedMemo) return;
-
-        // Zustand 상태 업데이트
-        useAuthStore.getState().updateData<Memo>('memo',updatedMemo);
-        setToast("수정이 완료됐습니다!", "success")
-        // setShowModal(false)
-        setEditPopup(false)
-        setCheckId([])
     };
 
     const handleClose = () => {
         setEditPopup(false)
-        setCheckId([])
+        checkId.current = []
     }
 
     return(
@@ -128,6 +151,7 @@ export default function EditModal({editObj,setEditPopup,setCheckId}:ModalProps) 
                     modalTitle={modalTitle}
                     modalPage={modalPage}
                     modalContent={modalContent}
+                    isLoading={isLoading}
                     onClick={handleModalEdit}
                     />
                 </div>

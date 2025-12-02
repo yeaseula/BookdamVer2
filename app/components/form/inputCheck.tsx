@@ -1,7 +1,8 @@
 "use client"
 import styled from "styled-components"
-import { RiCheckLine } from "@remixicon/react";
+import { RiMore2Fill  } from "@remixicon/react";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+
 
 const CheckStyle = styled.input`
     appearance: none;
@@ -18,27 +19,27 @@ const Label = styled.label<{checked:boolean, $focused: boolean}>`
     height: 18px;
     border-radius: 50%;
     border:${(props)=>props.$focused ? '2px solid var(--sub_color)' : 'none'};
-    background-color: ${(props)=>props.checked ? `var(--point-color)` : `rgba(106, 200, 216, .5)`};
     color: #424242;
-    opacity: ${(props)=>props.checked || props.$focused ? 1 : 0.5};
 `
 
 interface CheckProps {
     type: string;
     name: string;
     index: string;
-    checkId: string[];
-    setCheckId: Dispatch<SetStateAction<string[]>>
+    checkId: React.RefObject<string[]>;
+    modal: boolean;
+    setModal: Dispatch<SetStateAction<boolean>>
 }
 
-export default function InputCheck({ type, name, index, checkId, setCheckId }:CheckProps) {
+export default function InputCheck({ type, name, index, checkId, modal, setModal }:CheckProps) {
 
     const [ischecked,setisChecked] = useState(false)
     const [focused,setFocused] = useState(false)
+    //수정,삭제 버튼 모달
 
     useEffect(()=>{
         //모달 팝업에서 수정했을 시 모든 checkId 배열이 초기화되며 버튼 check여부 초기화
-        if(checkId.length === 0) {
+        if(checkId.current.length === 0) {
             setisChecked(false)
         }
     },[checkId])
@@ -46,11 +47,11 @@ export default function InputCheck({ type, name, index, checkId, setCheckId }:Ch
     useEffect(()=>{
         if(ischecked) {
             //check state
-            setCheckId(prev=>[...prev,index])
+            checkId.current = [...checkId.current, index]
         } else {
             //uncheck state
-            const editResult = checkId.filter((val)=>val !== index)
-            setCheckId(editResult)
+            const editResult = checkId.current.filter((val)=>val !== index)
+            checkId.current = editResult
         }
     },[ischecked])
 
@@ -58,18 +59,19 @@ export default function InputCheck({ type, name, index, checkId, setCheckId }:Ch
         <>
             <CheckStyle
             type={type}
-            onChange={()=>setisChecked(!ischecked)}
+            onChange={()=>{
+                checkId.current = [...checkId.current, index]
+                setModal(!modal)
+            }}
             onFocus={()=>setFocused(true)}
             onBlur={()=>setFocused(false)}
             name={name}
             id={index}
             aria-label="목록 선택" />
             <Label htmlFor={index} checked={ischecked} $focused={focused}>
-                <RiCheckLine
-                    size={16}
-                    color={ischecked ? '#ffffff' : '#bdbdbd'}
-                    aria-hidden="true"
-                ></RiCheckLine>
+                <RiMore2Fill size={14}
+                color="#757575"
+                />
             </Label>
         </>
     )

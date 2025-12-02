@@ -7,6 +7,7 @@ export const ButtonStyle = styled.button<{disabled:boolean, $width?:number, $hei
     border-radius: 5px;
     background-color: var(--sub_color);
     cursor: ${(props)=>props.disabled ? 'initial' : 'pointer'};
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25)
     &:disabled {
         background-color: #bdbdbd;
         color: #e0e0e0;

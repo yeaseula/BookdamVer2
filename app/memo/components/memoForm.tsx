@@ -32,6 +32,11 @@ export default function MemoForm({session}) {
         debounce = true
 
         try {
+            if(!userId) throw new Error("세션이 없습니다.")
+            else if(!title) throw new Error("제목을 입력해주세요.")
+            else if(!page) throw new Error("페이지를 입력해주세요.")
+            else if(!content) throw new Error("내용을 입력해주세요.")
+
             const { data, error } = await supabase.from("memo").insert([
                 {
                     user_id: userId,
@@ -41,7 +46,9 @@ export default function MemoForm({session}) {
                 },
             ]).select();
 
-            if (error) throw error;
+            if (error) {
+                throw new Error('나만의 구절 추가에 실패했습니다.')
+            }
 
             const newMemo: Memo = data?.[0]
             if(!newMemo) return;
@@ -56,7 +63,10 @@ export default function MemoForm({session}) {
             setPage(null)
             setContent("")
         } catch (error) {
-            setToast("업로드 실패했습니다.","error")
+            const errorMessage = error instanceof Error
+                ? error.message
+                : '업로드 중 오류가 발생했습니다'
+            setToast(errorMessage, "error")
         } finally {
             debounce = false
             setIsLoading(false)
