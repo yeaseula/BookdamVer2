@@ -4,14 +4,14 @@ import InputFields from "../components/form/input"
 import TextArea from "../components/form/textarea"
 import Image from "next/image"
 import SelectField from "../components/form/select"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import WriteButton from "./components/WriteButton"
 import createClient from "@/utils/supabase/client"
 import { Reviews, useAuthStore } from "../lib/userfetch"
 import { useSearchParams } from "next/navigation"
 import { useToastStore } from "../lib/useToastStore"
 import { useRouter } from "next/navigation"
-import ModalBack from "../components/modal/ModalBack"
+import SpinnerArea from "../components/spinner/SpinnerArea"
 
 const FieldList = styled.div`
     margin-bottom: 20px;
@@ -90,6 +90,15 @@ export default function Write() {
         setLoading(true) //로딩중 상태 진입
         try {
             if(postId) { //수정 시 update 함수
+
+                if(!category) throw new Error('카테고리를 설정해주세요.')
+                else if(!title) throw new Error('제목을 입력해주세요.')
+                else if(!author) throw new Error('작가명을 입력해주세요.')
+                else if(!startDate) throw new Error('독서 시작일을 입력해주세요.')
+                else if(!endDate) throw new Error('독서 종료일을 입력해주세요.')
+                else if(!memo) throw new Error('한줄평을 입력해주세요.')
+                else if(!content) throw new Error('독서 기록 내용을 입력해주세요.')
+
                 const {data,error} = await supabase.from('reviews').update([
                     {
                         user_id: userId,
@@ -106,11 +115,9 @@ export default function Write() {
                 .eq("id", postId).select()
 
                 if(error) {
-                    console.error('수정 실패 :' + error)
-                    setToast("리뷰 수정 실패했습니다!","error")
+                    throw new Error('리뷰 수정에 실패했습니다 :' + error)
                 } else {
-                    //console.log('수정성공')
-                    setToast("리뷰 수정 성공했습니다!","success",()=>{router.push('/review')})
+                    router.push('/review')
                 }
 
                 const newReview:Reviews = data?.[0] //zustand 전역 상태 업로드
@@ -118,6 +125,15 @@ export default function Write() {
                 useAuthStore.getState().updateData<Reviews>("reviews",newReview)
 
             } else {
+
+                if(!category) throw new Error('카테고리를 설정해주세요.')
+                else if(!title) throw new Error('제목을 입력해주세요.')
+                else if(!author) throw new Error('작가명을 입력해주세요.')
+                else if(!startDate) throw new Error('독서 시작일을 입력해주세요.')
+                else if(!endDate) throw new Error('독서 종료일을 입력해주세요.')
+                else if(!memo) throw new Error('한줄평을 입력해주세요.')
+                else if(!content) throw new Error('독서 기록 내용을 입력해주세요.')
+
                 const {data,error} = await supabase.from('reviews').insert([
                     {
                         user_id: userId,
@@ -137,36 +153,38 @@ export default function Write() {
                 useAuthStore.getState().addData<Reviews>("reviews",newReviewPost)
 
                 if(error) {
-                    console.error('등록 실패 :' + error)
-                    setToast("리뷰 등록이 실패했습니다!","error")
+                    throw new Error('리뷰 등록이 실패했습니다 :' + error)
                 } else {
-                    //console.log('성공')
-                    setToast("리뷰를 등록했습니다!","success",()=>{router.push('/review')})
+                    router.push('/review')
                 }
             }
 
         } catch(err) {
             console.error('등록 실패 :' + err)
+            const errorMessage = err instanceof Error
+                ? err.message
+                : '리뷰 등록이 실패했습니다'
+            setToast(errorMessage, "error")
             setLoading(false)
         }
     }
 
     return (
         <div style={{ padding: '80px 15px 65px' }}>
-            {loading && (
-                <ModalBack onClick={()=>{}}/>
-            )}
+            {loading && <SpinnerArea text="글 등록중.."/>}
+
             <form>
                 <FieldList>
-                    <FieldName>카테고리</FieldName>
+                    <FieldName>카테고리 <b className="font-bold text-red-700"> *</b></FieldName>
                     <SelectField name="category"
+
                     value={category}
                     options={['국내소설','에세이','시','자연/과학','건강','인문','역사','만화/웹툰']}
                     onChange={(e:React.ChangeEvent<HTMLSelectElement>)=>{setCategory(e.target.value)}}
                     />
                 </FieldList>
                 <FieldList>
-                    <FieldName>제목</FieldName>
+                    <FieldName>제목 <b className="font-bold text-red-700"> *</b></FieldName>
                     <InputFields
                     type="text"
                     placeholder="책 제목을 입력해 주세요."
@@ -176,7 +194,7 @@ export default function Write() {
                     />
                 </FieldList>
                 <FieldList>
-                    <FieldName>작가명</FieldName>
+                    <FieldName>작가명 <b className="font-bold text-red-700"> *</b></FieldName>
                     <InputFields
                     type="text"
                     placeholder="작가명을 입력해 주세요."
@@ -186,7 +204,7 @@ export default function Write() {
                     />
                 </FieldList>
                 <FieldList>
-                    <FieldName>독서 기간</FieldName>
+                    <FieldName>독서 기간 <b className="font-bold text-red-700"> *</b></FieldName>
                     <div style={{ display:'flex', gap: '1rem', alignItems:'center' }}>
                         <InputFields
                         type="date"
@@ -203,7 +221,7 @@ export default function Write() {
                     </div>
                 </FieldList>
                 <FieldList>
-                    <FieldName>한줄평</FieldName>
+                    <FieldName>한줄평 <b className="font-bold text-red-700"> *</b></FieldName>
                     <InputFields
                     type="text"
                     placeholder="이 책을 한 줄로 평가해 주세요."
@@ -213,7 +231,7 @@ export default function Write() {
                     />
                 </FieldList>
                 <FieldList>
-                    <FieldName>독서 기록 내용</FieldName>
+                    <FieldName>독서 기록 내용 <b className="font-bold text-red-700"> *</b></FieldName>
                     <TextArea
                         name="review_content"
                         height={168}

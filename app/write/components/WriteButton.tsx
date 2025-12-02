@@ -24,7 +24,7 @@ export default function WriteButton({...props}:ButtonProps) {
     return (
         <ButtonStyle
         type={props.type}
-        disabled={!isValid}
+        disabled={false}
         $height={40}
         onClick={props.onClick}>등록</ButtonStyle>
     )

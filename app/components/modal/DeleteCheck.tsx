@@ -64,14 +64,28 @@ export default function DeleteCheck({onClick}) {
     const handleReviewDelete = async() => {
         if(loading) return
         setLoading(true)
-        const { error } = await deleteReview(postId, userId);
-        useAuthStore.getState().removeData("reviews",postId)
-        if (!error) {
+        try {
+            const { error } = await deleteReview(postId, userId);
+            useAuthStore.getState().removeData("reviews",postId)
+
+            if(error) {
+                throw new Error("리뷰 삭제에 실패했습니다.")
+            }
             setToast("리뷰 삭제 성공했습니다!","success",()=>router.push('/review'))
+
+        } catch (err) {
+            console.error('리뷰 삭제 오류:', err)
+            const errorMessage = err instanceof Error
+                ? err.message
+                : '리뷰삭제 중 오류가 발생했습니다.'
+            setToast(errorMessage,"error")
+            setLoading(false)
         }
     }
 
     return (
+        <>
+        {!loading &&
         <Container>
             <h2 className="text-3xl font-bold">게시물을 삭제할까요?</h2>
             <div className="flex justify-center gap-3 mt-10">
@@ -79,5 +93,7 @@ export default function DeleteCheck({onClick}) {
                 <ButtonStyleDark type="button" disabled={loading} onClick={onClick}>아니오</ButtonStyleDark>
             </div>
         </Container>
+        }
+        </>
     )
 }

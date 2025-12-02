@@ -11,7 +11,6 @@ const Select = styled.select<{$width:number | undefined}>`
     padding: 0 9px;
     font-size: 1.4rem;
     outline: 0;
-    box-shadow: 0 3px 14px rgba(0, 0, 0, .15);
 
     &:focus {
         border: 2px solid var(--point-color);
