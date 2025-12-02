@@ -14,6 +14,7 @@ import InterestList from "../components/form/Interest/InterestList"
 import { motion, AnimatePresence } from "framer-motion"
 import { CheckEmail, checkEmailExistence, CheckNickname, CheckPassword, handlePassCheck } from "./Valid"
 import { WarningMessage } from "./warningMsg"
+import SpinnerArea from "../components/spinner/SpinnerArea"
 
 const SignUpWrapper = styled.section`
     display: flex;
@@ -78,9 +79,6 @@ export default function SignUp() {
         ) {
             setButton(true)
         } else { setButton(false) }
-
-        console.log(emailExists)
-
     },[emailValid,emailExists, nicknameValue,passValue,passCheck,interest])
 
     const handleSignUp = async () => {
@@ -100,15 +98,18 @@ export default function SignUp() {
                     //  console.log('error.status:', error.status)
                     //  console.log('========================')
                 if(error.message === 'User already registered') {
+                    setToast('이미 가입된 이메일입니다.', 'error')
                     throw new Error('이미 가입된 이메일입니다.')
                 } else if(error.code === 'weak_password') {
+                    setToast('비밀번호는 8자 이상, 문자+숫자 조합으로 설정해주세요.', 'error')
                     throw new Error('비밀번호는 8자 이상, 문자+숫자 조합으로 설정해주세요.')
                 } else if(error.code === 'validation_failed') {
+                    setToast('이메일 형식이 올바르지 않습니다.', 'error')
                     throw new Error('이메일 형식이 올바르지 않습니다.')
                 } else {
-                    throw new Error('회원가입 중 오류가 발생했습니다. 다시 시도해주세요')
+                    setToast('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.', 'error')
+                    throw new Error('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.')
                 }
-
             }
             //세션 확인
             const {
@@ -117,7 +118,8 @@ export default function SignUp() {
             } = await supabase.auth.getSession()
 
             if (sessionError || !session?.user) {
-                throw new Error('로그인 세션 생성에 실패했습니다')
+                setToast('로그인 세션 생성에 실패했습니다.', 'error')
+                throw new Error('로그인 세션 생성에 실패했습니다.')
             }
             //프로필 테이블 생성
             const {error: profileError} = await supabase.from('profiles').insert({
@@ -127,7 +129,8 @@ export default function SignUp() {
                 email: email,
             })
             if(profileError) {
-                throw new Error('프로필 생성에 실패했습니다')
+                setToast('프로필 생성에 실패했습니다.', 'error')
+                throw new Error('프로필 생성에 실패했습니다.')
             }
             const UserId = session.user.id;
 
@@ -155,7 +158,6 @@ export default function SignUp() {
                     setData<Books>('books', UserBooks)
                     setData<Log>('log', UserLog)
                     setData<Wish>('wish',UserWish)
-                    setToast('회원가입이 완료됐습니다!','success',()=>{router.push('/')})
 
             } catch (dataError) {
                 console.error('초기 데이터 로딩 실패:', dataError)
@@ -170,13 +172,15 @@ export default function SignUp() {
                 ? err.message
                 : '회원가입 중 오류가 발생했습니다'
             setToast(errorMessage, "error")
-        } finally {
             setLoading(false)
+        } finally {
+            router.push('/')
         }
     }
     return(
         <SignUpWrapper>
-            <h2 className="sr-only">회원가입</h2>
+            <h2 className="sr-only">책담 회원가입 페이지. 모든 항목은 필수입력 입니다.</h2>
+            {loading && <SpinnerArea text="회원가입 처리중..." />}
             <Image
             src={'/images/main-logo.svg'}
             alt="로고"
