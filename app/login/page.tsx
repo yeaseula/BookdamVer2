@@ -98,9 +98,8 @@ export default function Login() {
 
             } catch (dataError) {
                 console.error('초기 데이터 로딩 실패:', dataError)
-                setToast('로그인은 완료되었으나 일부 데이터 로딩에 실패했습니다', "info", () => {
-                    router.push('/')
-                })
+                setToast('로그인은 완료되었으나 일부 데이터 로딩에 실패했습니다', "info")
+                router.push('/')
             }
             router.push('/')
 

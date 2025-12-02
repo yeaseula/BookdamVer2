@@ -1,33 +1,38 @@
 "use client"
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useToastStore } from "@/app/lib/useToastStore";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 const Toast = () => {
-  const { message, type, show, hideToast, callback } = useToastStore();
+    const { toasts, removeToast } = useToastStore();
+    const prevToastsRef = useRef<Set<string>>(new Set())
 
   useEffect(() => {
-    if(!show || message == null) return;
-    if (message && show) {
-        toast(message, {
-        type: type,
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        ariaLabel: message,
-        onClose:()=>{
-            callback?.();
-            hideToast();
-        }});
+    if( !toasts.length ) return;
+    toasts.forEach((tos)=>{
+
+    if (prevToastsRef.current.has(tos.id)) {
+        return;
     }
-    }, [show]);
+
+    prevToastsRef.current.add(tos.id)
+
+        toast(tos.message,{
+            type: tos.type,
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            ariaLabel: tos.message,
+            onClose: () => {removeToast(tos.id)}
+        })
+    })}, [toasts, removeToast]);
 
     return null;
 };

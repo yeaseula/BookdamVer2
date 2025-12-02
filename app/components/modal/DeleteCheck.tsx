@@ -71,7 +71,8 @@ export default function DeleteCheck({onClick}) {
             if(error) {
                 throw new Error("리뷰 삭제에 실패했습니다.")
             }
-            setToast("리뷰 삭제 성공했습니다!","success",()=>router.push('/review'))
+            setToast("리뷰 삭제 성공했습니다!","success")
+            router.push('/review')
 
         } catch (err) {
             console.error('리뷰 삭제 오류:', err)

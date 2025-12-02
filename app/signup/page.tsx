@@ -63,6 +63,7 @@ export default function SignUp() {
     const [button,setButton] = useState<boolean>(false) // button 활성화 상태
     const [loading,setLoading] = useState<boolean>(false)
     const setToast = useToastStore((state)=>state.setToast)
+    const setWorking = useToastStore((state)=>state.setWorking)
     const setSession = useAuthStore((state)=>state.setSession)
     const setProfile = useAuthStore((state)=>state.setProfile)
     const setData = useAuthStore((state)=>state.setData)
@@ -155,9 +156,7 @@ export default function SignUp() {
 
             } catch (dataError) {
                 console.error('초기 데이터 로딩 실패:', dataError)
-                setToast('회원가입은 완료되었으나 일부 데이터 로딩에 실패했습니다', "info", () => {
-                    router.push('/')
-                })
+                setToast('회원가입은 완료되었으나 일부 데이터 로딩에 실패했습니다', "info")
             }
 
             router.push('/')

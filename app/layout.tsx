@@ -9,6 +9,7 @@ import { AppleSDGothicNeo } from "@/public/fonts/fonts";
 import { ToastContainer } from "react-toastify";
 import Toast from "./components/modal/Toast";
 import Header from "./components/header/Header";
+import { useToastStore } from "./lib/useToastStore";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     session, profile,
     reviews, memo, books, log, wish,
   } = await createClient()
+
 
   return (
     <html lang="en" className={AppleSDGothicNeo.className}>

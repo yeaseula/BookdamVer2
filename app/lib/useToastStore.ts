@@ -1,19 +1,37 @@
 import { create } from "zustand";
 
-interface ToastState {
+interface ToastItem {
+    id: string;
     message: string;
-    show: boolean;
     type: "success" | "error" | "info";
-    callback?: () => void;
-    setToast: (msg:string,type: "success" | "error" | "info", cb?:()=>void) => void;
-    hideToast: () => void;
+}
+
+interface ToastState {
+    isWorking: boolean;
+    toasts: ToastItem[]; //id,msg,type
+    maxToast: 3;
+
+    setWorking: (value: boolean) => void;
+    setToast: (msg:string, type:ToastItem["type"])=>void;
+    removeToast: (id:string) => void;
 }
 
 export const useToastStore = create<ToastState>((set)=>({
-    message: '',
-    show: false,
-    type: "success",
-    callback: undefined,
-    setToast: (msg,type,cb) => set({ message:msg, type:type, show:true, callback:cb }),
-    hideToast: () => set({ show: false, callback:undefined }),
+    isWorking: false,
+    toasts: [],
+    maxToast: 3,
+    setWorking : (value) => set({ isWorking: value }),
+    setToast: (msg,type) => {
+        set((state)=>{
+            const newToasts = [...state.toasts, { id:crypto.randomUUID(), message:msg, type }]
+            if(newToasts.length > state.maxToast) {
+                newToasts.shift()
+            }
+
+            return { toasts: newToasts, isWorking: true}
+        })
+    },
+    removeToast: (id:string)=>set((state)=>({
+        toasts: state.toasts.filter((toast)=>toast.id !== id)
+    })),
 }))

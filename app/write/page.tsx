@@ -41,6 +41,7 @@ export default function Write() {
     const searchParams = useSearchParams()
     const postId = searchParams.get('id')
     const setToast = useToastStore((state)=>state.setToast)
+    const setWorking = useToastStore((state)=>state.setWorking)
     const router = useRouter();
 
     const handlePoint = (e:React.MouseEvent<HTMLButtonElement>) => {
@@ -118,6 +119,7 @@ export default function Write() {
                     throw new Error('리뷰 수정에 실패했습니다 :' + error)
                 } else {
                     router.push('/review')
+                    setToast("리뷰 수정이 완료됐어요!", "success")
                 }
 
                 const newReview:Reviews = data?.[0] //zustand 전역 상태 업로드
@@ -156,6 +158,7 @@ export default function Write() {
                     throw new Error('리뷰 등록이 실패했습니다 :' + error)
                 } else {
                     router.push('/review')
+                    setToast("리뷰 등록이 완료됐어요!", "success")
                 }
             }
 
