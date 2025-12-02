@@ -20,14 +20,17 @@ export default function MemoForm({session}) {
     const [title, setTitle] = useState<string>("")
     const [page, setPage] = useState<number | null>(null)
     const [content, setContent] = useState<string>("")
-
+    const [loading, setIsLoading] = useState<boolean>(false)
+    let debounce:boolean = false;
     const userId = session.user.id
 
     const handleSubmit = async () => {
-        if (!title || page === null || !content) {
-            alert("모든 필드를 채워주세요.")
-            return
-        }
+        if(loading) return //버튼 로딩
+        setIsLoading(true)
+
+        if(debounce) return
+        debounce = true
+
         try {
             const { data, error } = await supabase.from("memo").insert([
                 {
@@ -47,12 +50,16 @@ export default function MemoForm({session}) {
             useAuthStore.getState().addData<Memo>('memo',newMemo)
 
             setToast("나만의 구절 업로드 성공!","success")
+
             //필드 초기화
             setTitle("")
             setPage(null)
             setContent("")
         } catch (error) {
             setToast("업로드 실패했습니다.","error")
+        } finally {
+            debounce = false
+            setIsLoading(false)
         }
     }
 
@@ -83,7 +90,7 @@ export default function MemoForm({session}) {
                     if (/^\d+$/.test(value)) {
                         setPage(Number(value));
                     } else {
-                        setToast("숫자만 입력 가능합니다!","info")
+                        setToast("숫자만 입력 가능합니다!","warning")
                     }
                 }}
             />
@@ -92,6 +99,8 @@ export default function MemoForm({session}) {
                 type="button"
                 title={title}
                 page={page}
+                debounce={debounce}
+                loading={loading}
                 content={content}
                 onClick={handleSubmit}
             />
