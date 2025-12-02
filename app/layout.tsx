@@ -47,8 +47,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           initialLog={log}
           initialWish={wish}
           >
-              <ToastContainer></ToastContainer>
-              <Toast></Toast>
+              <ToastContainer limit={3} />
+              <Toast />
               <Header />
               {children}
             <NavBar />

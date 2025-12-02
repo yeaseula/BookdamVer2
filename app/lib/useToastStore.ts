@@ -24,10 +24,6 @@ export const useToastStore = create<ToastState>((set)=>({
     setToast: (msg,type) => {
         set((state)=>{
             const newToasts = [...state.toasts, { id:crypto.randomUUID(), message:msg, type }]
-            if(newToasts.length > state.maxToast) {
-                newToasts.shift()
-            }
-
             return { toasts: newToasts, isWorking: true}
         })
     },
