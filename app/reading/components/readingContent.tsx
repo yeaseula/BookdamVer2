@@ -9,6 +9,7 @@ import { useState } from "react"
 import StopModal from "./stopwatch/StopModal"
 
 const List = styled.div`
+    position: relative;
     width: 100%;
     display: flex;
     align-items: start;
@@ -27,25 +28,38 @@ const ListInfo = styled.div`
 `
 const EmptyMessage = styled.p`
     padding-bottom: 10px;
+    text-align: center;
+`
+const CheckBox = styled.div`
+    position: absolute;
+    right: 5px;
+    top: 10px;
+    z-index: 10;
 `
 
-
 export default function ReadingContent({
-    books, checkId, setCheckId,
+    books, checkId,
+    modal, setModal,
     logWatchNum, setLogWatchNum,
     currentBooks
 }) {
 
     return (
         <>
-            {!books && <EmptyMessage>등록된 글이 없습니다</EmptyMessage>}
+            {books.length === 0 && <EmptyMessage>등록된 글이 없습니다</EmptyMessage>}
             {books && (
                 books.map((m:Books,idx:number)=>(
                 <div className="mb-8" key={`${m.title}-${idx}`}>
                 <List>
-                    <div>
-                        <InputCheck type={'checkbox'} name={'list-check'} index={m.id} checkId={checkId} setCheckId={setCheckId} />
-                    </div>
+                    <CheckBox>
+                        <InputCheck
+                        type={'checkbox'}
+                        name={'list-check'}
+                        index={m.id}
+                        modal={modal}
+                        setModal={setModal}
+                        checkId={checkId} />
+                    </CheckBox>
                     <ListInfo>
                         <div className="w-[100%]">
                             <p className="font-bold">{m.title}</p>

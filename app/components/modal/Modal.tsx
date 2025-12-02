@@ -51,14 +51,11 @@ export default function Modal({
     setModal,
     deleteModal,
     setDeleteModal,
-    EditPopup,
-    setEditPopup,
     checkIdRef,
     onClickEdit
 } : ModalProps) {
     const params = useParams()
     const pathname = usePathname()
-
 
     const handleDeleteCheck = () => {
         setDeleteModal(false)
@@ -72,7 +69,7 @@ export default function Modal({
         {!deleteModal && (
         <ModalWrap $state={state}>
             <div>
-                {pathname === '/memo' ? (
+                {pathname === '/memo' || pathname === '/reading' ? (
                     <Button type="button"
                     onClick={onClickEdit}>수정</Button>
                 ) : (

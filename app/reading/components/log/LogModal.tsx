@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import ModalBack from "@/app/components/modal/ModalBack"
-import { Container, Card, Close, Title } from "../Modal.styled"
+import { LogContainer, Card, Close, Title } from "../Modal.styled"
 import { RiCloseLine } from "@remixicon/react"
 import { Log } from "@/app/lib/userfetch"
 import { Dispatch, SetStateAction } from "react";
@@ -33,7 +33,7 @@ export default function LogModal({logObj,setLogWatchNum}:LogProps) {
     return(
         <>
         <ModalBack onClick={()=>{}}></ModalBack>
-        <Container>
+        <LogContainer>
             <Card>
                 <Close><RiCloseLine onClick={()=>{setLogWatchNum([])}}/></Close>
                 <Title>독서 기록</Title>
@@ -72,7 +72,7 @@ export default function LogModal({logObj,setLogWatchNum}:LogProps) {
                 </table>
                 }
             </Card>
-        </Container>
+        </LogContainer>
         </>
     )
 }

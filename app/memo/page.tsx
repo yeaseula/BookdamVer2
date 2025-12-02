@@ -2,17 +2,12 @@
 import styled from "styled-components"
 import MemoForm from "./components/memoForm"
 import MemoContent from "./components/memoContent"
-import DeleteButton from "./components/Delete"
-import EditButton from "./components/Edit"
 import EditModal from "./components/modal/EditModal"
-import createClient from "@/utils/supabase/client"
 import { useAuthStore } from "../lib/userfetch"
 import { Memo } from "../lib/userfetch"
 import { useEffect, useState, useRef } from "react"
 import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
-import { useToastStore } from "../lib/useToastStore"
-import SpinnerArea from "../components/spinner/SpinnerArea"
 import Modal from "../components/modal/Modal"
 const MemoWrap = styled.section`
     padding: 80px 15px 65px;
@@ -20,7 +15,6 @@ const MemoWrap = styled.section`
 
 export default function MemoPage() {
     const [EditPopup,setEditPopup] = useState(false)
-    const [checkId,setCheckId] = useState<string[]>([])
 
     const checkIdRef = useRef<string[]>([])
     const editObjRef = useRef<Memo | null>(null)
@@ -32,8 +26,6 @@ export default function MemoPage() {
     const [currentMemo,setCurrentMemo] = useState<Memo[] | null>(null)
     const { memo } = useAuthStore() as { memo: Memo[] | null};
     const { session } = useAuthStore()
-    const supabase = createClient()
-    const setToast = useToastStore((state)=>state.setToast)
 
     useEffect(()=>{
         setCurrentMemo(memo)
@@ -45,8 +37,6 @@ export default function MemoPage() {
         setEditPopup(true) // 수정 폼 팝업 오픈
         setModal(false) // 수정/삭제버튼 딜리트
     }
-
-
 
     return(
         <MemoWrap>
@@ -73,12 +63,6 @@ export default function MemoPage() {
                         setModal={setModal}
                         />
                     </div>
-                    {/* {currentMemo.length > 0 && (
-                        <div className="sticky bottom-[100px] w-fit ml-auto mt-[20px] flex gap-3 justify-end">
-                            <EditButton onClick={handleEdit} checkId={checkId}/>
-                            <DeleteButton onClick={handleDelete} checkId={checkId}/>
-                        </div>
-                    )} */}
                     {EditPopup &&
                         <EditModal
                         editObj={editObjRef.current}

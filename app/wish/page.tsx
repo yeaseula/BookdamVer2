@@ -7,8 +7,8 @@ import { Wish } from "../lib/userfetch"
 import Skeleton from "react-loading-skeleton"
 import WishContent from "./components/WishContent"
 import { useState, useEffect, createElement } from "react"
-import EditButton from "../memo/components/Edit"
-import DeleteButton from "../memo/components/Delete"
+// import EditButton from "../memo/components/Edit"
+// import DeleteButton from "../memo/components/Delete"
 import createClient from "@/utils/supabase/client"
 import { useToastStore } from "../lib/useToastStore"
 import EditModal from "./components/modal/EditModal"
@@ -81,12 +81,12 @@ export default function WishPage() {
                     <div className="mt-[35px]">
                         <WishContent wish={currentWish} checkId={checkId} setCheckId={setCheckId}/>
                     </div>
-                    {currentWish.length > 0 && (
+                    {/* {currentWish.length > 0 && (
                         <div className="mt-[20px] flex gap-3 justify-end">
                             <EditButton onClick={handleEdit} checkId={checkId}/>
                             <DeleteButton onClick={handleDelete} checkId={checkId}/>
                         </div>
-                    )}
+                    )} */}
                     {EditPopup &&
                         <EditModal editObj={editObj} setEditPopup={setEditPopup} setCheckId={setCheckId}/>
                     }

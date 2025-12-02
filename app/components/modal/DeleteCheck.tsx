@@ -106,10 +106,7 @@ export default function DeleteCheck({onClick,checkIdRef,setDeleteModal}) {
                 .delete()
                 .in("id", checkIdRef.current);
 
-            if (error) {
-                setToast('삭제 실패했습니다!','error')
-                return;
-            }
+            if (error) throw new Error('삭제 실패했습니다!')
 
             setToast('삭제가 완료됐습니다!','success')
             removeData("memo", checkIdRef.current[0])
@@ -132,23 +129,64 @@ export default function DeleteCheck({onClick,checkIdRef,setDeleteModal}) {
         }
     }
 
+    const handleDeleteReading = async() => {
+
+        if(debounce || loading) return
+
+        debounce = true
+        setLoading(true)
+
+        try {
+            const { error } = await supabase
+                .from("books")
+                .delete()
+                .in("id", checkIdRef.current);
+
+            if (error) throw new Error('삭제 실패했습니다!')
+
+            setToast('삭제가 완료됐습니다!','success')
+            removeData("books", checkIdRef.current[0])
+            checkIdRef.current = []
+            setDeleteModal(false)
+            checkIdRef.current.map((number)=>(
+                useAuthStore.getState().removeData('books',number)
+            ))
+
+        } catch(err) {
+            const errorMessage = err instanceof Error
+                ? err.message
+                : '삭제 중 오류가 발생했습니다'
+            setToast(errorMessage, "error")
+        } finally {
+            debounce = false
+            setLoading(false)
+        }
+    }
+
     return (
         <>
         {!loading &&
         <Container>
             <h2 className="text-3xl font-bold">게시물을 삭제할까요?</h2>
             <div className="flex justify-center gap-3 mt-10">
-                {pathname === '/memo' ? (
+                {pathname === '/memo' &&
                     <ButtonStyle
                     type="button"
                     disabled={loading}
                     onClick={handleDelete}>예</ButtonStyle>
-                ) : (
+                }
+                {pathname === '/review' &&
                     <ButtonStyle
                     type="button"
                     disabled={loading}
                     onClick={handleReviewDelete}>예</ButtonStyle>
-                )}
+                }
+                {pathname === '/reading' &&
+                    <ButtonStyle
+                    type="button"
+                    disabled={loading}
+                    onClick={handleDeleteReading}>예</ButtonStyle>
+                }
                 <ButtonStyleDark
                 type="button"
                 disabled={loading}

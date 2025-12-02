@@ -78,7 +78,7 @@ export default function ReadingForm({ session }) {
                     if (/^\d+$/.test(value)) {
                         setPage(Number(value));
                     } else {
-                        setToast("숫자만 입력 가능합니다!","info")
+                        setToast("숫자만 입력 가능합니다!","warning")
                     }
                 }}
             />
@@ -97,7 +97,7 @@ export default function ReadingForm({ session }) {
                     if (/^\d+$/.test(value)) {
                         setReadingPage(Number(value));
                     } else {
-                        setToast("숫자만 입력 가능합니다!","info")
+                        setToast("숫자만 입력 가능합니다!","warning")
                     }
                 }}
             />

@@ -9,7 +9,7 @@ const Stop = styled.button`
     position: absolute;
     top: 5px;
     right: 0;
-    z-index: 20;
+    z-index: 9;
     width: 30px;
     height: 30px;
     display: flex;

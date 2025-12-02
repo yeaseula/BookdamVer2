@@ -37,7 +37,16 @@ export const Container = styled.section`
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 101;
 `
+export const LogContainer = styled(Container)`
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 101;
+`
+
 export const Card = styled.div`
     position: relative;
     background:#3a3967;

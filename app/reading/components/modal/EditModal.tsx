@@ -28,49 +28,71 @@ const Modal = styled.section`
 
 interface ModalProps {
     setEditPopup: Dispatch<SetStateAction<boolean>>
-    setCheckId: Dispatch<SetStateAction<string[]>>
+    checkIdRef: React.RefObject<string[]>
     editObj: Books
 }
 
-export default function EditModal({editObj,setEditPopup,setCheckId}:ModalProps) {
+export default function EditModal({editObj,setEditPopup,checkIdRef}:ModalProps) {
     const [modalTitle,setModalTitle] = useState<string>(editObj.title)
     const [modalPage,setModalPage] = useState<number | null>(editObj.total_pages)
     const [modalCurrentPage,setModalCurrentPage] = useState<number | null>(editObj.current_page)
     const editingId = editObj.id
     const supabase = createClient()
     const setToast = useToastStore((state)=>state.setToast)
+    const [loading,setIsLoading] = useState<boolean>(false)
+    let debounce:boolean = false;
 
     const handleModalEdit = async () => {
-        const { data, error } = await supabase
-            .from("books")
-            .update({
-            title: modalTitle,
-            total_pages: modalPage,
-            current_page: modalCurrentPage,
-            updated_at: new Date().toISOString()
-            })
-            .eq("id", editingId)
-            .select();
+        if(debounce || loading) return
+        debounce = true;
+        setIsLoading(true)
 
-        if (error) {
-            console.error(error);
-            setToast("수정 실패했습니다!", "error")
-            return;
+        try {
+
+            if(!modalTitle) throw new Error("제목을 입력해주세요.")
+            else if(!modalPage) throw new Error("총 페이지를 입력해주세요.")
+            else if(!modalCurrentPage) throw new Error("읽은 페이지를 입력해주세요.")
+
+            const { data, error } = await supabase
+                .from("books")
+                .update({
+                    title: modalTitle,
+                    total_pages: modalPage,
+                    current_page: modalCurrentPage,
+                    updated_at: new Date().toISOString()
+                })
+                .eq("id", editingId)
+                .select();
+
+            if (error) {
+                console.error(error);
+                setToast("읽고있는 책 수정에 실패했습니다!", "error")
+                return;
+            }
+
+            const updatedBooks:Books = data?.[0];
+            if (!updatedBooks) return;
+
+            // Zustand 상태 업데이트
+            useAuthStore.getState().updateData<Books>('books',updatedBooks);
+            setToast("수정이 완료됐습니다!", "success")
+            setEditPopup(false)
+            checkIdRef.current = []
+
+        } catch(err) {
+            const errorMessage = err instanceof Error
+                ? err.message
+                : '읽고있는 책 수정 중 오류가 발생했습니다'
+            setToast(errorMessage, "error")
+        } finally {
+            debounce = false;
+            setIsLoading(false)
         }
-
-        const updatedBooks:Books = data?.[0];
-        if (!updatedBooks) return;
-
-        // Zustand 상태 업데이트
-        useAuthStore.getState().updateData<Books>('books',updatedBooks);
-        setToast("수정이 완료됐습니다!", "success")
-        setEditPopup(false)
-        setCheckId([])
     };
 
     const handleClose = () => {
         setEditPopup(false)
-        setCheckId([])
+        checkIdRef.current = []
     }
 
     return(
@@ -134,6 +156,7 @@ export default function EditModal({editObj,setEditPopup,setCheckId}:ModalProps) 
                     modalTitle={modalTitle}
                     modalPage={modalPage}
                     modalContent={modalCurrentPage}
+                    loading={loading}
                     onClick={handleModalEdit}
                     />
                 </div>

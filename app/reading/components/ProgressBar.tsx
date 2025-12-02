@@ -7,6 +7,7 @@ const ProgressContainer = styled.div`
     height: 6px;
     background: #e5e5e5;
     border-radius: 3px;
+    overflow: hidden;
 `;
 
 const Progress = styled.div`
