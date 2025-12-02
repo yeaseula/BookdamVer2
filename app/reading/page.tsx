@@ -8,8 +8,6 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { useToastStore } from "../lib/useToastStore"
 import ReadingForm from "./components/readingForm"
 import createClient from "@/utils/supabase/client"
-import EditButton from "./components/Edit"
-import DeleteButton from "./components/Delete"
 import ReadingContent from "./components/readingContent"
 import EditModal from "./components/modal/EditModal"
 import LogModal from "./components/log/LogModal"
@@ -21,9 +19,6 @@ const MemoWrap = styled.section`
 
 export default function ReadingPage() {
     const [EditPopup,setEditPopup] = useState(false)
-    const [checkId,setCheckId] = useState<string[]>([])
-    const [editObj,setEditObj] = useState<Books | null>(null) // 수정 할 값 객체
-
     const checkIdRef = useRef<string[]>([])
     const editObjRef = useRef<Books | null>(null)
 
@@ -42,8 +37,6 @@ export default function ReadingPage() {
     const { books } = useAuthStore() as { books: Books[] | null};
     const { log } = useAuthStore() as { log: Log[] | null };
     const { session } = useAuthStore()
-    const supabase = createClient()
-    const setToast = useToastStore((state)=>state.setToast)
 
     useEffect(()=>{
         if(logWatchNum.length === 0) {
