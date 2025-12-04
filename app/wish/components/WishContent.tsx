@@ -20,6 +20,7 @@ const ListInfo = styled.div`
     justify-content: space-between;
 `
 const EmptyMessage = styled.p`
+    text-align: center;
     padding-bottom: 10px;
 `
 const CheckBox = styled.div`
@@ -34,8 +35,8 @@ export default function WishContent({wish,checkId,modal,setModal}) {
 
     return (
         <>
-            {!wish && <EmptyMessage>등록된 글이 없습니다</EmptyMessage>}
-            {wish && (
+            {wish.length === 0 && <EmptyMessage>등록된 글이 없습니다</EmptyMessage>}
+            {wish.length !== 0 && (
                 wish.map((w:Wish,idx:number)=>(
                 <List key={`${w.title}-${idx}`}>
                     <CheckBox>

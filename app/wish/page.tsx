@@ -7,10 +7,6 @@ import { Wish } from "../lib/userfetch"
 import Skeleton from "react-loading-skeleton"
 import WishContent from "./components/WishContent"
 import { useState, useEffect, useRef } from "react"
-// import EditButton from "../memo/components/Edit"
-// import DeleteButton from "../memo/components/Delete"
-import createClient from "@/utils/supabase/client"
-import { useToastStore } from "../lib/useToastStore"
 import EditModal from "./components/modal/EditModal"
 import Modal from "../components/modal/Modal"
 
@@ -75,24 +71,24 @@ export default function WishPage() {
                     setEditPopup={setEditPopup}
                     />
                 }
+                {!session &&
+                <>
+                    <Skeleton height={37} borderRadius={5}/>
+                    <div className="mt-1.5">
+                        <Skeleton height={90} borderRadius={5} />
+                    </div>
+                    <div className="mt-[35px]">
+                        <Skeleton height={25} borderRadius={5}/>
+                    </div>
+                    <div className="mt-[10px] text-right">
+                        <Skeleton width={100} height={25} borderRadius={5}/>
+                    </div>
+                    <div className="mt-[5px] text-right">
+                        <Skeleton width={150} height={25} borderRadius={5}/>
+                    </div>
+                </>
+                }
             </WishWrap>
-
-            {!session && (
-            <>
-                <Skeleton height={37} borderRadius={5}/>
-                <div className="mt-1.5">
-                    <Skeleton height={90} borderRadius={5} />
-                </div>
-                <div className="mt-[35px]">
-                    <Skeleton height={25} borderRadius={5}/>
-                </div>
-                <div className="mt-[10px] text-right">
-                    <Skeleton width={100} height={25} borderRadius={5}/>
-                </div>
-                <div className="mt-[5px] text-right">
-                    <Skeleton width={150} height={25} borderRadius={5}/>
-                </div>
-            </>)}
         </>
 
     )
