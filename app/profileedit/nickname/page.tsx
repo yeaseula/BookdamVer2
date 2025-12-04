@@ -26,10 +26,14 @@ export default function EditNickname() {
     const setProfile = useAuthStore((state)=>state.setProfile)
     const { session, profile } = useAuthStore()
     const router = useRouter()
+    let debounce:boolean = false
+
+    if(!session) return
 
     const handleSubmit = async() => {
-        if(loading) return
-        if(!session) return
+        if(debounce || loading || !session) return
+
+        debounce = true
         setLoading(true)
 
         try {
@@ -39,22 +43,25 @@ export default function EditNickname() {
                 .eq("id", session.user.id);
 
         if (error) {
-            console.error("닉네임 변경 실패:", error.message);
-            setToast('닉네임 변경 실패','error',()=>setLoading(false))
-            return;
+            throw new Error('닉네임 변경에 실패했습니다')
         }
+
+        router.push('/profileedit')
 
         // zustand 상태 업데이트
         setProfile({ username: newNickname, interests: profile.interests }); // interests는 필요에 맞게
-        setToast('닉네임 변경이 완료되었습니다','success',()=>{router.push('/profileedit')})
+        setToast('닉네임 변경이 완료되었습니다','success')
 
         } catch (err) {
             console.error(err);
-            setToast('오류가 발생했습니다','error',()=>setLoading(false))
+            const errorMessage = err instanceof Error
+                ? err.message
+                : '회원가입 중 오류가 발생했습니다'
+            setToast(errorMessage, "error")
+            debounce = false
+            setLoading(false)
         }
-
     }
-
 
     return(
         <ProfileWrap>
@@ -62,6 +69,7 @@ export default function EditNickname() {
                 <span>닉네임</span>
                 <InputFields type={"nickname"}
                 name={"login-nickname"}
+                value={newNickname}
                 placeholder={"닉네임을 입력해주세요"}
                 onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setNewNickname(e.currentTarget.value)}
                 />

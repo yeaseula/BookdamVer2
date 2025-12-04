@@ -1,8 +1,7 @@
 import styled, {keyframes} from "styled-components";
 import Checkbox from "./CheckBox"
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { RiArrowDownSLine } from "@remixicon/react";
-
 
 const ToggleHead = styled.div`
     display: flex;
@@ -29,7 +28,6 @@ const SubList = styled.div`
     list-style: none;
     animation: ${slideDown} 0.2s ease-out;
 `;
-
 const Ul = styled.ul`
     display: flex;
     flex-wrap: wrap;
@@ -41,12 +39,32 @@ interface ToggleProps {
     value: string;
     sub: string[];
     interest: string[];
-    setInterest: Dispatch<SetStateAction<string[]>>
+    setInterest: Dispatch<SetStateAction<string[]>>;
+    originList?: React.RefObject<string[]>;
+    originFetch?:boolean;
+    setIsOriginFecth: Dispatch<SetStateAction<boolean>>
 }
 
-export default function Toggle({label,value,sub,interest,setInterest}:ToggleProps) {
-
+export default function Toggle({label,value,sub,interest,setInterest,originList,originFetch,setIsOriginFecth}:ToggleProps) {
     const [openCategory,setOpenCategory] = useState(false)
+
+    useEffect(()=>{
+        if(!originList) return //sign up페이지에서 return
+
+        const hasSub = sub.some(item => interest.includes(item))
+        if(hasSub) {
+            setOpenCategory(true)
+        } else {
+            setOpenCategory(false)
+        }
+    },[originFetch,interest,sub])
+
+    const ArrayMatch = (value:string):boolean => {
+        if(!originList) return false
+        if(originList) {
+            return originList.current.some(item => item.includes(value))
+        }
+    }
 
     return (
     <div className="mb-6">
@@ -66,9 +84,11 @@ export default function Toggle({label,value,sub,interest,setInterest}:ToggleProp
                     id={`${subcont}-check`}
                     name={`${subcont}-check`}
                     value={subcont}
-                    checked={false}
+                    checked={ArrayMatch(subcont)}
                     interest={interest}
                     setInterest={setInterest}
+                    originList={originList}
+                    setIsOriginFecth={setIsOriginFecth}
                     />
                 ))}
             </Ul>

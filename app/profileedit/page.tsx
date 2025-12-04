@@ -29,11 +29,6 @@ const Inner = styled(Link)`
 `
 
 export default function ProfileEdit() {
-    const [email,setEmail] = useState<string>('');
-    const [password,setPassword] = useState<string>('')
-    const [nickname,setNickname] = useState<string>('')
-    const [interest,setInterest] = useState<string[]>([])
-    const [loading,setLoading] = useState<boolean>(false)
     const { session, profile } = useAuthStore()
     if(!session) return
 
@@ -71,21 +66,6 @@ export default function ProfileEdit() {
                 <RiArrowRightSLine size={18} />
                 <Inner href={'/profileedit/interest'} />
             </Container>
-            {/* <ProfileInfo
-            setEmail={setEmail}
-            setPassword={setPassword}
-            setNickname={setNickname}
-            interest={interest}
-            setInterest={setInterest}
-            />
-            <EditButton
-            email={email}
-            password={password}
-            nickname={nickname}
-            loading={loading}
-            text={'수정'}
-            onClick={()=>handleEdit()}
-            /> */}
         </ProfileWrap>
     )
 }

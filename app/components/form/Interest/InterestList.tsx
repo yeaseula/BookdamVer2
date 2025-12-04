@@ -5,16 +5,19 @@ import { Dispatch, SetStateAction } from "react";
 
 
 interface Category {
-    label: string;
-    value: string;
-    sub: string[];
+    label: string
+    value: string
+    sub: string[]
 }
 interface ListProps {
-    interest: string[];
+    interest: string[]
+    originList?: React.RefObject<string[]> //수정 페이지에서만 사용
+    originFetch?: boolean;
+    setIsOriginFecth?: Dispatch<SetStateAction<boolean>>
     setInterest: Dispatch<SetStateAction<string[]>>
 }
 
-export default function InterestList({interest,setInterest}:ListProps) {
+export default function InterestList({interest,originList,originFetch,setIsOriginFecth,setInterest}:ListProps) {
 
     const cats:Category[] = categories
 
@@ -28,6 +31,9 @@ export default function InterestList({interest,setInterest}:ListProps) {
                 sub={inter.sub}
                 interest={interest}
                 setInterest={setInterest}
+                setIsOriginFecth={setIsOriginFecth}
+                originFetch={originFetch}
+                originList={originList}
                 />
             ))}
         </div>

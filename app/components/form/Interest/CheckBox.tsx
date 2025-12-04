@@ -4,7 +4,6 @@ import styled from "styled-components"
 const Check = styled.input`
     appearance: none;
 `
-
 const Label = styled.label<{$ischecking:boolean}>`
     font-size: 1.3rem;
     background: ${(props)=>props.$ischecking ? 'var(--sub_color)' : '#fff'};
@@ -21,28 +20,50 @@ interface CheckboxProps {
     value: string;
     checked: boolean;
     interest: string[];
+    originList?: React.RefObject<string[]>;
     setInterest: Dispatch<SetStateAction<string[]>>
+    setIsOriginFecth: Dispatch<SetStateAction<boolean>>
 }
 
-export default function Checkbox({name,id,value,checked,interest,setInterest}:CheckboxProps) {
-    const [isChecked,setIsChecked] = useState(false)
+export default function Checkbox({name,id,value,checked,interest,originList,setInterest,setIsOriginFecth}:CheckboxProps) {
+    const [isChecked,setIsChecked] = useState(checked)
 
     useEffect(()=>{
+        setIsChecked(checked)
+    },[checked])
 
-        if(isChecked === false) {
+    useEffect(()=>{
+        interest.forEach((ele)=> {
+            if(ele === value) setIsChecked(true)
+        })
+    },[])
 
+    const handleInterest = () => {
+        if(isChecked) {
+            setIsChecked(false)
             const interestList:string[] = interest.filter((m)=>m !== value )
-            setInterest(interestList)
+            const interestListSet:string[] = [...new Set(interestList)]
+            setInterest(interestListSet)
+
+            if(!originList) return //sign up에서 확인
+            const test = originList.current.some((e)=> e === value)
+            if(test) {
+                setIsOriginFecth(false)
+                const newOriginList = originList.current.filter((e)=> e !== value)
+                console.log(newOriginList)
+                originList.current = newOriginList
+            }
         } else {
+            setIsChecked(true)
             setInterest((prev)=>[...prev,value])
         }
-    },[isChecked])
+    }
 
     return (
         <li>
             <Label htmlFor={id} $ischecking={isChecked}>{value}</Label>
             <Check type="checkbox" value={value} name={name} id={id}
-            onChange={()=>setIsChecked(!isChecked)}
+            onChange={handleInterest}
             />
         </li>
     )

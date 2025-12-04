@@ -2,34 +2,47 @@
 
 import styled from "styled-components"
 import InterestList from "@/app/components/form/Interest/InterestList"
-import { useEffect, useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { EditButtonInterest } from "../components/EditButton"
 import createClient from "@/utils/supabase/client"
 import { useToastStore } from "@/app/lib/useToastStore"
 import { useRouter } from "next/navigation"
 import { useAuthStore } from "@/app/lib/userfetch"
-
+import Skeleton from "react-loading-skeleton"
+import 'react-loading-skeleton/dist/skeleton.css'
 const ProfileWrap = styled.section`
     padding: 80px 15px 65px;
 `
-const Label = styled.div`
-    width: 100%;
-    display: block;
-    > span { font-size: 12px; color: #616161 }
+const Button = styled.button<{$isOriginFetch:boolean}>`
+    background: ${(p)=>p.$isOriginFetch ? 'var(--point-color)' :'var(--sub_color)' };
+    color: #fff;
+    font-size: 1.2rem;
+    display: inline-block;
+    padding: 2px 12px 1px;
+    margin-bottom: 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.3s;
 `
 
 export default function EditInterest() {
-    const [newInterest,setNewInterest] = useState<string[]>([]);
+    const { session, profile } = useAuthStore()
+    const [isOriginFetch, setIsOriginFecth] = useState<boolean>(false)
+
+    const originListRef = useRef<string[]>([])
+
+    const [newInterest,setNewInterest] = useState<string[]>([])
     const [loading,setLoading] = useState<boolean>(false);
     const supabase = createClient()
     const setToast = useToastStore((state)=>state.setToast)
     const setProfile = useAuthStore((state)=>state.setProfile)
-    const { session, profile } = useAuthStore()
     const router = useRouter()
+    let debounce:boolean = false
 
     const handleSubmit = async() => {
-        if(loading) return
-        if(!session) return
+        if(debounce || loading || !session) return
+
+        debounce = true
         setLoading(true)
 
         try {
@@ -38,26 +51,95 @@ export default function EditInterest() {
                 .update({ interests: newInterest })
                 .eq("id", session.user.id);
 
-        if (error) {
-            console.error("관심사 변경 실패:", error.message);
-            setToast('관심사 변경 실패','error',()=>setLoading(false))
-            return;
-        }
+            if (error) throw new Error('관심사 변경에 실패했습니다.')
 
-        // zustand 상태 업데이트
-        setProfile({ username: profile.username, interests: newInterest });
-        setToast('관심사 변경이 완료되었습니다','success',()=>{router.push('/profileedit')})
+            router.push('/profileedit')
+
+            // zustand 상태 업데이트
+            setProfile({ username: profile.username, interests: newInterest });
+            setToast('관심사 변경이 완료되었습니다','success')
 
         } catch (err) {
             console.error(err);
-            setToast('오류가 발생했습니다','error',()=>setLoading(false))
+            const errorMessage = err instanceof Error
+                ? err.message
+                : '회원가입 중 오류가 발생했습니다'
+            setToast(errorMessage, "error")
+            debounce = false
+            setLoading(false)
+        }
+    }
+    const handleOriginFetch = () => {
+        if(isOriginFetch) {
+            const filterInterests = newInterest.filter((ele)=> !originListRef.current.includes(ele))
+            setNewInterest(filterInterests)
+            setIsOriginFecth(false)
+            originListRef.current = []
+        } else {
+            originListRef.current = profile.interests
+            setNewInterest(prev => [
+                ...new Set([...prev, ...originListRef.current])
+            ])
+            setIsOriginFecth(true)
         }
     }
 
+    useEffect(()=>{
+        console.log(originListRef.current + ':origin')
+        console.log(newInterest + ':최종 제출 배열')
+        console.log(isOriginFetch + '원래꺼가져옴?')
+    },[isOriginFetch])
+
     return(
         <ProfileWrap>
-            <InterestList interest={newInterest} setInterest={setNewInterest}></InterestList>
-            <EditButtonInterest value={newInterest} loading={loading} onClick={handleSubmit} ></EditButtonInterest>
+            {!profile &&
+                <>
+                <Skeleton width={150} height={22}/>
+                <div className="mt-[10px]">
+                    <Skeleton height={31}/>
+                </div>
+                <div className="mb-6">
+                    <Skeleton height={31}/>
+                </div>
+                <div className="mb-6">
+                    <Skeleton height={31}/>
+                </div>
+                <div className="mb-6">
+                    <Skeleton height={31}/>
+                </div>
+                <div className="mb-6">
+                    <Skeleton height={31}/>
+                </div>
+                <div className="mb-6">
+                    <Skeleton height={31}/>
+                </div>
+                <div className="mb-6">
+                    <Skeleton height={31}/>
+                </div>
+                <div className="mb-6">
+                    <Skeleton height={31}/>
+                </div>
+                </>
+            }
+            {profile &&
+            <>
+            <Button type="button" $isOriginFetch={isOriginFetch} onClick={handleOriginFetch}>
+                {isOriginFetch ? '현재 관심사를 불러왔어요!' : '현재 관심사를 불러올까요?'}
+            </Button>
+            <InterestList
+            interest={newInterest}
+            originList={originListRef}
+            originFetch={isOriginFetch}
+            setIsOriginFecth={setIsOriginFecth}
+            setInterest={setNewInterest}
+            />
+
+            <EditButtonInterest
+            value={newInterest}
+            loading={loading}
+            onClick={handleSubmit} />
+            </>
+            }
         </ProfileWrap>
     )
 }
