@@ -50,6 +50,7 @@ const HEADER_CONFIG = {
     '/reading': { title: '읽고있는 책', type: 'normal' },
     '/mypage': { title: '프로필', type: 'normal' },
     '/profileedit': { title: '프로필 수정', type: 'normal' },
+    '/profileedit/nickname': { title: '닉네임 수정', type: 'normal' },
     '/profileedit/email': { title: '이메일 수정', type: 'normal' },
     '/profileedit/pass': { title: '비밀번호 수정', type: 'normal' },
     '/profileedit/interest': { title: '관심사 수정', type: 'normal' },

@@ -1,10 +1,11 @@
 "use client"
 
 import styled from "styled-components"
-import { useState } from "react"
 import Link from "next/link"
 import { RiArrowRightSLine } from "@remixicon/react"
 import { useAuthStore } from "../lib/userfetch"
+import Skeleton from "react-loading-skeleton"
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const ProfileWrap = styled.section`
     padding: 80px 15px 65px;
@@ -30,11 +31,12 @@ const Inner = styled(Link)`
 
 export default function ProfileEdit() {
     const { session, profile } = useAuthStore()
-    if(!session) return
 
     return(
         <ProfileWrap>
             <h2 className="sr-only">프로필 수정</h2>
+            {profile && session ? (
+            <>
             <Container>
                 <p>
                     이메일 수정<br />
@@ -66,6 +68,16 @@ export default function ProfileEdit() {
                 <RiArrowRightSLine size={18} />
                 <Inner href={'/profileedit/interest'} />
             </Container>
+            </>
+            ) : (
+                <>
+                    <Skeleton height={78} style={{ marginBottom: '10px' }} />
+                    <Skeleton height={54} style={{ marginBottom: '10px' }} />
+                    <Skeleton height={78} style={{ marginBottom: '10px' }} />
+                    <Skeleton height={78} style={{ marginBottom: '10px' }} />
+                </>
+            )}
+
         </ProfileWrap>
     )
 }

@@ -2,12 +2,14 @@
 
 import styled from "styled-components"
 import InputFields from "@/app/components/form/input"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import EditButton from "../components/EditButton"
 import createClient from "@/utils/supabase/client"
 import { useToastStore } from "@/app/lib/useToastStore"
 import { useRouter } from "next/navigation"
 import { useAuthStore } from "@/app/lib/userfetch"
+import Skeleton from "react-loading-skeleton"
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const ProfileWrap = styled.section`
     padding: 80px 15px 65px;
@@ -27,8 +29,6 @@ export default function EditNickname() {
     const { session, profile } = useAuthStore()
     const router = useRouter()
     let debounce:boolean = false
-
-    if(!session) return
 
     const handleSubmit = async() => {
         if(debounce || loading || !session) return
@@ -65,16 +65,27 @@ export default function EditNickname() {
 
     return(
         <ProfileWrap>
-            <Label>
-                <span>닉네임</span>
-                <InputFields type={"nickname"}
-                name={"login-nickname"}
-                value={newNickname}
-                placeholder={"닉네임을 입력해주세요"}
-                onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setNewNickname(e.currentTarget.value)}
-                />
-            </Label>
-            <EditButton type="nickname" vlaue={newNickname} loading={loading} onClick={handleSubmit}></EditButton>
+            {session && profile ? (
+                <>
+                <Label>
+                    <span>닉네임</span>
+                    <InputFields type={"nickname"}
+                    name={"login-nickname"}
+                    value={newNickname}
+                    placeholder={"닉네임을 입력해주세요"}
+                    onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setNewNickname(e.currentTarget.value)}
+                    />
+                </Label>
+                <EditButton type="nickname" vlaue={newNickname} loading={loading} onClick={handleSubmit}></EditButton>
+                </>
+            ) : (
+                <>
+                <Skeleton height={14} />
+                <Skeleton height={37} />
+                <Skeleton height={40} style={{ marginTop: '35px' }} />
+                </>
+            )}
+
         </ProfileWrap>
     )
 }
