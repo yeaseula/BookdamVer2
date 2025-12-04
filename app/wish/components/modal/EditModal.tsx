@@ -29,11 +29,10 @@ const Modal = styled.section`
 
 interface ModalProps {
     setEditPopup: Dispatch<SetStateAction<boolean>>
-    setCheckId: Dispatch<SetStateAction<string[]>>
     editObj: Wish
 }
 
-export default function EditModal({editObj,setEditPopup,setCheckId}:ModalProps) {
+export default function EditModal({editObj,setEditPopup}:ModalProps) {
     const [modalTitle,setModalTitle] = useState<string>(editObj.title)
     const [modalAuthor,setModalAuthor] = useState<string>(editObj.author)
     const [modalPrice,setModalPrice] = useState<number | null>(editObj.price)
@@ -67,12 +66,12 @@ export default function EditModal({editObj,setEditPopup,setCheckId}:ModalProps) 
         setToast("수정이 완료됐습니다!", "success")
         // setShowModal(false)
         setEditPopup(false)
-        setCheckId([])
+        //setCheckId([])
     };
 
     const handleClose = () => {
         setEditPopup(false)
-        setCheckId([])
+        //setCheckId([])
     }
 
     return(

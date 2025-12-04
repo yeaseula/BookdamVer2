@@ -163,6 +163,39 @@ export default function DeleteCheck({onClick,checkIdRef,setDeleteModal}) {
         }
     }
 
+    const handleDeleteWish = async() =>{
+        if(debounce || loading) return
+        debounce = true
+        setLoading(true)
+
+        try {
+            const { error } = await supabase
+                .from("wish")
+                .delete()
+                .in("id", checkIdRef.current)
+
+                if (error) throw new Error('삭제 실패했습니다!')
+
+                setToast('삭제가 완료됐습니다!','success')
+                removeData("wish", checkIdRef.current[0])
+                checkIdRef.current = []
+                setDeleteModal(false);
+
+                checkIdRef.current.map((number)=>(
+                    useAuthStore.getState().removeData('wish',number)
+                ))
+
+        } catch (err) {
+            const errorMessage = err instanceof Error
+                ? err.message
+                : '삭제 중 오류가 발생했습니다'
+            setToast(errorMessage, "error")
+        } finally {
+            debounce = false
+            setLoading(false)
+        }
+    }
+
     return (
         <>
         {!loading &&
@@ -186,6 +219,12 @@ export default function DeleteCheck({onClick,checkIdRef,setDeleteModal}) {
                     type="button"
                     disabled={loading}
                     onClick={handleDeleteReading}>예</ButtonStyle>
+                }
+                {pathname === '/wish' &&
+                    <ButtonStyle
+                    type="button"
+                    disabled={loading}
+                    onClick={handleDeleteWish}>예</ButtonStyle>
                 }
                 <ButtonStyleDark
                 type="button"

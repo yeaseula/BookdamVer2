@@ -69,7 +69,7 @@ export default function Modal({
         {!deleteModal && (
         <ModalWrap $state={state}>
             <div>
-                {pathname === '/memo' || pathname === '/reading' ? (
+                {pathname === '/memo' || pathname === '/reading' || pathname ==='/wish' ? (
                     <Button type="button"
                     onClick={onClickEdit}>수정</Button>
                 ) : (
