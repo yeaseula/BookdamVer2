@@ -2,7 +2,6 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import styled from "styled-components";
-import { useEffect, useState } from "react";
 import { useAuthStore } from "@/app/lib/userfetch";
 import Skeleton from "react-loading-skeleton";
 
@@ -119,6 +118,7 @@ export default function Calendar({stampDate}: { stampDate: string[] }) {
                     key={stampDate.join()}
                     plugins={[dayGridPlugin]}
                     initialView="dayGridMonth"
+                    firstDay={1}
                     dayCellDidMount={(info) => {
                         const dateStr = info.date.toLocaleDateString("en-CA");
                         const exist = stampDate.find(e => e === dateStr);

@@ -1,8 +1,6 @@
 import styled from "styled-components"
 import {  RiCloseLine } from "@remixicon/react"
 import ModalBack from "@/app/components/modal/ModalBack"
-import ToggleSwitch from "./ToggleSwitch"
-import { useState } from "react"
 
 const Container = styled.div`
     max-width: 380px;
@@ -32,40 +30,26 @@ const Close = styled.button`
     z-index: 25;
     cursor: pointer;
 `
-const ToggleList = styled.div`
-    margin-top: 40px;
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-`
-const ToggleListLast = styled(ToggleList)`
-    margin-top: 15px;
-`
 
-export default function SettingModal({setReviewUI}) {
+interface ModalProps {
+    title: string
+    onClose: ()=>void
+    children: React.ReactNode
+}
+
+export default function SettingModal({title,onClose,children}:ModalProps) {
 
 
     return (
         <>
-        <ModalBack onClick={()=>{setReviewUI(false)}}></ModalBack>
+        <ModalBack onClick={onClose}></ModalBack>
         <Container>
             <Inner>
-            <Title>서재 화면 설정</Title>
-            <Close onClick={()=>setReviewUI(false)}>
+            <Title>{title}</Title>
+            <Close onClick={onClose}>
                 <RiCloseLine />
             </Close>
-            <ToggleList>
-                <p>리스트형</p>
-                    <ToggleSwitch
-                    togglename={'list'}
-                    />
-            </ToggleList>
-            <ToggleListLast>
-                <p>갤러리형</p>
-                    <ToggleSwitch
-                    togglename={'gallery'}
-                    />
-            </ToggleListLast>
+            {children}
             </Inner>
         </Container>
         </>

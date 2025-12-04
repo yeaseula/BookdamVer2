@@ -2,7 +2,8 @@ import { RiWrenchLine, RiArrowRightSLine } from "@remixicon/react"
 import { useState } from "react"
 import styled from "styled-components"
 import SettingModal from "./setting/Modal"
-
+import ModalReviewSetting from "./setting/ModalReviewSetting"
+import ModalCalendarSetting from "./setting/ModalCalendarSetting"
 const MenuTitle = styled.div`
     display: flex;
     align-items: center;
@@ -24,6 +25,7 @@ const ButtonStyle = styled.button`
 
 export default function Setting() {
 
+    const [calendarUI,setCalendarUI] = useState(false)
     const [reviewUI,setReviewUI] = useState(false)
 
     return (
@@ -37,7 +39,7 @@ export default function Setting() {
                     </ButtonStyle>
                 </li>
                 <li>
-                    <ButtonStyle>
+                    <ButtonStyle type="button">
                         <span>타이머 설정</span>
                         <RiArrowRightSLine size={18} />
                     </ButtonStyle>
@@ -49,13 +51,26 @@ export default function Setting() {
                     </ButtonStyle>
                 </li>
                 <li>
-                    <ButtonStyle>
+                    <ButtonStyle type="button" onClick={()=>setCalendarUI(!calendarUI)}>
                         <span>캘린더 설정</span>
                         <RiArrowRightSLine size={18} />
                     </ButtonStyle>
                 </li>
             </ul>
-            {reviewUI && <SettingModal setReviewUI={setReviewUI}/>}
+            {calendarUI &&
+            <SettingModal
+            title="캘린더 설정"
+            onClose={()=>{setCalendarUI(false)}}
+            ><ModalCalendarSetting />
+            </SettingModal>
+            }
+            {reviewUI &&
+            <SettingModal
+            title="서재 화면 설정"
+            onClose={()=>{setReviewUI(false)}}
+            ><ModalReviewSetting />
+            </SettingModal>
+            }
         </>
     )
 }
