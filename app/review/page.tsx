@@ -1,13 +1,12 @@
 "use client"
 import Link from "next/link"
 import styled from "styled-components"
-import FloatWrite from "../components/common/Write"
 import { useAuthStore } from "../lib/userfetch"
 import Skeleton,{SkeletonTheme} from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
 import Thumbnail from "./components/Thumbnail"
 import { RiFileWarningFill } from "@remixicon/react"
-import { useEffect } from "react"
+import FloatWrite from "../components/common/Write"
 
 const ReivewWrap = styled.section`
     padding: 80px 15px 65px;
@@ -125,9 +124,9 @@ export default function ReviewList() {
                         <p className="mt-5 text-2xl font-bold">등록된 리뷰가 없습니다.</p>
                     </div>
                 )}
-                <FloatWrite />
                 </>
             )}
+            <FloatWrite></FloatWrite>
         </ReivewWrap>
     )
 }

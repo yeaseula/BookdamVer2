@@ -1,5 +1,4 @@
 "use client"
-
 import styled from "styled-components"
 import Link from "next/link"
 import { RiArrowLeftLine } from "@remixicon/react"
@@ -7,6 +6,8 @@ import { useHeaderStore } from "@/app/lib/useHeaderStore"
 import { usePathname } from "next/navigation"
 import { useEffect } from "react"
 import HeaderButton from "./HeaderButton"
+import FloatWrite from "../common/Write"
+import Search from "../common/Search"
 
 const Container = styled.header`
     position: fixed;
@@ -43,7 +44,7 @@ const Title = styled.p`
 
 const HEADER_CONFIG = {
     '/' : {title: 'home' , type: 'none'},
-    '/review': { title: '나의 리뷰', type: 'normal' },
+    '/review': { title: '나의 리뷰', type: 'button' },
     '/write': { title: '리뷰 작성', type: 'normal' },
     '/memo': { title: '기억에 남는 구절', type: 'normal' },
     '/reading': { title: '읽고있는 책', type: 'normal' },
@@ -86,6 +87,18 @@ export default function Header() {
                 <Depth>
                     <Link href={''}><RiArrowLeftLine size={20}></RiArrowLeftLine></Link>
                     <Title>{title}</Title>
+                </Depth>
+            </Container>
+        )
+    }
+    if(type === 'button') {
+        return (
+            <Container>
+                <Depth>
+                    <Link href={''}><RiArrowLeftLine size={20}></RiArrowLeftLine></Link>
+                    <Title>{title}</Title>
+                    <Search />
+                    <FloatWrite />
                 </Depth>
             </Container>
         )
