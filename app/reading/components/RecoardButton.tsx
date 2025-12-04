@@ -22,7 +22,6 @@ const LogView = styled(Stop)`
 `
 export default function RecoardButton({index,logWatchNum,currentBooks,setLogWatchNum}) {
 
-
     const { isTimer } = useAuthStore()
     const setTimerObj = useAuthStore((state)=>state.setTimerObj)
 

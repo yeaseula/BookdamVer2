@@ -164,3 +164,13 @@ export const useAuthStore = create<AuthState>()(
         }
     )
 )
+
+interface useSetting {
+    reviewSet: 'list' | 'gallery',
+    setReviewSet: (value:'list' | 'gallery')=>void;
+}
+
+export const useSettingStore = create<useSetting>((set)=>({
+    reviewSet: 'list',
+    setReviewSet: (value)=>set({reviewSet: value})
+}))

@@ -1,6 +1,7 @@
 import { RiWrenchLine, RiArrowRightSLine } from "@remixicon/react"
-import Link from "next/link"
+import { useState } from "react"
 import styled from "styled-components"
+import SettingModal from "./setting/Modal"
 
 const MenuTitle = styled.div`
     display: flex;
@@ -18,9 +19,13 @@ const ButtonStyle = styled.button`
     font-weight: 500;
     font-size: 1.6rem;
     margin-bottom: 6px;
+    cursor: pointer;
 `
 
 export default function Setting() {
+
+    const [reviewUI,setReviewUI] = useState(false)
+
     return (
         <>
             <MenuTitle><RiWrenchLine size={24} /> 시스템 설정</MenuTitle>
@@ -31,24 +36,18 @@ export default function Setting() {
                         <RiArrowRightSLine size={18} />
                     </ButtonStyle>
                 </li>
-            </ul>
-            <ul>
                 <li>
                     <ButtonStyle>
                         <span>타이머 설정</span>
                         <RiArrowRightSLine size={18} />
                     </ButtonStyle>
                 </li>
-            </ul>
-            <ul>
                 <li>
-                    <ButtonStyle>
+                    <ButtonStyle type="button" onClick={()=>setReviewUI(!reviewUI)}>
                         <span>서재 화면 설정</span>
                         <RiArrowRightSLine size={18} />
                     </ButtonStyle>
                 </li>
-            </ul>
-            <ul>
                 <li>
                     <ButtonStyle>
                         <span>캘린더 설정</span>
@@ -56,6 +55,7 @@ export default function Setting() {
                     </ButtonStyle>
                 </li>
             </ul>
+            {reviewUI && <SettingModal setReviewUI={setReviewUI}/>}
         </>
     )
 }

@@ -10,6 +10,7 @@ import { useEffect, useState } from "react"
 import { Profiles, Reviews } from "../lib/userfetch"
 import Skeleton, {SkeletonTheme} from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
+import SettingModal from "./components/setting/Modal"
 
 const ProfileWrap = styled.section`
     padding: 80px 15px 65px;
@@ -30,8 +31,8 @@ export default function MyPage() {
     const {profile,reviews, isReviewLoaded} = useAuthStore()
     const username = profile?.username
     const interests = profile?.interests
-
     return(
+        <>
         <ProfileWrap>
             <h2 className="sr-only">나의 프로필</h2>
             <CommonBox>
@@ -60,11 +61,14 @@ export default function MyPage() {
                 <MyActivity />
             </CommonBoxStyle>
             <CommonBoxStyle>
-                <Setting />
+                <Setting/>
             </CommonBoxStyle>
             <CommonBoxStyle>
                 <Myinfo />
             </CommonBoxStyle>
         </ProfileWrap>
+
+        </>
+
     )
 }
