@@ -46,11 +46,12 @@ export default function Checkbox({name,id,value,checked,interest,originList,setI
             setInterest(interestListSet)
 
             if(!originList) return //sign up에서 확인
-            const test = originList.current.some((e)=> e === value)
-            if(test) {
+
+            //클릭 value 개별 판단 : origin list에 추가되었는지 판단->버튼 및 origin 배열 변화
+            const valueOriginIn = originList.current.some((e)=> e === value)
+            if(valueOriginIn) {
                 setIsOriginFecth(false)
                 const newOriginList = originList.current.filter((e)=> e !== value)
-                console.log(newOriginList)
                 originList.current = newOriginList
             }
         } else {

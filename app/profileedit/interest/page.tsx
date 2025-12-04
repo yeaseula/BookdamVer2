@@ -84,12 +84,6 @@ export default function EditInterest() {
         }
     }
 
-    useEffect(()=>{
-        console.log(originListRef.current + ':origin')
-        console.log(newInterest + ':최종 제출 배열')
-        console.log(isOriginFetch + '원래꺼가져옴?')
-    },[isOriginFetch])
-
     return(
         <ProfileWrap>
             {!profile &&
