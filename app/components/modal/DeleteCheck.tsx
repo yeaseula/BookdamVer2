@@ -208,12 +208,6 @@ export default function DeleteCheck({onClick,checkIdRef,setDeleteModal}) {
                     disabled={loading}
                     onClick={handleDelete}>예</ButtonStyle>
                 }
-                {pathname === '/review' &&
-                    <ButtonStyle
-                    type="button"
-                    disabled={loading}
-                    onClick={handleReviewDelete}>예</ButtonStyle>
-                }
                 {pathname === '/reading' &&
                     <ButtonStyle
                     type="button"
@@ -225,6 +219,12 @@ export default function DeleteCheck({onClick,checkIdRef,setDeleteModal}) {
                     type="button"
                     disabled={loading}
                     onClick={handleDeleteWish}>예</ButtonStyle>
+                }
+                {pathname.includes('review') &&
+                    <ButtonStyle
+                    type="button"
+                    disabled={loading}
+                    onClick={handleReviewDelete}>예</ButtonStyle>
                 }
                 <ButtonStyleDark
                 type="button"
