@@ -8,9 +8,13 @@ import SectionPageOne from "./section1/SectionPage"
 import Calendar from "./section2/Calendar"
 import SpinnerArea from "./spinner/SpinnerArea"
 
-export default function MainPage() {
+interface BannerBook {
+    bookThumb: string;
+    booktitle: string;
+}
 
-    const [reviewThumb,setReviewThumb] = useState<string[]>([])
+export default function MainPage() {
+    const [reviewThumb,setReviewThumb] = useState<BannerBook[]>([])
     const [AithumbArr,setAiThumbArr] = useState<string[]>([])
     const [stampDate,setStampDate] = useState<string[]>([])
     const { profile, reviews, isReviewLoaded, books } = useAuthStore()
@@ -29,6 +33,7 @@ export default function MainPage() {
 
         const MyReviewThumb = async(title:string,author:string) => {
             const Thumbnail = await fetchBookCover(title,author)
+
             //console.log(Thumbnail + '패치북커버 함수 결과')
             const testing = reviewThumb.find((ele)=>ele === Thumbnail)
             //console.log(testing + ': 중복확인 디버깅 테스트 코드')

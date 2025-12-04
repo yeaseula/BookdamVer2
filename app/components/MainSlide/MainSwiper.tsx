@@ -64,9 +64,12 @@ const StyleSwiper = styled(Swiper)`
     }
 
 `
+interface BannerBook {
+    bookThumb: string;
+    booktitle: string;
+}
 
-
-export default function MainSwiper({slide,readingCount}) {
+export default function MainSwiper({slide}:{slide:BannerBook[]}) {
     const SwiperRef = useRef(null)
     const {profile, isReviewLoaded} = useAuthStore()
     const username = profile?.username
@@ -78,14 +81,13 @@ export default function MainSwiper({slide,readingCount}) {
             setIsContent(true)
             setTimeout(()=>{
                 setReady(true)
-            },500)
+            },700)
         } else {
             setIsContent(false)
             setTimeout(()=>{
                 setReady(true)
-            },500)
+            },700)
         }
-
     },[slide])
 
 
@@ -131,8 +133,23 @@ export default function MainSwiper({slide,readingCount}) {
                         slidesPerView={'auto'}
                         className='my-book-list'
                     >
-                        {slide.map((img:string,idx:string | number)=>(
-                            <SwiperSlide key={idx} style={{ backgroundImage : `url(${img})` }} />
+                        {slide.map((ele:BannerBook,idx:string | number)=>(
+                            <>
+                            {!ele.bookThumb &&
+                            <SwiperSlide key={idx}
+                                style={{ backgroundImage: 'url("/images/noThumb.svg")' }}
+                            >
+                                <p className='mt-5 text-center text-xl'>{ele.booktitle}</p>
+                                <p className='text-center text-xl'>썸네일이 없습니다</p>
+                            </SwiperSlide>
+                            }
+                            {ele.bookThumb &&
+                            <SwiperSlide key={idx}
+                                style={{ backgroundImage : `url(${ele.bookThumb})` }}
+                                />
+                            }
+                            </>
+
                         ))}
                     </StyleSwiper>
                     }

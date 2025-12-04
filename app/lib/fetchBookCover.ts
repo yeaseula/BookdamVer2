@@ -16,11 +16,17 @@ export const fetchBookCover = async (title:string,author:string) => {
             book.title.includes(title) && book.authors.join(',').includes(author)
         );
 
-        return (filtered || data.documents[0])?.thumbnail || '';
+        return {
+            bookThumb: (filtered || data.documents[0])?.thumbnail || '',
+            booktitle: title
+        }
 
     } catch (e) {
         console.error('카카오 API 오류:', e);
-        return '';
+        return {
+            bookThumb: '',
+            booktitle: title
+        }
     }
 }
 

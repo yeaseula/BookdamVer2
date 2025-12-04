@@ -22,16 +22,12 @@ export default function Thumbnail({title, author}:ThumbProps) {
 
     const [thumbnail,setThumbnail] = useState<Promise<void> | string | null>(null)
 
-    useEffect(()=>{
-        console.log(thumbnail)
-
-    },[thumbnail])
 
     useEffect(()=>{
         const image = async (title:string,author:string) => {
             const Thumbnails = await fetchBookCover(title,author)
-            if(!Thumbnails) { setThumbnail('/images/noThumb.svg') } else {
-                setThumbnail(Thumbnails)
+            if(Thumbnails.bookThumb == '') { setThumbnail('/images/noThumb.svg') } else {
+                setThumbnail(Thumbnails.bookThumb)
             }
         }
         image(title,author)
