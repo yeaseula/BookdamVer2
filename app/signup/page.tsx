@@ -241,7 +241,7 @@ export default function SignUp() {
                         newPass2Ref.current = e.currentTarget.value
                         handlePassCheck(newPassRef, newPass2Ref ,setPassCheck )
                     }}/>
-                        <WarningMessage state={passCheck} text="비밀번호를 정확하게 입력해주세요." />
+                    <WarningMessage state={passCheck} text="비밀번호를 정확하게 입력해주세요." />
                 </Label>
                 <Label style={{ marginTop: '10px' }}>
                     <span>관심 카테고리

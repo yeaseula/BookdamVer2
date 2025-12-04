@@ -16,7 +16,10 @@ const Container = styled.div<{$isBlur:boolean}>`
     background-color: ${(p)=>p.$isBlur ? 'rgba(255, 255, 255, 0.7)' : '#fff'};
     backdrop-filter: ${(p)=>p.$isBlur ? 'blur(4px)' : 'unset'};
     -webkit-backdrop-filter: ${(p)=>p.$isBlur ? 'blur(4px)' : 'unset'};
-`
+    @media(max-width:450px) {
+        left: 0;
+    }
+    `
 
 const Inner = styled.div`
     display: flex;

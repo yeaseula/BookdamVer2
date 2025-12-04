@@ -23,7 +23,7 @@ const FloatingWirte = styled(Link)`
 
 export default function FloatWrite() {
     return(
-        <FloatingWirte href={'/write'} className="go-wwite-btn" aria-label="글쓰기">
+        <FloatingWirte href={'/write'} aria-label="글쓰기 버튼">
             <RiAddLine />
         </FloatingWirte>
     )

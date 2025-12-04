@@ -21,8 +21,8 @@ const FloatingWirte = styled.button`
 `
 export default function Search() {
     return(
-        <FloatingWirte>
-            <RiSearchLine size={14}></RiSearchLine>
+        <FloatingWirte aria-label="검색 버튼">
+            <RiSearchLine size={14} />
         </FloatingWirte>
     )
 }
