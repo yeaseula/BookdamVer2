@@ -1,9 +1,9 @@
 "use client"
 import styled from "styled-components"
-import Link from "next/link"
 import { RiArrowLeftLine } from "@remixicon/react"
 import { useHeaderStore } from "@/app/lib/useHeaderStore"
 import { usePathname } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import HeaderButton from "./HeaderButton"
 import FloatWrite from "../common/Write"
@@ -66,6 +66,7 @@ export default function Header() {
     const pathname = usePathname()
     const setHeader = useHeaderStore(state => state.setHeader)
     const { title, type } = useHeaderStore()
+    const router = useRouter();
 
     useEffect(() => {
         if (HEADER_CONFIG[pathname]) {
@@ -80,9 +81,9 @@ export default function Header() {
         return (
             <Container>
                 <Depth>
-                    <Link href={''}><RiArrowLeftLine size={20}></RiArrowLeftLine></Link>
+                    <button onClick={()=>router.back()}><RiArrowLeftLine size={20}></RiArrowLeftLine></button>
                     <Title>{title}</Title>
-                    <HeaderButton></HeaderButton>
+                    <HeaderButton />
                 </Depth>
             </Container>
         )
@@ -91,7 +92,7 @@ export default function Header() {
         return (
             <Container>
                 <Depth>
-                    <Link href={''}><RiArrowLeftLine size={20}></RiArrowLeftLine></Link>
+                    <button onClick={()=>router.back()}><RiArrowLeftLine size={20}></RiArrowLeftLine></button>
                     <Title>{title}</Title>
                 </Depth>
             </Container>
@@ -101,7 +102,7 @@ export default function Header() {
         return (
             <Container>
                 <Depth>
-                    <Link href={''}><RiArrowLeftLine size={20}></RiArrowLeftLine></Link>
+                    <button onClick={()=>router.back()}><RiArrowLeftLine size={20}></RiArrowLeftLine></button>
                     <Title>{title}</Title>
                     <Search />
                     <FloatWrite />
