@@ -56,7 +56,6 @@ export default function MainPage() {
         }
     },[isReviewLoaded])
 
-
     useEffect(()=>{
         const RecomAi = async(array:string[])=>{
             if(!interest) return
@@ -73,7 +72,7 @@ export default function MainPage() {
         {!profile && <SpinnerArea text="로딩중 .."/>}
         {profile && (
             <>
-                <MainSlide slide={reviewThumb} readingCount={reviewThumb.length}></MainSlide>
+                <MainSlide slide={reviewThumb}></MainSlide>
                 <SectionPageOne readingCount={reviewThumb.length} books={books}></SectionPageOne>
                 <Calendar stampDate={stampDate}/>
                 <SectionPageThree username={nickname} books={AithumbArr}></SectionPageThree>

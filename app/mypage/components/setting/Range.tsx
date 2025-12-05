@@ -9,7 +9,6 @@ interface InputProps {
 }
 
 const Number = styled.input`
-    width: 19px;
     border: 0;
     color: #ff0088;
     margin-left: 5px;

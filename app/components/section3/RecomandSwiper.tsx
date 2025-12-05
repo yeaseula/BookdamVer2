@@ -14,7 +14,7 @@ import 'swiper/css/keyboard';
 import styled from 'styled-components';
 import createClient from '@/utils/supabase/client';
 import { useToastStore } from '@/app/lib/useToastStore';
-import { useAuthStore, Wish } from '@/app/lib/userfetch';
+import { Books, useAuthStore, Wish } from '@/app/lib/userfetch';
 
 const SliderWrap = styled.div`
     margin-top: 13px;
@@ -50,12 +50,16 @@ const BookCover = styled.div`
 `
 const EmptyBox = styled.div`
     width: 100px;
+    height: auto;
     aspect-ratio: 3/4;
     background-color: #bdbdbd;
 `
 const BookDesc = styled.div`
     position: relative;
     width: calc(100% - 110px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 `
 const BookTitle = styled.p`
     font-size: 1.6rem;
@@ -74,9 +78,6 @@ const BookIntro = styled.p`
     -webkit-line-clamp: 3;
 `
 const ButtonWrap = styled.div`
-    position: absolute;
-    bottom: 0;
-    left: 0;
     display: flex;
     gap: 5px;
     align-items: center;
@@ -86,9 +87,7 @@ const DefaultBtnStyle = styled.button`
     justify-content: center;
     display: flex;
     align-items: center;
-    height: 24px;
-    line-height: 24px;
-    padding: 0 4px;
+    padding: 1px 6px;
     border-radius: 150px;
     text-align: center;
     font-size: 1.1rem;
@@ -149,6 +148,8 @@ export default function RecomandSwiper({books}){
         }
     }
 
+    console.log(books)
+
     return (
         <SliderWrap>
             <StyleSwiper
@@ -181,8 +182,10 @@ export default function RecomandSwiper({books}){
                             )}
                         </BookCover>
                         <BookDesc>
-                            <BookTitle>{book.title}</BookTitle>
-                            <BookIntro>{book.contents ? book.contents.substring(0, 200) + '...' : '설명이 없습니다.'}</BookIntro>
+                            <div>
+                                <BookTitle>{book.title}</BookTitle>
+                                <BookIntro>{book.contents ? book.contents.substring(0, 200) + '...' : '설명이 없습니다.'}</BookIntro>
+                            </div>
                             <ButtonWrap>
                                 <DefaultBtnStyle
                                 onClick={()=>handleWishAdd(book.title,book.authors[0],book.price)}

@@ -33,6 +33,11 @@ const Depth = styled.div`
     align-items: center;
 `
 const Title = styled.p`
+    width: 60%;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
     position: absolute;
     top: 50%;
     left: 50%;

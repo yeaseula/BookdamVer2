@@ -44,8 +44,8 @@ export default function LogModal({logObj,setLogWatchNum}:LogProps) {
                 <table className="mt-4 text-amber-50">
                     <colgroup>
                         <col width={'20%'}></col>
-                        <col width={'20%'}></col>
-                        <col width={'60%'}></col>
+                        <col width={'25%'}></col>
+                        <col width={'55%'}></col>
                     </colgroup>
                     <thead>
                         <tr>

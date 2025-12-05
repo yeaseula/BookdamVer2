@@ -50,7 +50,7 @@ export default function WishContent({wish,checkId,modal,setModal}) {
                         />
                     </CheckBox>
                     <ListInfo>
-                        <div>
+                        <div className="w-[85%]">
                             <p className="font-medium">{w.title}</p>
                             <p className="text-xl">{w.author}</p>
                         </div>

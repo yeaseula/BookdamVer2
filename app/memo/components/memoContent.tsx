@@ -66,7 +66,7 @@ export default function MemoContent({memo,setModal,modal,checkId}) {
                     </CheckBox>
                     <ListInfo>
                         <blockquote className="w-[100%]">
-                            <p className="text-[1.6rem;]">{m.content}</p>
+                            <p className="text-[1.6rem;] max-w-[90%]">{m.content}</p>
                             <Cite><BookTitle>{m.title}</BookTitle> - <span>{m.page}</span> 페이지 중</Cite>
                         </blockquote>
                     </ListInfo>

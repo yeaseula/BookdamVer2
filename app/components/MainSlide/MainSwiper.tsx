@@ -25,7 +25,6 @@ const SliderWrap = styled.div`
     padding-bottom: 5rem;
 `
 const Text = styled.div`
-    height: 74px;
     position: relative;
     font-size: 2.1rem;
     color: #fff;

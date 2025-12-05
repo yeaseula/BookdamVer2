@@ -39,7 +39,7 @@ export default function ReviewList() {
                 {reviews.length > 0 && ( //리뷰가 있을 때
                     <>
                     <p className="total-count text-s">총 {reviews.length}개</p>
-                    <div className="mt-10">
+                    <div className="mt-[10px]">
                         {userSetting.reviewSet === 'gallery' && <GalleryList reviews={reviews} />}
                         {userSetting.reviewSet === 'list' && <List reviews={reviews} />}
                     </div>

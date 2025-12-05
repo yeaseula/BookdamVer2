@@ -59,7 +59,7 @@ export default function ReadingContent({
                     </CheckBox>
                     <ListInfo>
                         <div className="w-[100%]">
-                            <p className="font-bold">{m.title}</p>
+                            <p className="font-bold w-[80%]">{m.title}</p>
                             <span className="text-xl font-medium"> 전체 {m.total_pages} 페이지 / 현재 {m.current_page} page</span>
                         </div>
                         <RecoardButton
