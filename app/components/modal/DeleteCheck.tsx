@@ -1,6 +1,5 @@
 "use client"
 import styled from "styled-components"
-import DeleteButton from "@/app/memo/components/Delete"
 import { useParams } from "next/navigation"
 import { useAuthStore } from "@/app/lib/userfetch"
 import { deleteReview } from "@/app/lib/delete"

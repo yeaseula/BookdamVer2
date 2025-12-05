@@ -42,7 +42,7 @@ interface ModalProps {
     setDeleteModal: Dispatch<SetStateAction<boolean>>;
     EditPopup?: boolean;
     setEditPopup?: Dispatch<SetStateAction<boolean>>;
-    checkIdRef: React.RefObject<string[]>;
+    checkIdRef?: React.RefObject<string[]>;
     onClickEdit?: ()=>void;
 }
 

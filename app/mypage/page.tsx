@@ -6,11 +6,8 @@ import Myinfo from "./components/Myinfo"
 import MyActivity from "./components/MyActivity"
 import Setting from "./components/Setting"
 import { useAuthStore } from "../lib/userfetch"
-import { useEffect, useState } from "react"
-import { Profiles, Reviews } from "../lib/userfetch"
-import Skeleton, {SkeletonTheme} from "react-loading-skeleton"
+import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
-import SettingModal from "./components/setting/Modal"
 
 const ProfileWrap = styled.section`
     padding: 80px 15px 65px;
