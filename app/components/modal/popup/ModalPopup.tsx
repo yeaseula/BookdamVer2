@@ -37,6 +37,7 @@ export default function ModalPopUp({title, onClose, children}) {
             <Close onClick={onClose}>
                 <RiCloseLine />
             </Close>
+            {children}
             </Inner>
         </>
     )

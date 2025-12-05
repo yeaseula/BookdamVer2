@@ -1,22 +1,110 @@
+import styled from "styled-components"
+import ToggleSwitch from "./ToggleSwitch"
+import createClient from "@/utils/supabase/client"
+import { useAuthStore, useSettingStore, SettingDefault } from "@/app/lib/userfetch"
 
+const ToggleList = styled.div`
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+`
+const ToggleListLast = styled(ToggleList)`
+    margin-top: 7px;
+`
 
 export default function ModalCalendarSetting() {
+    const supabase = createClient()
+    const { session } = useAuthStore()
+    const { userSetting } = useSettingStore()
+    const setUserCustom = useSettingStore((s)=>s.setUserCustom)
+
+    const SettingKey = {
+        reviewSet: 'review_set',
+        calendarStart: 'calendar_start',
+        calendarStamp: 'calendar_stamp',
+        font: 'font',
+        timerSet: 'timer_set',
+    } as const
+
+    const handleToggle = async() => {
+        if(!session) return
+        const RealTarget = userSetting.calendarStart === 'sun' ? 'mon' : 'sun'
+
+        await EditFunc('calendarStart',RealTarget)
+
+    }
+
+    const handleToggle2 = async() => {
+        if(!session) return
+        const RealTarget = userSetting.calendarStamp === 'star' ? 'gook' : 'star'
+
+        await EditFunc('calendarStamp',RealTarget)
+    }
+
+    const EditFunc = async<K extends keyof SettingDefault>(
+        key: K,
+        value: SettingDefault[K]
+    ) => {
+        try {
+
+            const mappingKey = SettingKey[key]
+
+            const { data, error } = await supabase
+                .from("user_settings")
+                .update({
+                [mappingKey]: value,
+                updated_at: new Date().toISOString()
+                })
+                .eq("user_id", session.user.id)
+                .select();
+
+            if (error) {
+                console.error(error);
+                throw new Error ('캘린더 수정에 실패했습니다.')
+            }
+            setUserCustom(key, value)
+
+        } catch(err) {
+            console.error(err);
+            const errorMessage = err instanceof Error
+                ? err.message
+                : '수정 중 오류가 발생했습니다'
+        }
+    }
+
+
     return(
         <>
-        <div>
-            <p>시작일 선택</p>
-            <label htmlFor="start-sun">일요일부터 시작</label>
-            <input type="radio" id="start-sun" name="calendar" value={'sun'}/>
-            <label htmlFor="start-mon">월요일부터 시작</label>
-            <input type="radio" id="start-mon" name="calendar" value={'mon'}/>
-        </div>
-        <div>
-            <p>도장 선택</p>
-            <label htmlFor="stamp-star">별도장</label>
-            <input type="radio" id="stamp-star" name="stamp" value={'star'}/>
-            <label htmlFor="stamp-gook">발자국도장</label>
-            <input type="radio" id="stamp-gook" name="stamp" value={'gook'}/>
-        </div>
+        <p className="mt-[40px] mb-5 font-bold">시작일 선택</p>
+        <ToggleList>
+            <p>일요일부터</p>
+                <ToggleSwitch
+                isOn={userSetting.calendarStart === 'sun'}
+                onClick={handleToggle}
+                />
+        </ToggleList>
+        <ToggleListLast>
+            <p>월요일부터</p>
+                <ToggleSwitch
+                isOn={userSetting.calendarStart === 'mon'}
+                onClick={handleToggle}
+                />
+        </ToggleListLast>
+        <p className="mt-[20px] mb-5 font-bold">도장 선택</p>
+        <ToggleListLast>
+            <p>별도장</p>
+                <ToggleSwitch
+                isOn={userSetting.calendarStamp === 'star'}
+                onClick={handleToggle2}
+                />
+        </ToggleListLast>
+        <ToggleListLast>
+            <p>발자국도장</p>
+                <ToggleSwitch
+                isOn={userSetting.calendarStamp === 'gook'}
+                onClick={handleToggle2}
+                />
+        </ToggleListLast>
         </>
     )
 }

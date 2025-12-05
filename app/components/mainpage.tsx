@@ -41,6 +41,7 @@ export default function MainPage() {
             setReviewThumb((prev)=>[...prev,Thumbnail])
         }
 
+        if(!reviews) return
         reviews.map((ele)=>(
             MyReviewThumb(ele.title,ele.author)
         ))

@@ -165,7 +165,7 @@ export const useAuthStore = create<AuthState>()(
     )
 )
 
-interface SettingDefault {
+export interface SettingDefault {
     reviewSet: 'list' | 'gallery',
     calendarStart: 'sun' | 'mon',
     calendarStamp: 'star' | 'gook',
@@ -173,7 +173,7 @@ interface SettingDefault {
     timerSet: 'normal' | 'bottom'
 }
 
-interface UserSetting {
+export interface UserSetting {
     userSetting: SettingDefault
     initSettings: (settings: any) => void
     setUserCustom: <K extends keyof SettingDefault>(
@@ -191,8 +191,6 @@ export const useSettingStore = create<UserSetting>((set) => ({
         timerSet: 'normal',
     },
     initSettings: (settings) => {
-        console.log('🔥 initSettings 호출됨!', settings)
-        console.log('🔥 review_set:', settings[0]?.review_set)
         if(!settings) return
 
         const newSettings = {
@@ -202,10 +200,7 @@ export const useSettingStore = create<UserSetting>((set) => ({
             font: settings[0].font || 'normal',
             timerSet: settings[0].timer_set || 'normal',
         }
-        console.log('✅ 변환된 settings:', newSettings)
-
         set({ userSetting: newSettings })
- console.log('✅ set 완료, 현재 store:', useSettingStore.getState().userSetting)
     },
     setUserCustom: (key, value) =>
         set((state) => ({

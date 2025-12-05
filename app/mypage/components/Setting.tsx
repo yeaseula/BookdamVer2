@@ -77,7 +77,6 @@ export default function Setting() {
                 title={'서재 화면 설정'} onClose={()=>{setReviewUI(false)}}>
                     <ModalReviewSetting />
                 </ModalPopUp>
-                <ModalReviewSetting />
             </SettingModal>
             }
         </>
