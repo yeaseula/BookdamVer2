@@ -44,26 +44,13 @@ const spring: Transition = {
     damping: 30,
 }
 
-export default function ToggleSwitch({togglename}) {
-
-    const {reviewSet} = useSettingStore()
-    const setReviewSet = useSettingStore((state)=>state.setReviewSet)
-
-    const isOn = reviewSet === togglename; // list - true
-
-    const handleToggle = () => {
-        if (isOn) {
-            setReviewSet(togglename === "list" ? "gallery" : "list");
-        } else {
-            setReviewSet(togglename);
-        }
-    };
+export default function ToggleSwitch({isOn,onClick}) {
 
     return (
         <SwitchContainer>
             <Switch
                 $dataIsOn={isOn}
-                onClick={handleToggle}
+                onClick={onClick}
             >
                 <motion.div
                     className="ball"

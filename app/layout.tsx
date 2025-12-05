@@ -30,7 +30,7 @@ export const metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const {
     session, profile,
-    reviews, memo, books, log, wish,
+    reviews, memo, books, log, wish, settings
   } = await createClient()
 
 
@@ -46,6 +46,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           initialBooks={books}
           initialLog={log}
           initialWish={wish}
+          initialSettings={settings}
           >
               <ToastContainer limit={3} />
               <Toast />

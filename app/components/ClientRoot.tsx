@@ -1,6 +1,6 @@
 "use client"
 import { useEffect } from "react"
-import { useAuthStore } from "../lib/userfetch"
+import { useAuthStore, useSettingStore } from "../lib/userfetch"
 import { Session } from "@supabase/supabase-js"
 import { Reviews } from "../lib/userfetch"
 import { Memo, Books, Log, Wish } from "../lib/userfetch"
@@ -15,6 +15,7 @@ interface Props {
   initialBooks: any
   initialLog: any
   initialWish: any
+  initialSettings: any
   children: React.ReactNode
 }
 
@@ -22,12 +23,18 @@ export default function ClientRoot({
   initialSession,
   initialProfile,
   initialReview,
-  initialMemo,initialBooks, initialLog,initialWish, children}:Props) {
+  initialMemo,
+  initialBooks,
+  initialLog,
+  initialWish,
+  initialSettings,
+  children}:Props) {
 
     const pathname = usePathname()
     const setSession = useAuthStore((state)=>state.setSession)
     const setProfile = useAuthStore((state)=>state.setProfile)
     const setData = useAuthStore((state)=>state.setData)
+    const initSettings = useSettingStore((state)=>state.initSettings)
 
     const { isTimer } = useAuthStore()
     const useTimer = pathname !== '/login' && pathname !== '/sign'
@@ -40,6 +47,7 @@ export default function ClientRoot({
       setData<Books>('books',initialBooks)
       setData<Log>('log',initialLog)
       setData<Wish>('wish',initialWish)
+      initSettings(initialSettings)
     },[])
 
     return (

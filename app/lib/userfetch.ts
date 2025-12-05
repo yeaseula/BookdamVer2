@@ -175,6 +175,7 @@ interface SettingDefault {
 
 interface UserSetting {
     userSetting: SettingDefault
+    initSettings: (settings: any) => void
     setUserCustom: <K extends keyof SettingDefault>(
         key: K,
         value: SettingDefault[K]
@@ -188,6 +189,23 @@ export const useSettingStore = create<UserSetting>((set) => ({
         calendarStamp: 'star',
         font: 'normal',
         timerSet: 'normal',
+    },
+    initSettings: (settings) => {
+        console.log('🔥 initSettings 호출됨!', settings)
+        console.log('🔥 review_set:', settings[0]?.review_set)
+        if(!settings) return
+
+        const newSettings = {
+            reviewSet: settings[0].review_set || 'list',
+            calendarStart: settings[0].calendar_start || 'sun',
+            calendarStamp: settings[0].calendar_stamp || 'star',
+            font: settings[0].font || 'normal',
+            timerSet: settings[0].timer_set || 'normal',
+        }
+        console.log('✅ 변환된 settings:', newSettings)
+
+        set({ userSetting: newSettings })
+ console.log('✅ set 완료, 현재 store:', useSettingStore.getState().userSetting)
     },
     setUserCustom: (key, value) =>
         set((state) => ({

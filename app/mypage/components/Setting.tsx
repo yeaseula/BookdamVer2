@@ -1,9 +1,11 @@
 import { RiWrenchLine, RiArrowRightSLine } from "@remixicon/react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import styled from "styled-components"
-import SettingModal from "./setting/Modal"
+import SettingModal from "@/app/components/modal/ModalSetting"
+import ModalPopUp from "@/app/components/modal/popup/ModalPopup"
 import ModalReviewSetting from "./setting/ModalReviewSetting"
 import ModalCalendarSetting from "./setting/ModalCalendarSetting"
+
 const MenuTitle = styled.div`
     display: flex;
     align-items: center;
@@ -27,7 +29,6 @@ export default function Setting() {
 
     const [calendarUI,setCalendarUI] = useState(false)
     const [reviewUI,setReviewUI] = useState(false)
-
     return (
         <>
             <MenuTitle><RiWrenchLine size={24} /> 시스템 설정</MenuTitle>
@@ -59,16 +60,24 @@ export default function Setting() {
             </ul>
             {calendarUI &&
             <SettingModal
-            title="캘린더 설정"
-            onClose={()=>{setCalendarUI(false)}}
-            ><ModalCalendarSetting />
+            type="popup"
+            onClose={()=>{setCalendarUI(false)}}>
+                <ModalPopUp
+                title={'캘린더 설정'}
+                onClose={()=>setCalendarUI(false)}>
+                    <ModalCalendarSetting />
+                </ModalPopUp>
             </SettingModal>
             }
             {reviewUI &&
             <SettingModal
-            title="서재 화면 설정"
-            onClose={()=>{setReviewUI(false)}}
-            ><ModalReviewSetting />
+            type="popup"
+            onClose={()=>{setReviewUI(false)}}>
+                <ModalPopUp
+                title={'서재 화면 설정'} onClose={()=>{setReviewUI(false)}}>
+                    <ModalReviewSetting />
+                </ModalPopUp>
+                <ModalReviewSetting />
             </SettingModal>
             }
         </>

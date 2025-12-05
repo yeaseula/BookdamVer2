@@ -1,6 +1,5 @@
 import styled from "styled-components"
 import {  RiCloseLine } from "@remixicon/react"
-import ModalBack from "@/app/components/modal/ModalBack"
 
 const Container = styled.div`
     max-width: 380px;
@@ -30,28 +29,15 @@ const Close = styled.button`
     z-index: 25;
     cursor: pointer;
 `
-
-interface ModalProps {
-    title: string
-    onClose: ()=>void
-    children: React.ReactNode
-}
-
-export default function SettingModal({title,onClose,children}:ModalProps) {
-
-
+export default function ModalPopUp({title, onClose, children}) {
     return (
         <>
-        <ModalBack onClick={onClose}></ModalBack>
-        <Container>
             <Inner>
             <Title>{title}</Title>
             <Close onClick={onClose}>
                 <RiCloseLine />
             </Close>
-            {children}
             </Inner>
-        </Container>
         </>
     )
 }

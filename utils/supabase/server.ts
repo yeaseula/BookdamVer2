@@ -84,5 +84,15 @@ export default async function createClient() {
     console.log('wish data 패치 실패', reviewError)
   }
 
-  return { supabase, session, profile, reviews, memo, books, log, wish }
+  const { data:settings, error:settingsError } = await supabase
+  .from('user_settings')
+  .select('*')
+  .eq('user_id', session.user.id)
+  .order('updated_at', { ascending: false })
+
+  if(settingsError) {
+    console.log('초기 settings 패치 실패 :' + settingsError)
+  }
+
+  return { supabase, session, profile, reviews, memo, books, log, wish, settings }
 }
