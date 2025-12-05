@@ -72,8 +72,6 @@ export default function Myinfo() {
                         <RiArrowRightSLine size={18} />
                     </Buttonstyle>
                 </li>
-            </ul>
-            <ul>
                 <li>
                     <LinkStyle href={'/profileedit'}>
                         <span>내 정보 변경</span>

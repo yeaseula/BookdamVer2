@@ -31,24 +31,18 @@ export default function MyActivity() {
                         <RiArrowRightSLine size={18} />
                     </LinkStyle>
                 </li>
-            </ul>
-            <ul>
                 <li>
                     <LinkStyle href={'/review'}>
                         <span>리뷰 목록</span>
                         <RiArrowRightSLine size={18} />
                     </LinkStyle>
                 </li>
-            </ul>
-            <ul>
                 <li>
                     <LinkStyle href={'/wish'}>
                         <span>읽고싶은 책</span>
                         <RiArrowRightSLine size={18} />
                     </LinkStyle>
                 </li>
-            </ul>
-            <ul>
                 <li>
                     <LinkStyle href={'/reading'}>
                         <span>읽는중인 책</span>
