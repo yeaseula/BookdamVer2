@@ -1,10 +1,8 @@
 "use client"
-import Link from "next/link"
 import styled from "styled-components"
 import { useAuthStore, useSettingStore } from "../lib/userfetch"
 import Skeleton,{SkeletonTheme} from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
-import Thumbnail from "./components/Thumbnail"
 import { RiFileWarningFill } from "@remixicon/react"
 import GalleryList from "./components/Gallery"
 import List from "./components/List"
@@ -15,7 +13,7 @@ const ReivewWrap = styled.section`
 
 export default function ReviewList() {
     const { reviews,isReviewLoaded } = useAuthStore()
-    const { reviewSet } = useSettingStore()
+    const { userSetting } = useSettingStore()
     return(
         <ReivewWrap>
             <h2 className="sr-only">내가 쓴 리뷰 리스트</h2>
@@ -42,8 +40,8 @@ export default function ReviewList() {
                     <>
                     <p className="total-count text-s">총 {reviews.length}개</p>
                     <div className="mt-10">
-                        {reviewSet === 'gallery' && <GalleryList reviews={reviews} />}
-                        {reviewSet === 'list' && <List reviews={reviews} />}
+                        {userSetting.reviewSet === 'gallery' && <GalleryList reviews={reviews} />}
+                        {userSetting.reviewSet === 'list' && <List reviews={reviews} />}
                     </div>
                     </>
                 )}

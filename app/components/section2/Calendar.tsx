@@ -2,7 +2,7 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import styled from "styled-components";
-import { useAuthStore } from "@/app/lib/userfetch";
+import { useAuthStore, useSettingStore } from "@/app/lib/userfetch";
 import Skeleton from "react-loading-skeleton";
 
 const FullCalBox = styled.div`
@@ -104,6 +104,7 @@ const FullCalBox = styled.div`
 export default function Calendar({stampDate}: { stampDate: string[] }) {
 
     const { isReviewLoaded } = useAuthStore()
+    const { userSetting } = useSettingStore()
 
     return (
         <section className="pt-8 pr-5 pl-5">
@@ -118,15 +119,25 @@ export default function Calendar({stampDate}: { stampDate: string[] }) {
                     key={stampDate.join()}
                     plugins={[dayGridPlugin]}
                     initialView="dayGridMonth"
-                    firstDay={1}
+                    firstDay={userSetting.calendarStart === 'sun' ? 0 : 1}
                     dayCellDidMount={(info) => {
                         const dateStr = info.date.toLocaleDateString("en-CA");
                         const exist = stampDate.find(e => e === dateStr);
                         if (!exist) return;
-                        info.el.style.backgroundImage = "url(/images/stamp.svg)";
-                        info.el.style.backgroundSize = "auto";
+                        info.el.style.backgroundImage = `
+                        ${userSetting.calendarStamp === 'star' ?
+                            'url(/images/stamp.svg)' :
+                            'url(/images/footprint.svg)' }
+                        `;
+                        info.el.style.backgroundSize = `
+                        ${userSetting.calendarStamp === 'star' ?
+                            'auto' : '25px'
+                        }
+                        `;
                         info.el.style.backgroundRepeat = "no-repeat";
-                        info.el.style.backgroundPosition = "center";
+                        info.el.style.backgroundPosition = `
+                        ${userSetting.calendarStamp === 'star' ? 'center' : 'left 10px'}
+                        `;
                     }}
                 />
             </FullCalBox>
