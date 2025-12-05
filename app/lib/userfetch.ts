@@ -169,7 +169,7 @@ export interface SettingDefault {
     reviewSet: 'list' | 'gallery',
     calendarStart: 'sun' | 'mon',
     calendarStamp: 'star' | 'gook',
-    font: 'normal' | 'gsans',
+    font: number,
     timerSet: 'normal' | 'bottom'
 }
 
@@ -187,7 +187,7 @@ export const useSettingStore = create<UserSetting>((set) => ({
         reviewSet: 'list',
         calendarStart: 'sun',
         calendarStamp: 'star',
-        font: 'normal',
+        font: 16,
         timerSet: 'normal',
     },
     initSettings: (settings) => {
@@ -197,7 +197,7 @@ export const useSettingStore = create<UserSetting>((set) => ({
             reviewSet: settings[0].review_set || 'list',
             calendarStart: settings[0].calendar_start || 'sun',
             calendarStamp: settings[0].calendar_stamp || 'star',
-            font: settings[0].font || 'normal',
+            font: settings[0].font || 16,
             timerSet: settings[0].timer_set || 'normal',
         }
         set({ userSetting: newSettings })

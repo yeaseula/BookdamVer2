@@ -35,9 +35,15 @@ export default function ClientRoot({
     const setProfile = useAuthStore((state)=>state.setProfile)
     const setData = useAuthStore((state)=>state.setData)
     const initSettings = useSettingStore((state)=>state.initSettings)
+    const { userSetting } = useSettingStore()
 
     const { isTimer } = useAuthStore()
     const useTimer = pathname !== '/login' && pathname !== '/sign'
+
+    function applyFontSize(px: number) {
+      const percent = (px / 16) * 62.5;
+      document.documentElement.style.fontSize = `${percent}%`;
+    }
 
     useEffect(()=>{
       setSession(initialSession)
@@ -49,6 +55,10 @@ export default function ClientRoot({
       setData<Wish>('wish',initialWish)
       initSettings(initialSettings)
     },[])
+
+    useEffect(()=>{
+      applyFontSize(userSetting.font);
+    },[userSetting.font])
 
     return (
     <>

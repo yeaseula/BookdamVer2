@@ -5,6 +5,7 @@ import SettingModal from "@/app/components/modal/ModalSetting"
 import ModalPopUp from "@/app/components/modal/popup/ModalPopup"
 import ModalReviewSetting from "./setting/ModalReviewSetting"
 import ModalCalendarSetting from "./setting/ModalCalendarSetting"
+import ModalFontSetting from "./setting/ModalFontSetting"
 
 const MenuTitle = styled.div`
     display: flex;
@@ -26,7 +27,7 @@ const ButtonStyle = styled.button`
 `
 
 export default function Setting() {
-
+    const [fontUI,setFontUI] = useState(false)
     const [calendarUI,setCalendarUI] = useState(false)
     const [reviewUI,setReviewUI] = useState(false)
     return (
@@ -34,7 +35,7 @@ export default function Setting() {
             <MenuTitle><RiWrenchLine size={24} /> 시스템 설정</MenuTitle>
             <ul>
                 <li>
-                    <ButtonStyle>
+                    <ButtonStyle type="button" onClick={()=>setFontUI(!fontUI)}>
                         <span>폰트 설정</span>
                         <RiArrowRightSLine size={18} />
                     </ButtonStyle>
@@ -58,6 +59,17 @@ export default function Setting() {
                     </ButtonStyle>
                 </li>
             </ul>
+            {fontUI &&
+            <SettingModal
+            type="popup"
+            onClose={()=>{setFontUI(false)}}>
+                <ModalPopUp
+                title={'폰트 설정'}
+                onClose={()=>setFontUI(false)}>
+                    <ModalFontSetting setFontUI={setFontUI} />
+                </ModalPopUp>
+            </SettingModal>
+            }
             {calendarUI &&
             <SettingModal
             type="popup"
