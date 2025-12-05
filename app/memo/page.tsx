@@ -8,6 +8,7 @@ import { Memo } from "../lib/userfetch"
 import { useEffect, useState, useRef } from "react"
 import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
+import SettingModal from "../components/modal/ModalSetting"
 import Modal from "../components/modal/Modal"
 const MemoWrap = styled.section`
     padding: 80px 15px 65px;
@@ -39,6 +40,7 @@ export default function MemoPage() {
     }
 
     return(
+
         <MemoWrap>
             <Modal
             state={modal}

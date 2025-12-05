@@ -165,12 +165,35 @@ export const useAuthStore = create<AuthState>()(
     )
 )
 
-interface useSetting {
+interface SettingDefault {
     reviewSet: 'list' | 'gallery',
-    setReviewSet: (value:'list' | 'gallery')=>void;
+    calendarStart: 'sun' | 'mon',
+    calendarStamp: 'star' | 'gook',
+    font: 'normal' | 'gsans',
+    timerSet: 'normal' | 'bottom'
 }
 
-export const useSettingStore = create<useSetting>((set)=>({
-    reviewSet: 'list',
-    setReviewSet: (value)=>set({reviewSet: value})
+interface UserSetting {
+    userSetting: SettingDefault
+    setUserCustom: <K extends keyof SettingDefault>(
+        key: K,
+        value: SettingDefault[K]
+    )=>void
+}
+
+export const useSettingStore = create<UserSetting>((set) => ({
+    userSetting: {
+        reviewSet: 'list',
+        calendarStart: 'sun',
+        calendarStamp: 'star',
+        font: 'normal',
+        timerSet: 'normal',
+    },
+    setUserCustom: (key, value) =>
+        set((state) => ({
+            userSetting: {
+                ...state.userSetting,
+                [key]: value
+            }
+        }))
 }))
