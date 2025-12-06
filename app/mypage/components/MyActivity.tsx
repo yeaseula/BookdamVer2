@@ -1,6 +1,6 @@
-import { RiEmpathizeFill, RiArrowRightSLine } from "@remixicon/react"
-import Link from "next/link"
+import { RiEmpathizeFill } from "@remixicon/react"
 import styled from "styled-components"
+import ListItem from "../List"
 
 const MenuTitle = styled.div`
     display: flex;
@@ -10,45 +10,26 @@ const MenuTitle = styled.div`
     font-weight: 600;
     margin-bottom: 17px;
 `
-const LinkStyle = styled(Link)`
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-weight: 500;
-    font-size: 1.6rem;
-    margin-bottom: 6px;
-`
 
 export default function MyActivity() {
+
+    const List = [
+        { href: '/memo', text: '기억에 남는 구절'},
+        { href: '/review', text: '리뷰 목록'},
+        { href: '/wish', text: '읽고싶은 책'},
+        { href: '/reading', text: '읽는중인 책'},
+    ]
+
     return (
         <>
             <MenuTitle><RiEmpathizeFill size={24} /> 나의 활동</MenuTitle>
             <ul>
-                <li>
-                    <LinkStyle href={'/memo'}>
-                        <span>기억에 남는 구절</span>
-                        <RiArrowRightSLine size={18} />
-                    </LinkStyle>
-                </li>
-                <li>
-                    <LinkStyle href={'/review'}>
-                        <span>리뷰 목록</span>
-                        <RiArrowRightSLine size={18} />
-                    </LinkStyle>
-                </li>
-                <li>
-                    <LinkStyle href={'/wish'}>
-                        <span>읽고싶은 책</span>
-                        <RiArrowRightSLine size={18} />
-                    </LinkStyle>
-                </li>
-                <li>
-                    <LinkStyle href={'/reading'}>
-                        <span>읽는중인 책</span>
-                        <RiArrowRightSLine size={18} />
-                    </LinkStyle>
-                </li>
+                {List.map((list,idx)=>(
+                    <ListItem
+                    key={`${idx}-${list.text}`}
+                    href={list.href}
+                    text={list.text} />
+                ))}
             </ul>
         </>
     )

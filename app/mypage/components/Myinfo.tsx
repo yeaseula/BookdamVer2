@@ -1,11 +1,11 @@
 "use client"
 
-import { RiDraftLine, RiArrowRightSLine } from "@remixicon/react"
-import Link from "next/link"
+import { RiDraftLine } from "@remixicon/react"
 import styled from "styled-components"
 import { useAuthStore,Reviews,Memo,Wish,Log,Books } from "@/app/lib/userfetch"
 import createClient from "@/utils/supabase/client"
 import { useRouter } from "next/navigation"
+import ListItem from "../List"
 
 const MenuTitle = styled.div`
     display: flex;
@@ -15,29 +15,7 @@ const MenuTitle = styled.div`
     font-weight: 600;
     margin-bottom: 17px;
 `
-const Buttonstyle = styled.button`
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-weight: 500;
-    font-size: 1.6rem;
-    margin-bottom: 10px;
-    cursor: pointer;
-    margin-bottom: 6px;
-`
-const LinkStyle = styled(Link)`
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-weight: 500;
-    font-size: 1.6rem;
-    margin-bottom: 6px;
-`
-
 export default function Myinfo() {
-
     const supabase = createClient()
     const router = useRouter()
 
@@ -61,23 +39,22 @@ export default function Myinfo() {
         router.push('/login')
     }
 
+    const List = [
+        { onClick: handleLogout, text: '로그아웃'},
+        { href: '/profileedit', text: '내 정보 변경'},
+    ]
+
     return (
         <>
-            <h3 className="sr-only">내 정보 관리</h3>
             <MenuTitle><RiDraftLine size={24}></RiDraftLine> 내 정보</MenuTitle>
             <ul>
-                <li>
-                    <Buttonstyle onClick={handleLogout}>
-                        <span>로그아웃</span>
-                        <RiArrowRightSLine size={18} />
-                    </Buttonstyle>
-                </li>
-                <li>
-                    <LinkStyle href={'/profileedit'}>
-                        <span>내 정보 변경</span>
-                        <RiArrowRightSLine size={18} />
-                    </LinkStyle>
-                </li>
+                {List.map((list,idx)=>(
+                    <ListItem
+                    key={`${idx}-${list.text}`}
+                    href={list.href}
+                    onClick={list.onClick}
+                    text={list.text} />
+                ))}
             </ul>
         </>
     )
