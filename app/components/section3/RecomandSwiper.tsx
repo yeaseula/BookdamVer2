@@ -16,6 +16,7 @@ import createClient from '@/utils/supabase/client';
 import { useToastStore } from '@/app/lib/useToastStore';
 import { useAuthStore, Wish } from '@/app/lib/userfetch';
 import { fetchBookAI } from '@/app/lib/fetchBookCover';
+import { useErrorUtil } from '@/app/error/useErrorUtil';
 
 const SliderWrap = styled.div`
     margin-top: 13px;
@@ -112,6 +113,15 @@ const Button = styled(Link)`
     background-color: var(--sub_color);
     color: #fff
 `
+interface BookAiType {
+    isbn: string;
+    thumbnail: string;
+    title: string;
+    contents: string;
+    price: number;
+    sale_price: number;
+    err?: string;
+}
 
 export default function RecomandSwiper(){
     const SwiperRef = useRef(null);
@@ -121,15 +131,25 @@ export default function RecomandSwiper(){
     const [isWorking,setIsWorking] = useState(false)
     const [AithumbArr,setAiThumbArr] = useState([])
     const interest = profile?.interests
+    const throwError = useErrorUtil()
 
     useEffect(()=>{
         const RecomAi = async(array:string[])=>{
-            if(!interest) return
-            const Thumbnail = await fetchBookAI(array)
-            setAiThumbArr(Thumbnail)
+            try {
+                if(!interest) return
+                const Thumbnail:BookAiType[] = await fetchBookAI(array)
+                if(Thumbnail[0].err) {
+                    throwError("api", Thumbnail[0].err)
+                }
+                setAiThumbArr(Thumbnail)
+            } catch(err) {
+                throwError("api", err)
+            }
         }
         RecomAi(interest)
     },[profile])
+
+    useEffect(()=>{console.log(AithumbArr)},[AithumbArr])
 
     const handleWishAdd = async(title:string,author:string,price:number) => {
 
@@ -162,7 +182,6 @@ export default function RecomandSwiper(){
 
     return (
         <SliderWrap>
-            {AithumbArr.length > 0 &&
             <StyleSwiper
                 modules={[Navigation, A11y, Keyboard, Autoplay]}
                 onSwiper={(swiper)=>SwiperRef.current = swiper}
@@ -209,7 +228,6 @@ export default function RecomandSwiper(){
                 </SwiperSlide>
             ))}
             </StyleSwiper>
-            }
         </SliderWrap>
     )
 }

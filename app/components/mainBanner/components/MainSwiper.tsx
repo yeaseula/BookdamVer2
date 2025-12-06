@@ -11,8 +11,8 @@ import 'swiper/css/a11y';
 import 'swiper/css/keyboard';
 import styled from 'styled-components';
 import { useAuthStore } from '../../../lib/userfetch';
-import BannerButton from '../../mainButton/bannerButton';
 import { fetchBookCover } from '@/app/lib/fetchBookCover';
+import { useErrorUtil } from '@/app/error/useErrorUtil';
 
 const StyleSwiper = styled(Swiper)`
     width: 125px;
@@ -47,12 +47,14 @@ const StyleSwiper = styled(Swiper)`
 interface BannerBook {
     bookThumb: string;
     booktitle: string;
+    error?: any;
 }
 
 export default function MainSwiper() {
     const SwiperRef = useRef(null)
     const {reviews,isReviewLoaded} = useAuthStore()
     const [reviewThumb,setReviewThumb] = useState<BannerBook[]>([])
+    const throwError = useErrorUtil()
 
     useEffect(()=>{
         if(!isReviewLoaded) return
@@ -61,14 +63,22 @@ export default function MainSwiper() {
         let isCancelled = false
 
         const MyReviewThumb = async(title:string,author:string) => {
-            const Thumbnail = await fetchBookCover(title,author)
+            try {
+                const Thumbnail = await fetchBookCover(title,author)
+                if(isCancelled) return
 
-            //console.log(Thumbnail + '패치북커버 함수 결과')
-            if(isCancelled) return
-            setReviewThumb((prev)=>[...prev,Thumbnail])
+                if(Thumbnail.error) {
+                    throwError('banner', Thumbnail.error)
+                }
+
+                setReviewThumb((prev)=>[...prev,Thumbnail])
+            } catch(err) {
+                throwError('banner', err)
+            }
         }
 
         if(!reviews) return
+
         reviews.map((ele)=>(
             MyReviewThumb(ele.title,ele.author)
         ))

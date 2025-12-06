@@ -1,6 +1,7 @@
 "use client"
 
 export const fetchBookCover = async (title:string,author:string) => {
+
     try {
         const query = `${title} ${author}`;
         const apiUrl = `https://dapi.kakao.com/v3/search/book?target=all&query=${encodeURIComponent(query)}`;
@@ -10,6 +11,10 @@ export const fetchBookCover = async (title:string,author:string) => {
                 Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_KEY}`
             }
         });
+
+        if(!res.ok) {
+            throw new Error('api 호출 실패')
+        }
         const data = await res.json();
 
         const filtered = data.documents.find((book:any) =>
@@ -20,11 +25,24 @@ export const fetchBookCover = async (title:string,author:string) => {
             bookThumb: (filtered || data.documents[0])?.thumbnail || '',
             booktitle: title
         }
-
-    } catch (err) {
-        console.error('API 패치 오류:',err)
-        throw new Error('API 패치 오류 : ' + err)
+    } catch(err) {
+        console.log(err)
+        return {
+            bookThumb: '',
+            booktitle: title,
+            error: '썸네일 로드 실패'
+        }
     }
+}
+
+interface BookAiType {
+    isbn: string;
+    thumbnail: string;
+    title: string;
+    contents: string;
+    price: number;
+    sale_price: number;
+    err?: string;
 }
 
 export const fetchBookAI = async(interest:string[]) => {
@@ -34,20 +52,44 @@ export const fetchBookAI = async(interest:string[]) => {
 
     try {
         const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
-        const response = await fetch(`https://dapi.kakao.com/v3/search/book?query=${randomKeyword}&size=15`, {
+        const res = await fetch(`https://dapi.kakao.com/v3/search/book?query=${randomKeyword}&size=15`, {
             headers: {
                 Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_KEY}`
             }
         });
-        const data = await response.json();
 
-        const books:string[] = data?.documents || [];
-        //console.log(JSON.parse(JSON.stringify(books[0])) + ':😭')
+        if(!res.ok) {
+            throw new Error('api 호출 실패')
+        }
+        const data = await res.json();
 
-        return books
+        const BookAiResult:BookAiType[] = []
 
-    } catch(err) {
-        console.error('API 패치 오류:',err)
-        throw new Error('API 패치 오류 : ' + err)
+        data?.documents.forEach((ele)=>{
+            const test = {
+                isbn : ele.isbn,
+                thumbnail: ele.thumbnail,
+                title: ele.title,
+                contents: ele.contents,
+                price: ele.price,
+                sale_price: ele.sale_price,
+            }
+            BookAiResult.push(test)
+        })
+
+        return BookAiResult
+
+    } catch(error) {
+        console.log(error)
+        const ErrorResult:BookAiType[] = [{
+                isbn : '',
+                thumbnail: '',
+                title: '',
+                contents: '',
+                price: 0,
+                sale_price: 0,
+                err: '추천 데이터 로드 실패'
+            }]
+        return ErrorResult
     }
 }

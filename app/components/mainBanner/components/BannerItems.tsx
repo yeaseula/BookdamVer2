@@ -4,6 +4,7 @@ import { useAuthStore } from "@/app/lib/userfetch";
 import MainSwiper from "./MainSwiper"
 import UserName from "./UserName";
 import BannerButton from "../../mainButton/bannerButton";
+import ErrorBoundaryBox from "@/app/error/ErrorBoundaryBox";
 
 export default function BannerItems() {
 
@@ -31,7 +32,9 @@ export default function BannerItems() {
             <div className='mt-[20px] flex justify-center' style={{ alignItems:'center',height: '174px' }}>
                 {(isReviewLoaded && ready) &&
                 <>
-                <MainSwiper />
+                <ErrorBoundaryBox>
+                    <MainSwiper />
+                </ErrorBoundaryBox>
                 <BannerButton isContent={isContent}/>
                 </>
                 }
