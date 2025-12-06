@@ -30,7 +30,7 @@ export const fetchBookCover = async (title:string,author:string) => {
         return {
             bookThumb: '',
             booktitle: title,
-            error: '썸네일 로드 실패'
+            error: err
         }
     }
 }
@@ -42,7 +42,7 @@ interface BookAiType {
     contents: string;
     price: number;
     sale_price: number;
-    err?: string;
+    err?: unknown;
 }
 
 export const fetchBookAI = async(interest:string[]) => {
@@ -88,7 +88,7 @@ export const fetchBookAI = async(interest:string[]) => {
                 contents: '',
                 price: 0,
                 sale_price: 0,
-                err: '추천 데이터 로드 실패'
+                err: error
             }]
         return ErrorResult
     }

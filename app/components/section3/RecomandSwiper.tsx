@@ -139,11 +139,11 @@ export default function RecomandSwiper(){
                 if(!interest) return
                 const Thumbnail:BookAiType[] = await fetchBookAI(array)
                 if(Thumbnail[0].err) {
-                    throwError("api", Thumbnail[0].err)
+                    throwError(Thumbnail[0].err)
                 }
                 setAiThumbArr(Thumbnail)
             } catch(err) {
-                throwError("api", err)
+                throwError(err)
             }
         }
         RecomAi(interest)

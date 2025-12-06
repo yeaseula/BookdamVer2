@@ -32,9 +32,11 @@ export default function BannerItems() {
             <div className='mt-[20px] flex justify-center' style={{ alignItems:'center',height: '174px' }}>
                 {(isReviewLoaded && ready) &&
                 <>
-                <ErrorBoundaryBox>
-                    <MainSwiper />
-                </ErrorBoundaryBox>
+                <div style={{ width: '125px', height:'100%', marginLeft: 'auto', marginRight:'auto' }}>
+                    <ErrorBoundaryBox>
+                        <MainSwiper />
+                    </ErrorBoundaryBox>
+                </div>
                 <BannerButton isContent={isContent}/>
                 </>
                 }

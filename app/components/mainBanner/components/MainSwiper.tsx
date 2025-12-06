@@ -68,12 +68,12 @@ export default function MainSwiper() {
                 if(isCancelled) return
 
                 if(Thumbnail.error) {
-                    throwError('banner', Thumbnail.error)
+                    throwError(Thumbnail.error)
                 }
 
                 setReviewThumb((prev)=>[...prev,Thumbnail])
             } catch(err) {
-                throwError('banner', err)
+                throwError(err)
             }
         }
 
