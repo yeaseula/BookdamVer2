@@ -18,8 +18,8 @@ const ReadBoxP = styled.p`
     font-size: 1.6rem;
 `
 
-export default function ReadingState({books}:{books:Books[]}) {
-    const { isBooksLoaded } = useAuthStore()
+export default function ReadingState() {
+    const { isBooksLoaded, books } = useAuthStore()
     return (
         <ReadBox>
             <Image

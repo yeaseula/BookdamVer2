@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -14,7 +14,8 @@ import 'swiper/css/keyboard';
 import styled from 'styled-components';
 import createClient from '@/utils/supabase/client';
 import { useToastStore } from '@/app/lib/useToastStore';
-import { Books, useAuthStore, Wish } from '@/app/lib/userfetch';
+import { useAuthStore, Wish } from '@/app/lib/userfetch';
+import { fetchBookAI } from '@/app/lib/fetchBookCover';
 
 const SliderWrap = styled.div`
     margin-top: 13px;
@@ -87,6 +88,7 @@ const DefaultBtnStyle = styled.button`
     justify-content: center;
     display: flex;
     align-items: center;
+    min-height: 24px;
     padding: 1px 6px;
     border-radius: 150px;
     text-align: center;
@@ -101,8 +103,7 @@ const Button = styled(Link)`
     justify-content: center;
     display: flex;
     align-items: center;
-    height: 24px;
-    line-height: 24px;
+    min-height: 24px;
     padding: 0 4px;
     border-radius: 150px;
     text-align: center;
@@ -112,12 +113,23 @@ const Button = styled(Link)`
     color: #fff
 `
 
-export default function RecomandSwiper({books}){
+export default function RecomandSwiper(){
     const SwiperRef = useRef(null);
     const supabase = createClient()
-    const {session} = useAuthStore()
+    const { session,profile } = useAuthStore()
     const setToast = useToastStore((state)=>state.setToast)
     const [isWorking,setIsWorking] = useState(false)
+    const [AithumbArr,setAiThumbArr] = useState([])
+    const interest = profile?.interests
+
+    useEffect(()=>{
+        const RecomAi = async(array:string[])=>{
+            if(!interest) return
+            const Thumbnail = await fetchBookAI(array)
+            setAiThumbArr(Thumbnail)
+        }
+        RecomAi(interest)
+    },[profile])
 
     const handleWishAdd = async(title:string,author:string,price:number) => {
 
@@ -148,10 +160,9 @@ export default function RecomandSwiper({books}){
         }
     }
 
-    console.log(books)
-
     return (
         <SliderWrap>
+            {AithumbArr.length > 0 &&
             <StyleSwiper
                 modules={[Navigation, A11y, Keyboard, Autoplay]}
                 onSwiper={(swiper)=>SwiperRef.current = swiper}
@@ -169,7 +180,7 @@ export default function RecomandSwiper({books}){
                 slidesPerView={1.15}
                 className='my-recomand-book'
             >
-            {books.map((book)=>(
+            {AithumbArr.map((book)=>(
                 <SwiperSlide key={book.isbn}>
                     <SwiperDepth>
                         <BookCover>
@@ -198,6 +209,7 @@ export default function RecomandSwiper({books}){
                 </SwiperSlide>
             ))}
             </StyleSwiper>
+            }
         </SliderWrap>
     )
 }

@@ -21,12 +21,9 @@ export const fetchBookCover = async (title:string,author:string) => {
             booktitle: title
         }
 
-    } catch (e) {
-        console.error('카카오 API 오류:', e);
-        return {
-            bookThumb: '',
-            booktitle: title
-        }
+    } catch (err) {
+        console.error('API 패치 오류:',err)
+        throw new Error('API 패치 오류 : ' + err)
     }
 }
 
@@ -50,6 +47,7 @@ export const fetchBookAI = async(interest:string[]) => {
         return books
 
     } catch(err) {
-        console.error('kakao api 로드 실패:',err)
+        console.error('API 패치 오류:',err)
+        throw new Error('API 패치 오류 : ' + err)
     }
 }

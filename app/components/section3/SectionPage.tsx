@@ -2,6 +2,7 @@
 import Image from "next/image"
 import RecomandSwiper from "./RecomandSwiper"
 import styled from "styled-components"
+import { useAuthStore } from "@/app/lib/userfetch"
 
 const TitleSection = styled.div`
     position: relative;
@@ -19,7 +20,9 @@ const Title = styled.p`
     font-size: 2rem;
 `
 
-export default function SectionPageThree({username, books }) {
+export default function SectionPageThree() {
+    const { profile } = useAuthStore()
+    const username = profile.username
 
     return(
         <section className="pt-20 pb-20 pr-5 pl-5">
@@ -40,7 +43,7 @@ export default function SectionPageThree({username, books }) {
                         <button className="sr-only next-slide" aria-label="다음 슬라이드">다음 슬라이드</button>
                     </div>
                 </TitleSection>
-                <RecomandSwiper books={books} />
+                <RecomandSwiper />
         </section>
     )
 }

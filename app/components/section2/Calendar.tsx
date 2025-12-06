@@ -1,4 +1,5 @@
 "use client"
+import { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import styled from "styled-components";
@@ -101,10 +102,25 @@ const FullCalBox = styled.div`
     }
 `
 
-export default function Calendar({stampDate}: { stampDate: string[] }) {
+export default function Calendar() {
 
-    const { isReviewLoaded } = useAuthStore()
+    const { isReviewLoaded, reviews } = useAuthStore()
     const { userSetting } = useSettingStore()
+    const [stampDate,setStampDate] = useState<string[]>([])
+
+    useEffect(()=>{
+        if(!isReviewLoaded) return
+        let isCancelled = false
+
+        if(!isCancelled) {
+            reviews.map(ele=>{
+                setStampDate((prev)=>[...prev,ele.end_date])
+            })
+        }
+        return () => {
+            isCancelled = true
+        }
+    },[reviews])
 
     return (
         <section className="pt-8 pr-5 pl-5">

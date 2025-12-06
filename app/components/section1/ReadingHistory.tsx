@@ -1,5 +1,6 @@
 "use client"
 import styled from "styled-components"
+import { useAuthStore } from "@/app/lib/userfetch"
 
 const HisBox = styled.div`
     text-align: center;
@@ -12,10 +13,12 @@ const HisBox = styled.div`
     min-height: 56px;
 `
 
-export default function ReadingHistory({readingCount}) {
+export default function ReadingHistory() {
+    const { reviews } = useAuthStore()
+
     return (
         <HisBox>
-            <p>지금까지 <span className="reading-book font-bold">{readingCount}권</span>의 책을 읽었어요!</p>
+            <p>지금까지 <span className="reading-book font-bold">{reviews.length}권</span>의 책을 읽었어요!</p>
         </HisBox>
     )
 }
