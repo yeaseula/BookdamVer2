@@ -36,18 +36,19 @@ export async function middleware(request: NextRequest) {
     request.nextUrl.pathname.startsWith('/signup'))
   ) {
     const url = request.nextUrl.clone()
-    url.pathname = '/'
+    url.pathname = '/guardLogin'
     return NextResponse.redirect(url)
   }
 
   if (
     !user &&
     !request.nextUrl.pathname.startsWith('/login') &&
-    !request.nextUrl.pathname.startsWith('/auth')
+    !request.nextUrl.pathname.startsWith('/auth') &&
+    !request.nextUrl.pathname.startsWith('/guard')
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone()
-    url.pathname = '/login'
+    url.pathname = '/guardNeedLogin'
     return NextResponse.redirect(url)
   }
 
