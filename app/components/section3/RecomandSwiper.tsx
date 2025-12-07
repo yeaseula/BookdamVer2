@@ -200,7 +200,7 @@ export default function RecomandSwiper(){
                 <SwiperSlide key={book.isbn}>
                     <SwiperDepth>
                         <BookCover>
-                            {book.thumbnail ? (
+                            {book.thumbnail !== '' ? (
                                 <Image src={`${book.thumbnail}`}
                                 alt={book.title}
                                 width={'120'} height={'174'} />
