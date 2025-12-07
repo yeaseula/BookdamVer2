@@ -116,4 +116,5 @@ export default function Header() {
     if(type === 'none') {
         return null
     }
+    return null
 }
