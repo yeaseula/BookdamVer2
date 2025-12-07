@@ -120,7 +120,7 @@ interface BookAiType {
     contents: string;
     price: number;
     sale_price: number;
-    err?: string;
+    err?: unknown;
 }
 
 export default function RecomandSwiper(){
@@ -137,19 +137,16 @@ export default function RecomandSwiper(){
         const RecomAi = async(array:string[])=>{
             try {
                 if(!interest) return
-                const Thumbnail:BookAiType[] = await fetchBookAI(array)
-                if(Thumbnail[0].err) {
-                    throwError(Thumbnail[0].err)
+                const Thumbnail = await fetchBookAI(array)
+                if(Thumbnail) {
+                    setAiThumbArr(Thumbnail)
                 }
-                setAiThumbArr(Thumbnail)
             } catch(err) {
                 throwError(err)
             }
         }
         RecomAi(interest)
     },[profile])
-
-    useEffect(()=>{console.log(AithumbArr)},[AithumbArr])
 
     const handleWishAdd = async(title:string,author:string,price:number) => {
 

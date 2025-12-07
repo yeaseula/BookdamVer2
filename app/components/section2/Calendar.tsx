@@ -5,6 +5,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import styled from "styled-components";
 import { useAuthStore, useSettingStore } from "@/app/lib/userfetch";
 import Skeleton from "react-loading-skeleton";
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const FullCalBox = styled.div`
     padding: 15px 15px 10px 15px;
@@ -101,7 +102,6 @@ const FullCalBox = styled.div`
         opacity: 0.7;
     }
 `
-
 export default function Calendar() {
 
     const { isReviewLoaded, reviews } = useAuthStore()

@@ -13,7 +13,8 @@ import styled from 'styled-components';
 import { useAuthStore } from '../../../lib/userfetch';
 import { fetchBookCover } from '@/app/lib/fetchBookCover';
 import { useErrorUtil } from '@/app/error/useErrorUtil';
-
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css'
 const StyleSwiper = styled(Swiper)`
     width: 125px;
     aspectratio: 3/4;
@@ -53,6 +54,7 @@ interface BannerBook {
 export default function MainSwiper() {
     const SwiperRef = useRef(null)
     const {reviews,isReviewLoaded} = useAuthStore()
+    const [isReady,setIsReady] = useState(false)
     const [reviewThumb,setReviewThumb] = useState<BannerBook[]>([])
     const throwError = useErrorUtil()
 
@@ -66,14 +68,13 @@ export default function MainSwiper() {
             try {
                 const Thumbnail = await fetchBookCover(title,author)
                 if(isCancelled) return
-
-                if(Thumbnail.error) {
-                    throwError(Thumbnail.error)
+                if(Thumbnail) {
+                    setReviewThumb((prev)=>[...prev,Thumbnail])
                 }
-
-                setReviewThumb((prev)=>[...prev,Thumbnail])
             } catch(err) {
                 throwError(err)
+            } finally {
+                setIsReady(true)
             }
         }
 
@@ -92,6 +93,10 @@ export default function MainSwiper() {
         <>
             {/* <div className='prev-main-slide'>이전 슬라이드</div>
             <div className='next-slide-main'>다음 슬라이드</div> */}
+            {!isReady &&
+                <Skeleton height={174} style={{ lineHeight: '1.6', borderRadius: '10px' }} />
+            }
+            {isReady &&
             <StyleSwiper
                 effect={'cards'}
                 modules={[Navigation, A11y, Keyboard, Autoplay, EffectCards]}
@@ -122,9 +127,9 @@ export default function MainSwiper() {
                         />
                     }
                     </>
-
                 ))}
             </StyleSwiper>
+            }
         </>
     )
 }

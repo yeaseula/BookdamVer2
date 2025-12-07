@@ -3,7 +3,8 @@ import Image from "next/image"
 import RecomandSwiper from "./RecomandSwiper"
 import styled from "styled-components"
 import { useAuthStore } from "@/app/lib/userfetch"
-import ErrorBoundaryBox from "@/app/error/ErrorBoundaryBox"
+import { ErrorBoundary } from "react-error-boundary"
+import { CompoErrorFallBack } from "@/app/error/CompoErrorFallBack"
 
 const TitleSection = styled.div`
     position: relative;
@@ -44,9 +45,9 @@ export default function SectionPageThree() {
                         <button className="sr-only next-slide" aria-label="다음 슬라이드">다음 슬라이드</button>
                     </div>
                 </TitleSection>
-                <ErrorBoundaryBox>
+                <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
                     <RecomandSwiper />
-                </ErrorBoundaryBox>
+                </ErrorBoundary>
         </section>
     )
 }

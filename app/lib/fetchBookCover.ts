@@ -1,5 +1,7 @@
 "use client"
 
+import Error from "../error";
+import { NetworkError, throwHttpError } from "../error/errorLibrary";
 export const fetchBookCover = async (title:string,author:string) => {
 
     try {
@@ -13,7 +15,7 @@ export const fetchBookCover = async (title:string,author:string) => {
         });
 
         if(!res.ok) {
-            throw new Error('api 호출 실패')
+            throwHttpError(res)
         }
         const data = await res.json();
 
@@ -27,11 +29,13 @@ export const fetchBookCover = async (title:string,author:string) => {
         }
     } catch(err) {
         console.log(err)
-        return {
-            bookThumb: '',
-            booktitle: title,
-            error: err
+        if (err instanceof TypeError && err.message.includes('fetch')) {
+            throw new NetworkError()
         }
+        if(err instanceof Error) {
+            throw err
+        }
+        throw err
     }
 }
 
@@ -42,7 +46,7 @@ interface BookAiType {
     contents: string;
     price: number;
     sale_price: number;
-    err?: unknown;
+    error?: unknown;
 }
 
 export const fetchBookAI = async(interest:string[]) => {
@@ -59,14 +63,15 @@ export const fetchBookAI = async(interest:string[]) => {
         });
 
         if(!res.ok) {
-            throw new Error('api 호출 실패')
+            throwHttpError(res)
         }
+
         const data = await res.json();
 
         const BookAiResult:BookAiType[] = []
 
         data?.documents.forEach((ele)=>{
-            const test = {
+            const test:BookAiType = {
                 isbn : ele.isbn,
                 thumbnail: ele.thumbnail,
                 title: ele.title,
@@ -81,15 +86,13 @@ export const fetchBookAI = async(interest:string[]) => {
 
     } catch(error) {
         console.log(error)
-        const ErrorResult:BookAiType[] = [{
-                isbn : '',
-                thumbnail: '',
-                title: '',
-                contents: '',
-                price: 0,
-                sale_price: 0,
-                err: error
-            }]
-        return ErrorResult
+
+        if (error instanceof TypeError && error.message.includes('fetch')) {
+            throw new NetworkError()
+        }
+        if(error instanceof Error) {
+            throw error
+        }
+        throw error
     }
 }

@@ -5,9 +5,7 @@ export function useErrorUtil() {
     const { showBoundary } = useErrorBoundary()
 
     return (err:unknown) => {
-        const e = new Error(
-            err instanceof Error ? err.message : String(err)
-        )
-        showBoundary(e)
+        const error = err instanceof Error ? err : new Error(String(err));
+        showBoundary(error)
     }
 }
