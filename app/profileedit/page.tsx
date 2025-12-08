@@ -53,7 +53,7 @@ export default function ProfileEdit() {
             <Container>
                 <p>
                     닉네임 수정<br />
-                    <span className="text-xl text-gray-600">{profile.username}</span>
+                    <span className="text-xl text-gray-600">{profile.data.username}</span>
                 </p>
                 <RiArrowRightSLine size={18} />
                 <Inner href={'/profileedit/nickname'} />

@@ -3,6 +3,7 @@
 import styled from "styled-components"
 import InputFields from "@/app/components/form/input"
 import { useState } from "react"
+import { DataState, Profiles } from "@/app/lib/userfetch"
 import EditButton from "../components/EditButton"
 import createClient from "@/utils/supabase/client"
 import { useToastStore } from "@/app/lib/useToastStore"
@@ -37,20 +38,29 @@ export default function EditNickname() {
         setLoading(true)
 
         try {
-            const { error } = await supabase
+            const { data, error } = await supabase
                 .from("profiles")
                 .update({ username: newNickname })
-                .eq("id", session.user.id);
+                .eq("id", session.user.id)
 
-        if (error) {
-            throw new Error('닉네임 변경에 실패했습니다')
-        }
+            if(error) {
+                throw new Error('닉네임 수정에 실패했습니다')
+            }
 
-        router.push('/profileedit')
+            const newProfile:DataState<Profiles> = {
+                data: {
+                    ...profile.data,
+                    username:newNickname
+                },
+                error: error,
+                ok: !error
+            }
 
-        // zustand 상태 업데이트
-        setProfile({ username: newNickname, interests: profile.interests }); // interests는 필요에 맞게
-        setToast('닉네임 변경이 완료되었습니다','success')
+            router.push('/profileedit')
+
+            // zustand 상태 업데이트
+            setProfile(newProfile);
+            setToast('닉네임 변경이 완료되었습니다','success')
 
         } catch (err) {
             console.error(err);
