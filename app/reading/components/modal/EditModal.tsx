@@ -1,6 +1,6 @@
 "use client"
 import styled from "styled-components"
-import { Books } from "@/app/lib/userfetch"
+import { DataState, Books } from "@/app/lib/userfetch"
 import { Dispatch, SetStateAction, useState } from "react"
 import InputFields from "@/app/components/form/input"
 import EditModalButton from "./EditButton"
@@ -64,25 +64,26 @@ export default function EditModal({editObj,setEditPopup,checkIdRef}:ModalProps) 
                 .eq("id", editingId)
                 .select();
 
-            if (error) {
-                console.error(error);
-                setToast("읽고있는 책 수정에 실패했습니다!", "error")
-                return;
+            const updatedBooks:DataState<Books> = {
+                data: data?.[0],
+                error: error,
+                ok: !error
             }
 
-            const updatedBooks:Books = data?.[0];
-            if (!updatedBooks) return;
-
-            // Zustand 상태 업데이트
-            useAuthStore.getState().updateData<Books>('books',updatedBooks);
-            setToast("수정이 완료됐습니다!", "success")
-            setEditPopup(false)
-            checkIdRef.current = []
+            if(!updatedBooks.ok || updatedBooks.error) {
+                throw new Error("수정이 실패했습니다.")
+            } else {
+                // Zustand 상태 업데이트
+                useAuthStore.getState().updateData('books',updatedBooks);
+                setToast("수정이 완료됐습니다!", "success")
+                setEditPopup(false)
+                checkIdRef.current = []
+            }
 
         } catch(err) {
             const errorMessage = err instanceof Error
                 ? err.message
-                : '읽고있는 책 수정 중 오류가 발생했습니다'
+                : '수정 중 오류가 발생했습니다'
             setToast(errorMessage, "error")
         } finally {
             debounce = false;

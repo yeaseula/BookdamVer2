@@ -19,7 +19,7 @@ export default function WishPage() {
     const { session, isWishLoaded } = useAuthStore()
     const [EditPopup,setEditPopup] = useState(false)
     const { wish } = useAuthStore() as { wish: DataState<Wish[]>}
-    const [currentWish,setCurrentWish] = useState<DataState<Wish[]>>([])
+    const [currentWish,setCurrentWish] = useState<DataState<Wish[]>>(null)
 
     const checkIdRef = useRef<string[]>([])
     const [modal,setModal] = useState(false)
