@@ -6,8 +6,6 @@ import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
 
-console.log('✅ MIDDLEWARE PATH:', request.nextUrl.pathname)
-
   let supabaseResponse = NextResponse.next({
     request,
   })

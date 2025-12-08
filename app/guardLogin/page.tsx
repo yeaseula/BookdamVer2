@@ -15,8 +15,8 @@ export default function GuardLogin() {
             />
 
             <p className="font-semibold text-3xl mb-5.5">이미 로그인 중입니다 :)</p>
-            <button onClick={()=>router.back()}
-            className="py-2 pt-3 px-10 pointer-fine:cursor-pointer transition-all bg-cyan-500 hover:bg-cyan-900 text-white rounded-2xl">돌아가기</button>
+            <button onClick={()=>router.push('/')}
+            className="py-2 pt-3 px-10 pointer-fine:cursor-pointer transition-all bg-cyan-500 hover:bg-cyan-900 text-white rounded-2xl">홈으로 이동</button>
         </div>
     )
 }

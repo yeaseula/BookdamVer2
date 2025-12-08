@@ -82,8 +82,6 @@ export const fetchBookAI = async(interest:string[]) => {
                 sale_price: ele.sale_price,
             }
             BookAiResult.push(test)
-
-            console.log(ele)
         })
 
         return BookAiResult
