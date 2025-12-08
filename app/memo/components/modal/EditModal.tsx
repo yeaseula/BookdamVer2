@@ -1,6 +1,6 @@
 "use client"
 import styled from "styled-components"
-import { Memo } from "@/app/lib/userfetch"
+import { DataState, Memo } from "@/app/lib/userfetch"
 import { Dispatch, SetStateAction, useState } from "react"
 import InputFields from "@/app/components/form/input"
 import TextArea from "@/app/components/form/textarea"
@@ -66,21 +66,22 @@ export default function EditModal({editObj,setEditPopup,checkId}:ModalProps) {
                 .eq("id", editingId)
                 .select();
 
-            if (error) {
-                console.error(error);
-                throw new Error ('메모 수정에 실패했습니다.')
-            }
-
-            const updatedMemo:Memo = data?.[0];
+            const updatedMemo:DataState<Memo> = {
+                data: data?.[0],
+                error: error,
+                ok: !error
+            };
             if (!updatedMemo) return;
 
-            // Zustand 상태 업데이트
-            useAuthStore.getState().updateData<Memo>('memo',updatedMemo);
-            setToast("수정이 완료됐습니다!", "success")
+            if(!updatedMemo.data || !updatedMemo.ok) {
+                throw new Error
+            } else {
+                useAuthStore.getState().updateData('memo',updatedMemo);
+                setToast("수정이 완료됐습니다!", "success")
 
-            setEditPopup(false)
-            checkId.current = []
-
+                setEditPopup(false)
+                checkId.current = []
+            }
         } catch (err) {
             const errorMessage = err instanceof Error
                 ? err.message

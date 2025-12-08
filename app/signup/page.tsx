@@ -63,7 +63,6 @@ export default function SignUp() {
     const [button,setButton] = useState<boolean>(false) // button 활성화 상태
     const [loading,setLoading] = useState<boolean>(false)
     const setToast = useToastStore((state)=>state.setToast)
-    const setWorking = useToastStore((state)=>state.setWorking)
     const setSession = useAuthStore((state)=>state.setSession)
     const setProfile = useAuthStore((state)=>state.setProfile)
     const setData = useAuthStore((state)=>state.setData)
@@ -93,16 +92,12 @@ export default function SignUp() {
 
             if (error) {
                 if(error.message === 'User already registered') {
-                    setToast('이미 가입된 이메일입니다.', 'error')
                     throw new Error('이미 가입된 이메일입니다.')
                 } else if(error.code === 'weak_password') {
-                    setToast('비밀번호는 8자 이상, 문자+숫자 조합으로 설정해주세요.', 'error')
                     throw new Error('비밀번호는 8자 이상, 문자+숫자 조합으로 설정해주세요.')
                 } else if(error.code === 'validation_failed') {
-                    setToast('이메일 형식이 올바르지 않습니다.', 'error')
                     throw new Error('이메일 형식이 올바르지 않습니다.')
                 } else {
-                    setToast('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.', 'error')
                     throw new Error('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.')
                 }
             }
@@ -116,6 +111,10 @@ export default function SignUp() {
                 setToast('로그인 세션 생성에 실패했습니다.', 'error')
                 throw new Error('로그인 세션 생성에 실패했습니다.')
             }
+
+            const UserId = session.user.id;
+            setSession(session)
+
             //프로필 테이블 생성
             const {error: profileError} = await supabase.from('profiles').insert({
                 id: session.user?.id,
@@ -127,36 +126,50 @@ export default function SignUp() {
                 setToast('프로필 생성에 실패했습니다.', 'error')
                 throw new Error('프로필 생성에 실패했습니다.')
             }
-            const UserId = session.user.id;
+
+
+            const UserInfor = await UserInfoInitial(UserId)
+
+            if(!UserInfor.ok || !UserInfor.data) {
+                console.log(UserInfor.error)
+                setToast('프로필 데이터 로드에 실패했습니다', 'info')
+                throw new Error('프로필 데이터를 읽어오지 못했습니다.')
+            } else {
+                const UserProrile = {
+                    data: {
+                        ...UserInfor.data
+                    },
+                    error: UserInfor.error,
+                    ok: !UserInfor.error
+                }
+                setProfile(UserProrile)
+            }
 
             //초기 데이터 로딩
-            try {
-                const [UserInfor,
-                    UserReview,
-                    UserMemo,
-                    UserBooks,
-                    UserLog,
-                    UserWish] = await Promise.all([
-                        UserInfoInitial(UserId),
-                        UserReviewInitial(UserId),
-                        UserMemoInitial(UserId),
-                        UserBooksInitial(UserId),
-                        UserLogInitial(UserId),
-                        UserWishInitial(UserId)
-                    ])
-                    setSession(session)
-                    const UserProrile = { username: UserInfor.username, interests:interest }
-                    setProfile(UserProrile)
+            const results = await Promise.all([
+                    UserReviewInitial(UserId),
+                    UserMemoInitial(UserId),
+                    UserBooksInitial(UserId),
+                    UserLogInitial(UserId),
+                    UserWishInitial(UserId)
+                ])
 
-                    setData<Reviews>('reviews',UserReview)
-                    setData<Memo>('memo', UserMemo)
-                    setData<Books>('books', UserBooks)
-                    setData<Log>('log', UserLog)
-                    setData<Wish>('wish',UserWish)
+            const [UserReview, UserMemo, UserBooks, UserLog, UserWish] = results
 
-            } catch (dataError) {
-                console.error('초기 데이터 로딩 실패:', dataError)
-                setToast('회원가입은 완료되었으나 일부 데이터 로딩에 실패했습니다', "info")
+            if(UserReview.ok) setData('reviews',UserReview)
+            if(UserMemo.ok) setData('memo',UserMemo)
+            if(UserBooks.ok) setData('books',UserBooks)
+            if(UserLog.ok) setData('log', UserLog)
+            if(UserWish.ok) setData('wish',UserWish)
+
+            if(!UserReview.ok) console.log('리뷰로드실패')
+            if(!UserMemo.ok) console.log('메모로드실패')
+            if(!UserBooks.ok) console.log('읽는중책로드실패')
+            if(!UserLog.ok) console.log('로그로드실패')
+            if(!UserWish.ok) console.log('위시로드실패')
+
+            if(results.some(r => !r.ok)) {
+                setToast('회원가입은 완료되었으나 일부 데이터 로딩에 실패했습니다', 'info')
             }
 
             router.push('/')
@@ -168,8 +181,6 @@ export default function SignUp() {
                 : '회원가입 중 오류가 발생했습니다'
             setToast(errorMessage, "error")
             setLoading(false)
-        } finally {
-
         }
     }
     return(

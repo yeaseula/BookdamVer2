@@ -1,6 +1,6 @@
 import { ButtonStyle } from "@/app/components/form/Button.styled"
 
-export default function EditModalButton({modalTitle,modalPage,modalContent,onClick}) {
+export default function EditModalButton({modalTitle,modalPage,modalContent,isLoading,onClick}) {
 
     const isValid = modalTitle && modalPage && modalContent
 

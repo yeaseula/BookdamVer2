@@ -1,20 +1,20 @@
 "use client"
 import { useEffect } from "react"
-import { useAuthStore, useSettingStore } from "../lib/userfetch"
+import { Profiles, useAuthStore, useSettingStore } from "../lib/userfetch"
 import { Session } from "@supabase/supabase-js"
-import { Reviews } from "../lib/userfetch"
-import { Memo, Books, Log, Wish } from "../lib/userfetch"
+import { DataState,Reviews, Memo, Books, Log, Wish } from "../lib/userfetch"
 import StopWatch from "../reading/components/stopwatch/StopWatch"
 import { usePathname } from "next/navigation"
+import 'react-loading-skeleton/dist/skeleton.css'
 
 interface Props {
   initialSession: Session | null
-  initialProfile: { username: string; interests: string[] } | null
-  initialReview: any
-  initialMemo: any
-  initialBooks: any
-  initialLog: any
-  initialWish: any
+  initialProfile: DataState<Profiles>
+  initialReview: DataState<Reviews[]>
+  initialMemo: DataState<Memo[]>
+  initialBooks: DataState<Books[]>
+  initialLog: DataState<Log[]>
+  initialWish: DataState<Wish[]>
   initialSettings: any
   children: React.ReactNode
 }
@@ -48,11 +48,11 @@ export default function ClientRoot({
     useEffect(()=>{
       setSession(initialSession)
       setProfile(initialProfile)
-      setData<Reviews>('reviews',initialReview)
-      setData<Memo>('memo',initialMemo)
-      setData<Books>('books',initialBooks)
-      setData<Log>('log',initialLog)
-      setData<Wish>('wish',initialWish)
+      setData('reviews',initialReview)
+      setData('memo',initialMemo)
+      setData('books',initialBooks)
+      setData('log',initialLog)
+      setData('wish',initialWish)
       initSettings(initialSettings)
     },[])
 

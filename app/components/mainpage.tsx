@@ -10,13 +10,13 @@ import { ErrorBoundary } from "react-error-boundary"
 import { GlobalErrorFallback } from "../error/GlobalErrorFallBack"
 
 export default function MainPage() {
-    const { profile, isReviewLoaded } = useAuthStore()
+    const { session, profile, isReviewLoaded } = useAuthStore()
 
     return(
         <>
         <ErrorBoundary FallbackComponent={GlobalErrorFallback}>
-        {(!profile || !isReviewLoaded) && <SpinnerArea text="로딩중 .."/>}
-        {(profile || isReviewLoaded) && (
+        {(!session || !profile || !isReviewLoaded) && <SpinnerArea text="로딩중 .."/>}
+        {(session || profile || isReviewLoaded) && (
             <>
                 <MainBanner />
                 <SectionPageOne />

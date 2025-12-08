@@ -24,7 +24,7 @@ const Title = styled.p`
 
 export default function SectionPageThree() {
     const { profile } = useAuthStore()
-    const username = profile.username
+    const username = profile.data?.username
 
     return(
         <section className="pt-20 pb-20 pr-5 pl-5">

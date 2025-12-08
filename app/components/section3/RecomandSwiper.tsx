@@ -14,7 +14,7 @@ import 'swiper/css/keyboard';
 import styled from 'styled-components';
 import createClient from '@/utils/supabase/client';
 import { useToastStore } from '@/app/lib/useToastStore';
-import { useAuthStore, Wish } from '@/app/lib/userfetch';
+import { useAuthStore, DataState, Wish } from '@/app/lib/userfetch';
 import { fetchBookAI } from '@/app/lib/fetchBookCover';
 import { useErrorUtil } from '@/app/error/useErrorUtil';
 
@@ -130,13 +130,15 @@ export default function RecomandSwiper(){
     const setToast = useToastStore((state)=>state.setToast)
     const [isWorking,setIsWorking] = useState(false)
     const [AithumbArr,setAiThumbArr] = useState([])
-    const interest = profile?.interests
+    const interest = profile.data?.interests
     const throwError = useErrorUtil()
+
 
     useEffect(()=>{
         const RecomAi = async(array:string[])=>{
             try {
                 if(!interest) return
+
                 const Thumbnail = await fetchBookAI(array)
                 if(Thumbnail) {
                     setAiThumbArr(Thumbnail)
@@ -152,6 +154,7 @@ export default function RecomandSwiper(){
 
         if(isWorking) return
         setIsWorking(true)
+
         try {
             const { data, error } = await supabase.from("wish").insert([
                 {
@@ -162,16 +165,23 @@ export default function RecomandSwiper(){
                 },
             ]).select();
 
-            if (error) throw error;
+            const newWish: DataState<Wish> = {
+                data : data?.[0],
+                error: error,
+                ok: !error
+            }
 
-            const newWish: Wish = data?.[0]
-            if(!newWish) return;
+            if(!newWish.data || !newWish.ok) {
+                setToast("읽고싶은 책 업로드 실패","error")
+                throw new Error('위시리스트 추가 실패')
+            } else {
+                setToast("읽고싶은 책 업로드 성공!","success")
+                useAuthStore.getState().addData('wish',newWish)
+            }
 
-            //zustand 전역 업로드
-            useAuthStore.getState().addData<Wish>('wish',newWish)
-            setToast("읽고싶은 책 업로드 성공!","success")
         } catch(error) {
             setToast("읽고싶은 책 업로드 실패","error")
+            throw new Error('위시리스트 추가 실패')
         } finally {
             setIsWorking(false)
         }
@@ -211,6 +221,7 @@ export default function RecomandSwiper(){
                         <BookDesc>
                             <div>
                                 <BookTitle>{book.title}</BookTitle>
+                                {book.authors}
                                 <BookIntro>{book.contents ? book.contents.substring(0, 200) + '...' : '설명이 없습니다.'}</BookIntro>
                             </div>
                             <ButtonWrap>

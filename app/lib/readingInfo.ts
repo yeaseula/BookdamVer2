@@ -1,5 +1,5 @@
 import createClient from "@/utils/supabase/client";
-import { Reviews, Memo, Books, Log, Wish } from "./userfetch";
+import { DataState, Profiles, Reviews, Memo, Books, Log, Wish, SettingDefault } from "./userfetch";
 const supabase = createClient()
 
 //profile
@@ -9,7 +9,11 @@ export const UserInfoInitial = async (userId:string)=>{
     .select('*')
     .eq('id', userId)
     .single();
-    const userInfor = data
+    const userInfor:DataState<Profiles> = {
+        data: data,
+        error: error,
+        ok: !error
+    }
     return userInfor
 }
 
@@ -21,7 +25,11 @@ export const UserReviewInitial = async (userId:string)=> {
         .eq("user_id", userId)
         .order('created_at', { ascending: false })
 
-    const userReviews:Reviews[] = data
+    const userReviews:DataState<Reviews[]> = {
+        data: data,
+        error: error,
+        ok: !error
+    }
     return userReviews
 }
 
@@ -33,7 +41,11 @@ export const UserMemoInitial = async (userId:string) => {
         .eq("user_id", userId)
         .order('created_at', { ascending: false })
 
-    const userMemo:Memo[] = data
+    const userMemo:DataState<Memo[]> = {
+        data: data,
+        error: error,
+        ok: !error
+    }
     return userMemo
 }
 
@@ -45,19 +57,27 @@ export const UserBooksInitial = async (userId:string) => {
         .eq("user_id", userId)
         .order('updated_at', { ascending: false })
 
-    const userBooks:Books[] = data
+    const userBooks:DataState<Books[]> = {
+        data: data,
+        error: error,
+        ok: !error
+    }
     return userBooks
 }
 
 //log
 export const UserLogInitial = async (userId:string) => {
     const { data, error } = await supabase
-        .from("log")
+        .from("reading_logs")
         .select("*")
         .eq("user_id", userId)
         .order('created_at', { ascending: false })
 
-    const userLog:Log[] = data
+    const userLog:DataState<Log[]> = {
+        data: data,
+        error: error,
+        ok: !error
+    }
     return userLog
 }
 
@@ -69,6 +89,23 @@ export const UserWishInitial = async (userId:string) => {
         .eq("user_id", userId)
         .order('created_at', { ascending: false })
 
-    const userWish:Wish[] = data
+    const userWish:DataState<Wish[]> = {
+        data: data,
+        error: error,
+        ok: !error
+    }
     return userWish
+}
+
+//setting
+export const UserSetting = async(userId: string) => {
+    const { data, error } = await supabase
+    .from('user_settings')
+    .select('*')
+    .eq('user_id', userId)
+    .order('updated_at', { ascending: false })
+    .single()
+
+    const UserSettings: SettingDefault = data
+    return UserSettings
 }

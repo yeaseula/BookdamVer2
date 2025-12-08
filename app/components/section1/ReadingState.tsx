@@ -1,5 +1,4 @@
 "use client"
-import { Books } from "@/app/lib/userfetch"
 import { useAuthStore } from "@/app/lib/userfetch"
 import Image from "next/image"
 import Skeleton from "react-loading-skeleton"
@@ -37,14 +36,14 @@ export default function ReadingState() {
             )}
             {isBooksLoaded && (
                 <>
-                {books.length === 0 &&
+                {books.data.length == 0 &&
                     <p className="mt-8 font-medium">읽고있는 책이 없네요🤔</p>
                 }
-                {books.length !== 0 && (
+                {books.data.length > 0 && (
                     <ReadBoxP>
                         현재
-                        <span className="reading-name font-bold"> {books[0].title}</span>을 읽고 계시네요!<br />
-                        <span className="reading-page font-bold">{books[0].current_page} 페이지</span>까지 읽었어요.
+                        <span className="reading-name font-bold"> {books.data[0].title}</span>을 읽고 계시네요!<br />
+                        <span className="reading-page font-bold">{books.data[0].current_page} 페이지</span>까지 읽었어요.
                     </ReadBoxP>
                 )}
                 </>

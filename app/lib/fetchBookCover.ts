@@ -41,6 +41,7 @@ export const fetchBookCover = async (title:string,author:string) => {
 
 interface BookAiType {
     isbn: string;
+    authors: string[]
     thumbnail: string;
     title: string;
     contents: string;
@@ -73,6 +74,7 @@ export const fetchBookAI = async(interest:string[]) => {
         data?.documents.forEach((ele)=>{
             const test:BookAiType = {
                 isbn : ele.isbn,
+                authors: ele.authors,
                 thumbnail: ele.thumbnail,
                 title: ele.title,
                 contents: ele.contents,
@@ -80,6 +82,8 @@ export const fetchBookAI = async(interest:string[]) => {
                 sale_price: ele.sale_price,
             }
             BookAiResult.push(test)
+
+            console.log(ele)
         })
 
         return BookAiResult

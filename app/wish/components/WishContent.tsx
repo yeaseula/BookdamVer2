@@ -2,6 +2,8 @@
 import styled from "styled-components"
 import InputCheck from "../../components/form/inputCheck"
 import { Wish } from "@/app/lib/userfetch"
+import PageError from "@/app/error/PageError"
+import { useEffect } from "react"
 
 const List = styled.div`
     position: relative;
@@ -33,11 +35,21 @@ const CheckBox = styled.div`
 export default function WishContent({wish,checkId,modal,setModal}) {
     const formatMoney = (num:number) => num.toLocaleString();
 
+    if(!wish.ok || wish.error) {
+        return (
+            <PageError />
+        )
+    }
+
+    if(wish.data?.length === 0) {
+        return (
+            <EmptyMessage>등록된 글이 없습니다</EmptyMessage>
+        )
+    }
+
     return (
         <>
-            {wish.length === 0 && <EmptyMessage>등록된 글이 없습니다</EmptyMessage>}
-            {wish.length !== 0 && (
-                wish.map((w:Wish,idx:number)=>(
+            {wish.data?.map((w:Wish,idx:number)=>(
                 <List key={`${w.title}-${idx}`}>
                     <CheckBox>
                         <InputCheck
@@ -54,11 +66,10 @@ export default function WishContent({wish,checkId,modal,setModal}) {
                             <p className="font-medium">{w.title}</p>
                             <p className="text-xl">{w.author}</p>
                         </div>
-                        <p className="text-xl">{formatMoney(w.price)}원</p>
+                        <p className="text-xl">{formatMoney(Number(w.price))}원</p>
                     </ListInfo>
                 </List>
-                ))
-            )}
+            ))}
         </>
     )
 }

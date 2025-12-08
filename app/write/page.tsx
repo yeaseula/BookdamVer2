@@ -7,7 +7,7 @@ import SelectField from "../components/form/select"
 import React, { useEffect, useRef, useState } from "react"
 import WriteButton from "./components/WriteButton"
 import createClient from "@/utils/supabase/client"
-import { Reviews, useAuthStore } from "../lib/userfetch"
+import { DataState, Reviews, useAuthStore } from "../lib/userfetch"
 import { useSearchParams } from "next/navigation"
 import { useToastStore } from "../lib/useToastStore"
 import { useRouter } from "next/navigation"
@@ -115,16 +115,18 @@ export default function Write() {
                 ])
                 .eq("id", postId).select()
 
-                if(error) {
-                    throw new Error('리뷰 수정에 실패했습니다 :' + error)
+                const newReview:DataState<Reviews> = {
+                    data: data?.[0],
+                    error: error,
+                    ok: !error
+                }
+                if(!newReview.ok) {
+                    throw new Error
                 } else {
+                    useAuthStore.getState().updateData("reviews",newReview)
                     router.push('/review')
                     setToast("리뷰 수정이 완료됐어요!", "success")
                 }
-
-                const newReview:Reviews = data?.[0] //zustand 전역 상태 업로드
-                if(!newReview) return;
-                useAuthStore.getState().updateData<Reviews>("reviews",newReview)
 
             } else {
 
@@ -150,13 +152,16 @@ export default function Write() {
                     }
                 ]).select()
 
-                const newReviewPost:Reviews = data?.[0]
-                if(!newReviewPost) return
-                useAuthStore.getState().addData<Reviews>("reviews",newReviewPost)
+                const newReviewPost:DataState<Reviews> = {
+                    data: data?.[0],
+                    error: error,
+                    ok: !error
+                }
 
-                if(error) {
-                    throw new Error('리뷰 등록이 실패했습니다 :' + error)
+                if(!newReviewPost.ok) {
+                    throw new Error
                 } else {
+                    useAuthStore.getState().addData("reviews",newReviewPost)
                     router.push('/review')
                     setToast("리뷰 등록이 완료됐어요!", "success")
                 }

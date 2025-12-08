@@ -3,7 +3,7 @@ import styled from "styled-components"
 import StarRaiting from "./StarRating"
 import { useAuthStore } from "@/app/lib/userfetch"
 import { useEffect, useState } from "react"
-import { Reviews } from "@/app/lib/userfetch"
+import { Reviews, DataState } from "@/app/lib/userfetch"
 import Thumbnail from "../components/Thumbnail"
 import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -45,11 +45,11 @@ const ReviewBody = styled.section`
 export default function ReviewDetail({postNumber}) {
 
     const [reviewArr,setReviewArr] = useState<Reviews[] | null>([])
-    const { reviews } = useAuthStore() as { reviews: Reviews[] | null}
+    const { reviews } = useAuthStore() as { reviews: DataState<Reviews[]>}
 
     useEffect(()=>{
         if(!reviews) return;
-        const result = reviews.filter((review)=>review.id === postNumber)
+        const result = reviews.data.filter((review)=>review.id === postNumber)
         setReviewArr(result)
     },[reviews])
 

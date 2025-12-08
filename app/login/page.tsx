@@ -9,10 +9,10 @@ import LoginButton from "./components/LoginButton";
 import createClient from "@/utils/supabase/client";
 import { useToastStore } from "../lib/useToastStore";
 import { useRouter } from "next/navigation";
-import { useAuthStore, Reviews, Memo, Books, Log, Wish } from "../lib/userfetch";
+import { useAuthStore } from "../lib/userfetch";
 //util function
 import { UserInfoInitial, UserReviewInitial, UserMemoInitial,
-    UserBooksInitial, UserLogInitial, UserWishInitial
+    UserBooksInitial, UserLogInitial, UserWishInitial, UserSetting
  } from "../lib/readingInfo";
 import SpinnerArea from "../components/spinner/SpinnerArea";
 
@@ -73,35 +73,49 @@ export default function Login() {
             setSession(data.session)
             const UserId = data.session.user.id
 
-            try {
-                const [UserInfor,
-                    UserReview,
-                    UserMemo,
-                    UserBooks,
-                    UserLog,
-                    UserWish] = await Promise.all([
-                        UserInfoInitial(UserId),
-                        UserReviewInitial(UserId),
-                        UserMemoInitial(UserId),
-                        UserBooksInitial(UserId),
-                        UserLogInitial(UserId),
-                        UserWishInitial(UserId)
-                    ])
-
-                    const UserProrile = { username: UserInfor.username, interests:UserInfor.interests }
-                    setProfile(UserProrile)
-                    setData<Reviews>('reviews',UserReview)
-                    setData<Memo>('memo', UserMemo)
-                    setData<Books>('books', UserBooks)
-                    setData<Log>('log', UserLog)
-                    setData<Wish>('wish',UserWish)
-
-            } catch (dataError) {
-                console.error('초기 데이터 로딩 실패:', dataError)
-                setToast('로그인은 완료되었으나 일부 데이터 로딩에 실패했습니다', "info")
-                router.push('/')
+            const UserInfor = await UserInfoInitial(UserId)
+            if(!UserInfor.ok || !UserInfor.data) {
+                console.log(UserInfor.error)
+                setToast('프로필 데이터 로드에 실패했습니다', 'info')
+                throw new Error('프로필 데이터를 읽어오지 못했습니다.')
+            } else {
+                const UserProrile = {
+                    data: {
+                        ...UserInfor.data
+                    },
+                    error: UserInfor.error,
+                    ok: !UserInfor.error
+                }
+                setProfile(UserProrile)
             }
-            router.push('/')
+
+            const results = await Promise.all([
+                    UserReviewInitial(UserId),
+                    UserMemoInitial(UserId),
+                    UserBooksInitial(UserId),
+                    UserLogInitial(UserId),
+                    UserWishInitial(UserId),
+                    UserSetting(UserId)
+                ])
+
+                const [UserReview, UserMemo, UserBooks, UserLog, UserWish] = results
+
+                if(UserReview.ok) setData('reviews',UserReview)
+                if(UserMemo.ok) setData('memo',UserMemo)
+                if(UserBooks.ok) setData('books',UserBooks)
+                if(UserLog.ok) setData('log', UserLog)
+                if(UserWish.ok) setData('wish',UserWish)
+
+                if(!UserReview.ok) console.log('리뷰로드실패')
+                if(!UserMemo.ok) console.log('메모로드실패')
+                if(!UserBooks.ok) console.log('읽는중책로드실패')
+                if(!UserLog.ok) console.log('로그로드실패')
+                if(!UserWish.ok) console.log('위시로드실패')
+
+                if(results.some((r)=> !r.ok)) {
+                    setToast('로그인은 완료되었으나 일부 데이터 로딩에 실패했습니다', "info")
+                }
+                router.push('/')
 
         } catch (err) {
             console.error('로그인 오류:', err)

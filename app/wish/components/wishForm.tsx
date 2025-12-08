@@ -2,10 +2,9 @@
 import styled from "styled-components"
 import AddButton from "./Add"
 import InputFields from "../../components/form/input"
-import TextArea from "../../components/form/textarea"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import createClient from "@/utils/supabase/client"
-import { Wish, useAuthStore } from "@/app/lib/userfetch"
+import { DataState, Wish, useAuthStore } from "@/app/lib/userfetch"
 import { useToastStore } from "@/app/lib/useToastStore"
 
 const FormWrap = styled.div`
@@ -25,6 +24,7 @@ export default function WishForm({session}) {
     const userId = session.user.id
 
     const handleSubmit = async () => {
+
         if(isWorking) return
         setIsWorking(true)
 
@@ -44,21 +44,30 @@ export default function WishForm({session}) {
 
             if (error) throw error;
 
-            const newWish: Wish = data?.[0]
+            const newWish:DataState<Wish> = {
+                data: data?.[0],
+                error: error,
+                ok: !error
+            }
             if(!newWish) return;
 
-            //zustand 전역 업로드
-            useAuthStore.getState().addData<Wish>('wish',newWish)
-
-            setToast("읽고싶은 책 업로드 성공!","success")
-            //필드 초기화
-            setTitle("")
-            setAuthor("")
-            setPrice(null)
-
-            setIsWorking(false)
+            if(!newWish.ok || newWish.error) {
+                throw new Error
+            } else {
+                useAuthStore.getState().addData('wish',newWish)
+                setToast("읽고싶은 책 업로드 성공!","success")
+                //필드 초기화
+                setTitle("")
+                setAuthor("")
+                setPrice(null)
+            }
         } catch (error) {
-            setToast("업로드 실패했습니다.","error")
+            const errorMessage = error instanceof Error
+                ? error.message
+                : '업로드 중 오류가 발생했습니다'
+            setToast(errorMessage, "error")
+        } finally {
+            setIsWorking(false)
         }
     }
 

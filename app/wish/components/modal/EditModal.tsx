@@ -1,9 +1,8 @@
 "use client"
 import styled from "styled-components"
-import { Wish } from "@/app/lib/userfetch"
+import { Wish, DataState } from "@/app/lib/userfetch"
 import { Dispatch, SetStateAction, useState } from "react"
 import InputFields from "@/app/components/form/input"
-import TextArea from "@/app/components/form/textarea"
 import EditModalButton from "./EditButton"
 import EditCloseButton from "./EditCloseButton"
 import createClient from "@/utils/supabase/client"
@@ -36,42 +35,56 @@ export default function EditModal({editObj,setEditPopup}:ModalProps) {
     const [modalTitle,setModalTitle] = useState<string>(editObj.title)
     const [modalAuthor,setModalAuthor] = useState<string>(editObj.author)
     const [modalPrice,setModalPrice] = useState<number | null>(editObj.price)
+    const [isLoading,setIsLoading] = useState<boolean>(false)
     const editingId = editObj.id
     const supabase = createClient()
     const setToast = useToastStore((state)=>state.setToast)
+    let debounce:boolean = false;
 
     const handleModalEdit = async () => {
-        const { data, error } = await supabase
-            .from("wish")
-            .update({
-            title: modalTitle,
-            author: modalAuthor,
-            price: modalPrice,
-            updated_at: new Date().toISOString()
-            })
-            .eq("id", editingId)
-            .select();
 
-        if (error) {
-            console.error(error);
-            setToast("수정 실패했습니다!", "error")
-            return;
+        if(debounce || isLoading) return
+        debounce = true
+        setIsLoading(true)
+
+        try {
+            const { data, error } = await supabase
+                .from("wish")
+                .update({
+                title: modalTitle,
+                author: modalAuthor,
+                price: modalPrice,
+                updated_at: new Date().toISOString()
+                })
+                .eq("id", editingId)
+                .select();
+
+            const updatedWish:DataState<Wish> = {
+                data: data?.[0],
+                error: error,
+                ok: !error
+            }
+            if (!updatedWish.ok || updatedWish.error) {
+                throw new Error
+            } else {
+                // Zustand 상태 업데이트
+                useAuthStore.getState().updateData('wish',updatedWish);
+                setToast("수정이 완료됐습니다!", "success")
+                setEditPopup(false)
+            }
+        } catch(err) {
+            const errorMessage = err instanceof Error
+                ? err.message
+                : '위시리스트 수정 중 오류가 발생했습니다'
+            setToast(errorMessage, "error")
+        } finally {
+            debounce = false;
+            setIsLoading(false)
         }
-
-        const updatedWish:Wish = data?.[0];
-        if (!updatedWish) return;
-
-        // Zustand 상태 업데이트
-        useAuthStore.getState().updateData<Wish>('wish',updatedWish);
-        setToast("수정이 완료됐습니다!", "success")
-        // setShowModal(false)
-        setEditPopup(false)
-        //setCheckId([])
     };
 
     const handleClose = () => {
         setEditPopup(false)
-        //setCheckId([])
     }
 
     return(
@@ -126,6 +139,7 @@ export default function EditModal({editObj,setEditPopup}:ModalProps) {
                     modalTitle={modalTitle}
                     modalPage={modalAuthor}
                     modalContent={modalPrice}
+                    isLoading={isLoading}
                     onClick={handleModalEdit}
                     />
                 </div>

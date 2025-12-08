@@ -4,12 +4,15 @@ import MemoForm from "./components/memoForm"
 import MemoContent from "./components/memoContent"
 import EditModal from "./components/modal/EditModal"
 import { useAuthStore } from "../lib/userfetch"
-import { Memo } from "../lib/userfetch"
+import { DataState,Memo } from "../lib/userfetch"
 import { useEffect, useState, useRef } from "react"
 import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
 import SettingModal from "../components/modal/ModalSetting"
 import Modal from "../components/modal/Modal"
+
+
+
 const MemoWrap = styled.section`
     padding: 80px 15px 65px;
 `
@@ -24,23 +27,42 @@ export default function MemoPage() {
     const [deleteModal,setDeleteModal] = useState(false)
 
     //data first access point
-    const [currentMemo,setCurrentMemo] = useState<Memo[] | null>(null)
-    const { memo } = useAuthStore() as { memo: Memo[] | null};
-    const { session } = useAuthStore()
+    const [currentMemo,setCurrentMemo] = useState<DataState<Memo[]>>(null)
+    const { memo } = useAuthStore() as { memo: DataState<Memo[]>}
+    const { session, isMemoRoaded } = useAuthStore()
 
     useEffect(()=>{
         setCurrentMemo(memo)
     },[memo])
 
     const handleEdit = async() => {
-        const CheckEdit = currentMemo.find((m)=>m.id===checkIdRef.current[0])
+        const CheckEdit = currentMemo.data.find((m)=>m.id===checkIdRef.current[0])
         editObjRef.current = CheckEdit //변경
         setEditPopup(true) // 수정 폼 팝업 오픈
         setModal(false) // 수정/삭제버튼 딜리트
     }
 
-    return(
+    if(!isMemoRoaded) {
+        return (
+            <MemoWrap>
+                <Skeleton height={37} borderRadius={5}/>
+                <div className="mt-1.5">
+                    <Skeleton height={90} borderRadius={5} />
+                </div>
+                <div className="mt-[35px]">
+                    <Skeleton height={25} borderRadius={5}/>
+                </div>
+                <div className="mt-[10px] text-right">
+                    <Skeleton width={100} height={25} borderRadius={5}/>
+                </div>
+                <div className="mt-[5px] text-right">
+                    <Skeleton width={150} height={25} borderRadius={5}/>
+                </div>
+            </MemoWrap>
+        )
+    }
 
+    return(
         <MemoWrap>
             <Modal
             state={modal}
@@ -52,9 +74,8 @@ export default function MemoPage() {
             setEditPopup={setEditPopup}
             onClickEdit={handleEdit}
             />
-
             <h2 className="sr-only">기억에 남는 구절</h2>
-            {session && currentMemo && (
+            {currentMemo && (
                 <>
                     <MemoForm session={session}/>
                     <div className="mt-[35px]">
@@ -74,22 +95,7 @@ export default function MemoPage() {
                     }
                 </>
             )}
-            {(!session || !currentMemo) && (
-            <>
-                <Skeleton height={37} borderRadius={5}/>
-                <div className="mt-1.5">
-                    <Skeleton height={90} borderRadius={5} />
-                </div>
-                <div className="mt-[35px]">
-                    <Skeleton height={25} borderRadius={5}/>
-                </div>
-                <div className="mt-[10px] text-right">
-                    <Skeleton width={100} height={25} borderRadius={5}/>
-                </div>
-                <div className="mt-[5px] text-right">
-                    <Skeleton width={150} height={25} borderRadius={5}/>
-                </div>
-            </>)}
+
         </MemoWrap>
     )
 }

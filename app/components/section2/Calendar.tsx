@@ -106,21 +106,24 @@ export default function Calendar() {
 
     const { isReviewLoaded, reviews } = useAuthStore()
     const { userSetting } = useSettingStore()
+    const [isReview,setIsReview] = useState<boolean>(false)
     const [stampDate,setStampDate] = useState<string[]>([])
+
 
     useEffect(()=>{
         if(!isReviewLoaded) return
         let isCancelled = false
 
-        if(!isCancelled) {
-            reviews.map(ele=>{
+        if(!isCancelled && reviews.data) {
+            reviews.data.map(ele=>{
                 setStampDate((prev)=>[...prev,ele.end_date])
             })
+
         }
         return () => {
             isCancelled = true
         }
-    },[reviews])
+    },[reviews.data])
 
     return (
         <section className="pt-8 pr-5 pl-5">

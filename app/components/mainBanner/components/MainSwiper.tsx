@@ -78,9 +78,9 @@ export default function MainSwiper() {
             }
         }
 
-        if(!reviews) return
+        if(!reviews.data) return
 
-        reviews.map((ele)=>(
+        reviews.data.map((ele)=>(
             MyReviewThumb(ele.title,ele.author)
         ))
 

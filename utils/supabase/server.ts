@@ -28,71 +28,81 @@ export default async function createClient() {
   const { data: {session} } = await supabase.auth.getSession();
   if (!session) return { supabase, session: null, profile: null };
 
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
   .from('profiles')
-  .select('username, interests')
+  .select('*')
   .eq('id', session.user.id)
   .single();
 
-  const { data:reviews, error:reviewError } = await supabase
-  .from('reviews')
-  .select('*')
-  .eq('user_id', session.user.id)
-  .order('created_at', { ascending: false })
+  const [ reviews, memo, books, log, wish, settings ] = await Promise.all([
+    supabase
+    .from('reviews')
+    .select('*')
+    .eq('user_id', session.user.id)
+    .order('created_at', { ascending: false }),
+    supabase
+    .from('memo')
+    .select('*')
+    .eq('user_id',session.user.id)
+    .order('created_at', { ascending: false }),
+    supabase
+    .from('books')
+    .select('*')
+    .eq('user_id', session.user.id)
+    .order('updated_at', { ascending: false }),
+    supabase
+    .from('reading_logs')
+    .select('*')
+    .eq('user_id', session.user.id)
+    .order('created_at', { ascending: false }),
+    supabase
+    .from('wish')
+    .select('*')
+    .eq('user_id', session.user.id)
+    .order('updated_at', { ascending: false }),
+    supabase
+    .from('user_settings')
+    .select('*')
+    .eq('user_id', session.user.id)
+    .order('updated_at', { ascending: false })
+  ])
 
-  if(reviewError) {
-    console.log('review data 패치 실패', reviewError)
-  }
-
-  const { data:memo, error:memoError } = await supabase
-  .from('memo')
-  .select('*')
-  .eq('user_id', session.user.id)
-  .order('created_at', { ascending: false })
-
-  if(memoError) {
-    console.log('memo data 패치 실패', reviewError)
-  }
-
-  const { data:books, error:booksError } = await supabase
-  .from('books')
-  .select('*')
-  .eq('user_id', session.user.id)
-  .order('updated_at', { ascending: false })
-
-  if(booksError) {
-    console.log('books data 패치 실패', reviewError)
-  }
-
-  const { data:log, error:logError } = await supabase
-  .from('reading_logs')
-  .select('*')
-  .eq('user_id', session.user.id)
-  .order('created_at', { ascending: false })
-
-  if(logError) {
-    console.log('books data 패치 실패', reviewError)
-  }
-
-  const { data:wish, error:wishError } = await supabase
-  .from('wish')
-  .select('*')
-  .eq('user_id', session.user.id)
-  .order('updated_at', { ascending: false })
-
-  if(wishError) {
-    console.log('wish data 패치 실패', reviewError)
-  }
-
-  const { data:settings, error:settingsError } = await supabase
-  .from('user_settings')
-  .select('*')
-  .eq('user_id', session.user.id)
-  .order('updated_at', { ascending: false })
-
-  if(settingsError) {
-    console.log('초기 settings 패치 실패 :' + settingsError)
-  }
-
-  return { supabase, session, profile, reviews, memo, books, log, wish, settings }
+  return {
+    supabase,
+    session,
+    profile : {
+      data: profile,
+      ok: !profileError,
+      error: profileError
+    },
+    reviews : {
+      data: reviews.data,
+      ok: !reviews.error,
+      error: reviews.error
+    },
+    memo : {
+      data: memo.data,
+      ok: !memo.error,
+      error: memo.error
+    },
+    books : {
+      data: books.data,
+      ok: !books.error,
+      error: books.error
+    },
+    log : {
+      data: log.data,
+      ok: !log.error,
+      error: log.error
+    },
+    wish : {
+      data: wish.data,
+      ok: !wish.error,
+      error: wish.error
+    },
+    settings : {
+      data: settings.data,
+      ok: !settings.error,
+      error: settings.error
+    } }
 }

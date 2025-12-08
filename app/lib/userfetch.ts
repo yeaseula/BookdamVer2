@@ -1,8 +1,14 @@
 
-import { Session, User } from "@supabase/supabase-js";
+import { PostgrestError, Session, User } from "@supabase/supabase-js";
 import { create } from "zustand";
 import createClient from "@/utils/supabase/client";
 import { persist } from "zustand/middleware"
+
+export type DataState<T> = {
+    data: T | null;
+    ok: boolean;
+    error: PostgrestError | null | string;
+}
 
 interface BaseType {
     id:string;
@@ -61,12 +67,12 @@ export interface Wish extends BaseType {
 interface AuthState {
     session: Session | null;
     user: User | null;
-    profile: { username: string; interests: string[] } | null;
-    reviews: Reviews[];
-    memo: Memo[];
-    books: Books[];
-    log: Log[];
-    wish: Wish[];
+    profile: DataState<Profiles>;
+    reviews: DataState<Reviews[]>;
+    memo: DataState<Memo[]>;
+    books: DataState<Books[]>;
+    log: DataState<Log[]>;
+    wish: DataState<Wish[]>;
 
     timer: number;
     timeObj: Books | null;
@@ -79,26 +85,41 @@ interface AuthState {
     isLogLoaded: boolean;
     isWishLoaded: boolean;
     setSession: (session: Session | null) => void;
-    setProfile: (profile: { username: string; interests: string[] } | null) => void;
-    setData: <T extends { id: string }>(key: 'memo' | 'reviews' | 'books' | 'log' | 'wish', items: T[]) => void;
-    addData: <T extends { id: string }>(key: 'memo' | 'reviews' | 'books' | 'log' | 'wish', item: T) => void;
-    updateData: <T extends { id: string }>(key: 'memo' | 'reviews' | 'books' | 'log' | 'wish', item: T) => void;
+    setProfile: (profile: DataState<Profiles> | null) => void;
+    setData: <T extends { id: string }>(
+        key: 'memo' | 'reviews' | 'books' | 'log' | 'wish',
+        items: DataState<T[]>
+    ) => void;
+    addData: <T extends { id: string }>(
+        key: 'memo' | 'reviews' | 'books' | 'log' | 'wish',
+        item: DataState<T>
+    ) => void;
+    updateData: <T extends { id: string }>(
+        key: 'memo' | 'reviews' | 'books' | 'log' | 'wish',
+        item: DataState<T>
+    ) => void;
     removeData: (key: 'memo' | 'reviews' | 'books' | 'log' | 'wish', id: string) => void;
     fetchSession: ()=>Promise<void>;
     setTimerObj: (key: 'timer' | 'timeObj' | 'isTimer' | 'isMinimalize', item: any)=> void;
 }
+
+const initialLoadState = {
+    data: null,
+    ok: true,
+    error: null,
+};
 
 export const useAuthStore = create<AuthState>()(
     persist(
         (set,get) => ({
             session: null,
             user: null,
-            profile: null,
-            reviews: [],
-            memo: [],
-            books: [],
-            log: [],
-            wish: [],
+            profile: initialLoadState,
+            reviews: {...initialLoadState},
+            memo: {...initialLoadState},
+            books: {...initialLoadState},
+            log: {...initialLoadState},
+            wish: {...initialLoadState},
             timer: 0,
             timeObj: null,
             isTimer: false,
@@ -128,29 +149,63 @@ export const useAuthStore = create<AuthState>()(
                     set({ [key]: items, isWishLoaded: true} as any)
                 }
             },
-            addData: (key, item) => set({ [key]: [item, ...get()[key]] } as any),
+            addData: (key, item) => {
+                const currentData = get()[key].data || []
+                set({
+                    [key] : {
+                        data : [item.data, ...currentData],
+                        ok: true,
+                        error: null
+                    }
+                } as any )
+            },
             updateData: (key, item) => {
-                const updated = get()[key].map((i: any) => i.id === item.id ? item : i)
-                //books는 updated_at 기준
+
+                const currentData = get()[key].data;
+                if (!currentData) return;
+                const updated = currentData.map((i: any) =>
+                    i.id === item.data.id ? item.data : i
+                );
+
                 if(key === 'books') {
-                    updated.sort((a:any,b:any) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
+                    updated.sort((a:any,b:any) =>
+                        new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
                 }
                 if(key === 'reviews') {
-                    updated.sort((a:any,b:any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                    updated.sort((a:any,b:any) =>
+                        new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
                 }
                 if(key === 'memo') {
-                    updated.sort((a:any,b:any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                    updated.sort((a:any,b:any) =>
+                        new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
                 }
                 if(key === 'log') {
-                    updated.sort((a:any,b:any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                    updated.sort((a:any,b:any) =>
+                        new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
                 }
                 if(key === 'wish') {
-                    updated.sort((a:any,b:any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                    updated.sort((a:any,b:any) =>
+                        new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
                 }
-                set({ [key]: updated } as any)
+                set({
+                    [key]: {
+                        data: updated,
+                        ok: true,
+                        error: null
+                    }
+                } as any)
             },
 
-            removeData: (key, id) => set({ [key]: get()[key].filter((i: any) => i.id !== id) } as any),
+            removeData: (key, id) => {
+                const currentData = get()[key].data
+                set({
+                    [key] : {
+                        data: currentData.filter((i: any) => i.id !== id),
+                        ok: true,
+                        error: null
+                    }
+                })
+            },
             setTimerObj: (key,item) => set({ [key] : item })
         }),
         {
@@ -194,11 +249,11 @@ export const useSettingStore = create<UserSetting>((set) => ({
         if(!settings) return
 
         const newSettings = {
-            reviewSet: settings[0].review_set || 'list',
-            calendarStart: settings[0].calendar_start || 'sun',
-            calendarStamp: settings[0].calendar_stamp || 'star',
-            font: settings[0].font || 16,
-            timerSet: settings[0].timer_set || 'normal',
+            reviewSet: settings.review_set || 'list',
+            calendarStart: settings .calendar_start || 'sun',
+            calendarStamp: settings.calendar_stamp || 'star',
+            font: settings.font || 16,
+            timerSet: settings.timer_set || 'normal',
         }
         set({ userSetting: newSettings })
     },

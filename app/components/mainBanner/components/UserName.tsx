@@ -14,8 +14,8 @@ const Name = styled.span`
 `
 
 export default function UserName() {
-    const {profile, isReviewLoaded} = useAuthStore()
-    const username = profile?.username
+    const {profile} = useAuthStore()
+    const username = profile.data ? profile.data.username : null
 
     return (
         <Text>

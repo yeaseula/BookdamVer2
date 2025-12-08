@@ -2,7 +2,7 @@
 import styled from "styled-components"
 import InputCheck from "../../components/form/inputCheck"
 import { Memo } from "@/app/lib/userfetch"
-
+import PageError from "@/app/error/PageError"
 
 const List = styled.div`
     position: relative;
@@ -48,11 +48,20 @@ const CheckBox = styled.div`
 
 export default function MemoContent({memo,setModal,modal,checkId}) {
 
+    if(!memo.ok || memo.error) {
+        return (
+            <PageError />
+        )
+    }
+
+    if(memo.data?.length === 0) {
+        return (
+            <EmptyMessage>등록된 글이 없습니다.</EmptyMessage>
+        )
+    }
     return (
         <>
-            {memo.length === 0 && <EmptyMessage>등록된 글이 없습니다.</EmptyMessage>}
-            {memo.length > 0 && (
-                memo.map((m:Memo,idx:number)=>(
+            {memo.data?.map((m:Memo,idx:number)=>(
                 <List key={`${m.title}-${idx}`}>
                     <CheckBox>
                         <InputCheck
@@ -71,8 +80,7 @@ export default function MemoContent({memo,setModal,modal,checkId}) {
                         </blockquote>
                     </ListInfo>
                 </List>
-                ))
-            )}
+            ))}
         </>
     )
 }

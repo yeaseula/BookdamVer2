@@ -5,7 +5,7 @@ import InputFields from "../../components/form/input"
 import TextArea from "../../components/form/textarea"
 import { useState } from "react"
 import createClient from "@/utils/supabase/client"
-import { Memo, useAuthStore } from "@/app/lib/userfetch"
+import { DataState ,Memo, useAuthStore } from "@/app/lib/userfetch"
 import { useToastStore } from "@/app/lib/useToastStore"
 
 const FormWrap = styled.div`
@@ -46,22 +46,27 @@ export default function MemoForm({session}) {
                 },
             ]).select();
 
-            if (error) {
-                throw new Error('나만의 구절 추가에 실패했습니다.')
+
+            const newMemo:DataState<Memo> = {
+                data: data?.[0],
+                error: error,
+                ok: !error
             }
 
-            const newMemo: Memo = data?.[0]
-            if(!newMemo) return;
+            if(!newMemo.data || !newMemo.ok) {
+                //실패
+                setToast("나만의 구절 업로드 실패!","error")
+                throw new Error
+            } else {
+                useAuthStore.getState().addData('memo',newMemo)
+                setToast("나만의 구절 업로드 성공!","success")
 
-            //zustand 전역 업로드
-            useAuthStore.getState().addData<Memo>('memo',newMemo)
+                //필드 초기화
+                setTitle("")
+                setPage(null)
+                setContent("")
+            }
 
-            setToast("나만의 구절 업로드 성공!","success")
-
-            //필드 초기화
-            setTitle("")
-            setPage(null)
-            setContent("")
         } catch (error) {
             const errorMessage = error instanceof Error
                 ? error.message
