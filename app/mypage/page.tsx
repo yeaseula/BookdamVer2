@@ -8,6 +8,8 @@ import Setting from "./components/Setting"
 import { useAuthStore } from "../lib/userfetch"
 import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
+import { ErrorBoundary } from "react-error-boundary"
+import { CompoErrorFallBack } from "../error/CompoErrorFallBack"
 
 const ProfileWrap = styled.section`
     padding: 80px 15px 65px;
@@ -46,7 +48,9 @@ export default function MyPage() {
             </CommonBox>
             <CommonBoxStyle>
                 {isReviewLoaded &&
-                    <ReadingState reviews={reviews} />
+                    <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
+                        <ReadingState reviews={reviews} />
+                    </ErrorBoundary>
                 }
                 {!isReviewLoaded &&
                     <>
