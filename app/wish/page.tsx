@@ -11,6 +11,7 @@ import EditModal from "./components/modal/EditModal"
 import Modal from "../components/modal/Modal"
 import { ErrorBoundary } from "react-error-boundary"
 import { CompoErrorFallBack } from "../error/CompoErrorFallBack"
+import { NetworkError } from "../error/errorLibrary"
 
 const WishWrap = styled.section`
     padding: 80px 15px 65px;
