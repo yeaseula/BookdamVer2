@@ -4,6 +4,7 @@ import InputCheck from "../../components/form/inputCheck"
 import { Books } from "@/app/lib/userfetch"
 import RecoardButton from "./RecoardButton"
 import ProgressBar from "./ProgressBar"
+import PageError from "@/app/error/PageError"
 
 const List = styled.div`
     position: relative;
@@ -41,39 +42,48 @@ export default function ReadingContent({
     currentBooks
 }) {
 
+    if(!books.ok || books.error) {
+        return (
+            <PageError />
+        )
+    }
+
+    if(books.data?.length === 0) {
+        return (
+            <EmptyMessage>등록된 글이 없습니다</EmptyMessage>
+        )
+    }
+
     return (
         <>
-            {books.length === 0 && <EmptyMessage>등록된 글이 없습니다</EmptyMessage>}
-            {books && (
-                books.map((m:Books,idx:number)=>(
-                <div className="mb-8" key={`${m.title}-${idx}`}>
-                <List>
-                    <CheckBox>
-                        <InputCheck
-                        type={'checkbox'}
-                        name={'list-check'}
-                        index={m.id}
-                        modal={modal}
-                        setModal={setModal}
-                        checkId={checkId} />
-                    </CheckBox>
-                    <ListInfo>
-                        <div className="w-[100%]">
-                            <p className="font-bold w-[80%]">{m.title}</p>
-                            <span className="text-xl font-medium"> 전체 {m.total_pages} 페이지 / 현재 {m.current_page} page</span>
-                        </div>
-                        <RecoardButton
-                        index={m.id}
-                        logWatchNum={logWatchNum}
-                        setLogWatchNum={setLogWatchNum}
-                        currentBooks={currentBooks}
-                        />
-                    </ListInfo>
-                </List>
-                <ProgressBar total={m.total_pages} current={m.current_page} />
-                </div>
-                ))
-            )}
+        {books.data?.map((m:Books,idx:number)=>(
+            <div className="mb-8" key={`${m.title}-${idx}`}>
+            <List>
+                <CheckBox>
+                    <InputCheck
+                    type={'checkbox'}
+                    name={'list-check'}
+                    index={m.id}
+                    modal={modal}
+                    setModal={setModal}
+                    checkId={checkId} />
+                </CheckBox>
+                <ListInfo>
+                    <div className="w-[100%]">
+                        <p className="font-bold w-[80%]">{m.title}</p>
+                        <span className="text-xl font-medium"> 전체 {m.total_pages} 페이지 / 현재 {m.current_page} page</span>
+                    </div>
+                    <RecoardButton
+                    index={m.id}
+                    logWatchNum={logWatchNum}
+                    setLogWatchNum={setLogWatchNum}
+                    currentBooks={currentBooks}
+                    />
+                </ListInfo>
+            </List>
+            <ProgressBar total={m.total_pages} current={m.current_page} />
+            </div>
+            ))}
         </>
     )
 }

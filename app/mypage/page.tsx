@@ -26,8 +26,9 @@ const CommonBoxStyle = styled(CommonBox)`
 export default function MyPage() {
 
     const {profile,reviews, isReviewLoaded} = useAuthStore()
-    const username = profile?.username
-    const interests = profile?.interests
+    const username = profile.data?.username
+    const interests = profile.data?.interests
+
     return(
         <>
         <ProfileWrap>
@@ -45,7 +46,7 @@ export default function MyPage() {
             </CommonBox>
             <CommonBoxStyle>
                 {isReviewLoaded &&
-                    <ReadingState reviews={reviews}></ReadingState>
+                    <ReadingState reviews={reviews} />
                 }
                 {!isReviewLoaded &&
                     <>

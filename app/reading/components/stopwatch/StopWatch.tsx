@@ -2,7 +2,7 @@
 
 
 import { useState,useRef,useEffect, Dispatch, SetStateAction } from "react"
-import { Books, Log } from "@/app/lib/userfetch"
+import { DataState, Books, Log } from "@/app/lib/userfetch"
 import createClient from "@/utils/supabase/client"
 import { useAuthStore } from "@/app/lib/userfetch"
 import { useToastStore } from "@/app/lib/useToastStore"
@@ -80,16 +80,17 @@ export default function StopWatch() {
             .eq("id", timeObj.id)
             .select();
 
-        if (error) {
-            console.error(error);
-            setToast("기록 실패했습니다!", "error")
-            return;
+        const updatedBooks:DataState<Books> = {
+            data: data?.[0],
+            error: error,
+            ok: !error
         }
 
-        const updatedBooks:Books = data?.[0];
-        if (!updatedBooks) return;
-
-        useAuthStore.getState().updateData<Books>('books',updatedBooks);
+        if(!updatedBooks.ok || updatedBooks.error) {
+            throw new Error('기록 저장에 실패했습니다.')
+        } else {
+            useAuthStore.getState().updateData('books',updatedBooks)
+        }
     }
 
     const handleLogTable = async() => {
@@ -104,16 +105,16 @@ export default function StopWatch() {
             },
         ]).select();
 
-        if (error) {
-            console.error(error)
-            setToast("로그 저장 실패했습니다!","error")
-            return;
+        const updatedLogs:DataState<Log> = {
+            data: data?.[0],
+            error: error,
+            ok: !error
         }
-
-        const updatedLogs:Log = data?.[0];
-        if (!updatedLogs) return;
-
-        useAuthStore.getState().addData<Log>('log',updatedLogs);
+        if(!updatedLogs.ok || updatedLogs.error) {
+            throw new Error('로그 저장에 실패했습니다.')
+        } else {
+            useAuthStore.getState().addData('log',updatedLogs)
+        }
     }
 
     const handleSubmit= async()=>{
@@ -136,8 +137,12 @@ export default function StopWatch() {
             setToast("기록이 저장됐습니다","success")
             handleClose()
 
-        } catch(error) {
-            console.error('Submit 실패:', error);
+        } catch(err) {
+            console.error('Submit 실패:', err);
+            const errorMessage = err instanceof Error
+                ? err.message
+                : '오류가 발생했습니다'
+            setToast(errorMessage, "error")
 
         } finally {
             setIsValidLoading(false)

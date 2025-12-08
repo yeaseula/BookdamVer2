@@ -5,7 +5,7 @@ import AddButton from "./Add"
 import { useState } from "react"
 import { useToastStore } from "@/app/lib/useToastStore"
 import createClient from "@/utils/supabase/client"
-import { Books } from "@/app/lib/userfetch"
+import { DataState, Books } from "@/app/lib/userfetch"
 import { useAuthStore } from "@/app/lib/userfetch"
 const FormWrap = styled.div`
     display: flex;
@@ -36,19 +36,29 @@ export default function ReadingForm({ session }) {
 
             if (error) throw error;
 
-            const newBooks: Books = data?.[0]
-            if(!newBooks) return;
+            const newBooks: DataState<Books> = {
+                data: data?.[0],
+                error: error,
+                ok: !error
+            }
 
-            //zustand 전역 업로드
-            useAuthStore.getState().addData<Books>('books',newBooks)
+            if(!newBooks.ok || newBooks.error) {
+                throw new Error
+            } else {
+                //zustand 전역 업로드
+                useAuthStore.getState().addData('books',newBooks)
+                setToast("읽고있는 책 업로드 성공!","success")
+                //필드 초기화
+                setTitle("")
+                setPage(null)
+                setReadingPage(null)
+            }
 
-            setToast("읽고있는 책 업로드 성공!","success")
-            //필드 초기화
-            setTitle("")
-            setPage(null)
-            setReadingPage(null)
         } catch (error) {
-            setToast("업로드 실패했습니다.","error")
+            const errorMessage = error instanceof Error
+                ? error.message
+                : '업로드 중 오류가 발생했습니다'
+            setToast(errorMessage, "error")
         }
     }
 

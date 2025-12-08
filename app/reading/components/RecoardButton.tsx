@@ -27,7 +27,7 @@ export default function RecoardButton({index,logWatchNum,currentBooks,setLogWatc
 
     const handleWatch = (index:string) => {
         if(!isTimer) {
-            const CheckStopObj:Books = currentBooks.find((m)=>m.id===index)
+            const CheckStopObj:Books = currentBooks.data.find((m)=>m.id===index)
 
             setTimerObj("isTimer", true) // timer open
             setTimerObj("timeObj", CheckStopObj) //스톱워치 대상 book_id
@@ -45,7 +45,6 @@ export default function RecoardButton({index,logWatchNum,currentBooks,setLogWatc
         type="button"
         aria-label="기록 보기 버튼"
         data-target={index}
-
         onClick={()=>handleLog(index)}>
             <RiListView size={16} color="#fff" />
         </LogView>
@@ -53,7 +52,6 @@ export default function RecoardButton({index,logWatchNum,currentBooks,setLogWatc
         type="button"
         aria-label="스톱워치 버튼"
         data-target={index}
-
         onClick={()=>handleWatch(index)}>
             <RiAlarmFill size={18} color="#fff" />
         </Stop>

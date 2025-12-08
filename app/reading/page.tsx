@@ -1,13 +1,11 @@
 "use client"
 import styled from "styled-components"
 import { useAuthStore } from "../lib/userfetch"
-import { Books, Log } from "../lib/userfetch"
+import { DataState, Books, Log } from "../lib/userfetch"
 import { useEffect, useState, useRef } from "react"
 import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
-import { useToastStore } from "../lib/useToastStore"
 import ReadingForm from "./components/readingForm"
-import createClient from "@/utils/supabase/client"
 import ReadingContent from "./components/readingContent"
 import EditModal from "./components/modal/EditModal"
 import LogModal from "./components/log/LogModal"
@@ -32,11 +30,11 @@ export default function ReadingPage() {
     const [logObj,setLogObj] = useState<Log[] | null>(null)
 
     //data first access point
-    const [currentBooks,setCurrentBooks] = useState<Books[] | null>(null)
-    const [currentLogs,setCurrentLogs] = useState<Log[] | null>(null)
-    const { books } = useAuthStore() as { books: Books[] | null};
-    const { log } = useAuthStore() as { log: Log[] | null };
-    const { session } = useAuthStore()
+    const [currentBooks,setCurrentBooks] = useState<DataState<Books[]>>(null)
+    const [currentLogs,setCurrentLogs] = useState<DataState<Log[]>>(null)
+    const { books } = useAuthStore() as { books: DataState<Books[]>};
+    const { log } = useAuthStore() as { log: DataState<Log[]> };
+    const { session, isBooksLoaded, isLogLoaded } = useAuthStore()
 
     useEffect(()=>{
         if(logWatchNum.length === 0) {
@@ -44,7 +42,7 @@ export default function ReadingPage() {
             setLogPopup(false)
         }
         if(logWatchNum.length > 0) {
-            const CheckLogObj = currentLogs.filter((m)=>m.book_id===logWatchNum[0])
+            const CheckLogObj = currentLogs.data.filter((m)=>m.book_id===logWatchNum[0])
             setLogObj(CheckLogObj)
             setLogPopup(true)
         }
@@ -59,10 +57,30 @@ export default function ReadingPage() {
     },[log])
 
     const handleEdit = async() => {
-        const CheckEdit = currentBooks.find((m)=>m.id===checkIdRef.current[0])
+        const CheckEdit = currentBooks.data.find((m)=>m.id===checkIdRef.current[0])
         editObjRef.current = CheckEdit //변경
         setEditPopup(true) // 수정 폼 팝업 오픈
         setModal(false) // 수정/삭제버튼 딜리트
+    }
+
+    if(!isBooksLoaded) {
+        return (
+            <MemoWrap>
+                <Skeleton height={37} borderRadius={5}/>
+                <div className="mt-1.5">
+                    <Skeleton height={90} borderRadius={5} />
+                </div>
+                <div className="mt-[35px]">
+                    <Skeleton height={25} borderRadius={5}/>
+                </div>
+                <div className="mt-[10px] text-right">
+                    <Skeleton width={100} height={25} borderRadius={5}/>
+                </div>
+                <div className="mt-[5px] text-right">
+                    <Skeleton width={150} height={25} borderRadius={5}/>
+                </div>
+            </MemoWrap>
+        )
     }
 
     return(
@@ -78,7 +96,6 @@ export default function ReadingPage() {
             onClickEdit={handleEdit}
             />
             <h2 className="sr-only">읽고있는 책</h2>
-            {session && currentBooks && (
                 <>
                     <ReadingForm session={session}/>
                     <div className="mt-[35px]">
@@ -105,23 +122,6 @@ export default function ReadingPage() {
                         setLogWatchNum={setLogWatchNum}/>
                     }
                 </>
-            )}
-            {(!session || !currentBooks) && (
-            <>
-                <Skeleton height={37} borderRadius={5}/>
-                <div className="mt-1.5">
-                    <Skeleton height={90} borderRadius={5} />
-                </div>
-                <div className="mt-[35px]">
-                    <Skeleton height={25} borderRadius={5}/>
-                </div>
-                <div className="mt-[10px] text-right">
-                    <Skeleton width={100} height={25} borderRadius={5}/>
-                </div>
-                <div className="mt-[5px] text-right">
-                    <Skeleton width={150} height={25} borderRadius={5}/>
-                </div>
-            </>)}
         </MemoWrap>
     )
 }
