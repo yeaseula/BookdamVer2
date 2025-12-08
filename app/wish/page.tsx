@@ -9,7 +9,8 @@ import WishContent from "./components/WishContent"
 import { useState, useEffect, useRef } from "react"
 import EditModal from "./components/modal/EditModal"
 import Modal from "../components/modal/Modal"
-import PageError from "../error/PageError"
+import { ErrorBoundary } from "react-error-boundary"
+import { CompoErrorFallBack } from "../error/CompoErrorFallBack"
 
 const WishWrap = styled.section`
     padding: 80px 15px 65px;
@@ -73,14 +74,16 @@ export default function WishPage() {
                     onClickEdit={handleEdit}
                     />
 
-                    <WishForm session={session}></WishForm>
+                    <WishForm session={session} />
                     <div className="mt-[35px]">
-                        <WishContent
-                        wish={currentWish}
-                        checkId={checkIdRef}
-                        modal={modal}
-                        setModal={setModal}
-                        />
+                        <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
+                            <WishContent
+                            wish={currentWish}
+                            checkId={checkIdRef}
+                            modal={modal}
+                            setModal={setModal}
+                            />
+                        </ErrorBoundary>
                     </div>
                 {EditPopup &&
                     <EditModal

@@ -2,6 +2,8 @@ import styled from "styled-components"
 import Link from "next/link"
 import { Reviews } from "@/app/lib/userfetch"
 import Thumbnail from "./Thumbnail"
+import { ErrorBoundary } from "react-error-boundary"
+import { CompoErrorFallBack } from "@/app/error/CompoErrorFallBack"
 
 const ListItem = styled.div`
     padding: 12px;
@@ -82,7 +84,9 @@ export default function List({reviews}: {reviews:Reviews[]}) {
             <ListItem key={cont.id}>
                 <ListHref href={`review/${cont.id}`}></ListHref>
                 <BookThumbnail>
-                    <Thumbnail title={cont.title} author={cont.author}/>
+                    <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
+                        <Thumbnail title={cont.title} author={cont.author}/>
+                    </ErrorBoundary>
                 </BookThumbnail>
                 <Content>
                     <Title>{cont.title}</Title>

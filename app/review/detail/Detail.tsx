@@ -7,7 +7,8 @@ import { Reviews, DataState } from "@/app/lib/userfetch"
 import Thumbnail from "../components/Thumbnail"
 import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
-
+import { ErrorBoundary } from "react-error-boundary"
+import { CompoErrorFallBack } from "@/app/error/CompoErrorFallBack"
 
 const ReivewWrap = styled.div`
     padding: 80px 15px 0;
@@ -60,7 +61,9 @@ export default function ReviewDetail({postNumber}) {
                 <ReivewHead>
                     <h2 className="sr-only">책 정보</h2>
                     <BookThumbnail>
+                        <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
                         <Thumbnail title={reviewArr[0].title} author={reviewArr[0].author}/>
+                        </ErrorBoundary>
                     </BookThumbnail>
                     <BookContent>
                         <p className="text-[1.4rem] text-sx-[1.5rem]">{reviewArr[0].category}</p>

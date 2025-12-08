@@ -1,7 +1,11 @@
+"use client"
+
 import styled from "styled-components"
 import Link from "next/link"
 import { Reviews } from "@/app/lib/userfetch"
 import Thumbnail from "./Thumbnail"
+import { ErrorBoundary } from "react-error-boundary"
+import { CompoErrorFallBack } from "@/app/error/CompoErrorFallBack"
 
 const GalleryContainer = styled.div`
     display: flex;
@@ -37,9 +41,12 @@ export default function GalleryList({reviews}: {reviews: Reviews[]}) {
         {reviews.map((ele)=> (
             <GalleryItem key={ele.id}>
                 <ListHref href={`review/${ele.id}`} />
-                <BookThumbnail>
-                    <Thumbnail title={ele.title} author={ele.author}/>
-                </BookThumbnail>
+                    <BookThumbnail>
+                    <ErrorBoundary
+                    FallbackComponent={CompoErrorFallBack}>
+                        <Thumbnail title={ele.title} author={ele.author}/>
+                    </ErrorBoundary>
+                    </BookThumbnail>
                     <p className="text-xl mt-3 font-medium">{ele.title}</p>
             </GalleryItem>
         ))}
