@@ -68,7 +68,7 @@ export default function EditPass() {
             console.error(err);
             const errorMessage = err instanceof Error
                 ? err.message
-                : '회원가입 중 오류가 발생했습니다'
+                : '비밀번호 수정 중 오류가 발생했습니다'
             setToast(errorMessage, "error")
             debounce = false
             setLoading(false)

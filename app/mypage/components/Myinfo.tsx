@@ -2,7 +2,7 @@
 
 import { RiDraftLine } from "@remixicon/react"
 import styled from "styled-components"
-import { useAuthStore,Reviews,Memo,Wish,Log,Books } from "@/app/lib/userfetch"
+import { useAuthStore,DataState,Reviews,Memo,Wish,Log,Books } from "@/app/lib/userfetch"
 import createClient from "@/utils/supabase/client"
 import { useRouter } from "next/navigation"
 import ListItem from "../List"
@@ -30,11 +30,11 @@ export default function Myinfo() {
 
         setSession(null)
         setProfile(null)
-        setData<Reviews>('reviews',[])
-        setData<Memo>('memo',[])
-        setData<Books>('books',[])
-        setData<Log>('log',[])
-        setData<Wish>('wish',[])
+        setData('reviews',{data: null, error: null, ok: true})
+        setData('memo',{data: null, error: null, ok: true})
+        setData('books',{data: null, error: null, ok: true})
+        setData('log',{data: null, error: null, ok: true})
+        setData('wish',{data: null, error: null, ok: true})
 
         router.push('/login')
     }

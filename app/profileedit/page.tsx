@@ -61,7 +61,7 @@ export default function ProfileEdit() {
             <Container>
                 <p>
                     관심사 수정<br />
-                    {profile.interests.map((ele,index)=>(
+                    {profile.data?.interests.map((ele,index)=>(
                         <span key={`${index}-${ele}`} className="text-xl text-gray-600 mr-1.5">#{ele}</span>
                     ))}
                 </p>
