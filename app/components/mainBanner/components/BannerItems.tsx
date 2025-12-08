@@ -12,13 +12,7 @@ import PageError from "@/app/error/PageError";
 export default function BannerItems() {
 
     const { reviews, isReviewLoaded } = useAuthStore()
-    const [isReview, setIsReview] = useState<boolean | null>(false)
     const [isContent,setIsContent] = useState<boolean | null>(null)
-
-    useEffect(()=>{
-        if(!reviews.data) setIsReview(false)
-            else setIsReview(true)
-    },[reviews.data])
 
     useEffect(()=>{
         if(isReviewLoaded) {
@@ -49,7 +43,6 @@ export default function BannerItems() {
 
     return(
         <>
-
         {isContent &&
             <div className="w-[125px] h-[100%]">
                 <ErrorBoundary

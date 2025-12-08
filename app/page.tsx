@@ -2,7 +2,7 @@
 import Footer from "./components/footer/Footer";
 import MainPage from "./components/mainpage";
 
-export default function mainHome() {
+export default function MainRoot() {
 
   return(
     <div className="common-wrap">

@@ -9,7 +9,6 @@ import { AppleSDGothicNeo } from "@/public/fonts/fonts";
 import { ToastContainer } from "react-toastify";
 import Toast from "./components/modal/Toast";
 import Header from "./components/header/Header";
-import { RiErrorWarningFill } from "@remixicon/react"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
