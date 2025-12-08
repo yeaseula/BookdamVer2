@@ -9,8 +9,8 @@ export default function GuardNeedLogin() {
 
             <Image src={'/images/fox_guard_need_login.svg'}
             alt="로그인 필요"
-            width={230}
-            height={230}
+            width={250}
+            height={250}
             />
 
             <p className="font-semibold text-3xl mb-5.5">로그인 후 이용 가능합니다 :)</p>

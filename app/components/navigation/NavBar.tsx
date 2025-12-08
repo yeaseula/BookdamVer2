@@ -88,6 +88,7 @@ export default function NavBar() {
         const frame = currentPath == '/mypage' ? 0 : 80;
 
         lottieRef.current.stop();
+
         setTimeout(() => {
             if (lottieRef.current) {
                 lottieRef.current.goToAndStop(frame, true);

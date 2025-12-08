@@ -7,6 +7,7 @@ import { RiFileWarningFill } from "@remixicon/react"
 import GalleryList from "./components/Gallery"
 import List from "./components/List"
 import PageError from "../error/PageError"
+import Image from "next/image"
 
 
 const ReviewWrap = styled.section`
@@ -50,8 +51,13 @@ export default function ReviewList() {
         return (
             <ReviewWrap>
                 <div className="text-center">
-                    <RiFileWarningFill size={40} style={{ margin: '0 auto',color: 'var(--sub_color)' }} />
-                    <p className="mt-5 text-2xl font-bold">등록된 리뷰가 없습니다.</p>
+                    <Image src={'/images/fox_review.svg'}
+                    alt=""
+                    width={250}
+                    height={250}
+                    style={{ margin: 'auto' }}
+                    />
+                    <p className="text-2xl font-bold">등록된 리뷰가 없습니다.</p>
                 </div>
             </ReviewWrap>
         )

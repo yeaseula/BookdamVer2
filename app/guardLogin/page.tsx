@@ -10,8 +10,8 @@ export default function GuardLogin() {
 
             <Image src={'/images/fox_guard_done.svg'}
             alt="이미 로그인 중"
-            width={230}
-            height={230}
+            width={250}
+            height={250}
             />
 
             <p className="font-semibold text-3xl mb-5.5">이미 로그인 중입니다 :)</p>
