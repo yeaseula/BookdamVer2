@@ -133,7 +133,6 @@ export default function RecomandSwiper(){
     const interest = profile.data?.interests
     const throwError = useErrorUtil()
 
-
     useEffect(()=>{
         const RecomAi = async(array:string[])=>{
             try {
@@ -221,7 +220,6 @@ export default function RecomandSwiper(){
                         <BookDesc>
                             <div>
                                 <BookTitle>{book.title}</BookTitle>
-                                {book.authors}
                                 <BookIntro>{book.contents ? book.contents.substring(0, 200) + '...' : '설명이 없습니다.'}</BookIntro>
                             </div>
                             <ButtonWrap>
