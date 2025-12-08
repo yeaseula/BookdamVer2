@@ -10,6 +10,8 @@ import ReadingContent from "./components/readingContent"
 import EditModal from "./components/modal/EditModal"
 import LogModal from "./components/log/LogModal"
 import Modal from "../components/modal/Modal"
+import { ErrorBoundary } from "react-error-boundary"
+import { CompoErrorFallBack } from "../error/CompoErrorFallBack"
 
 const MemoWrap = styled.section`
     padding: 80px 15px 65px;
@@ -96,9 +98,11 @@ export default function ReadingPage() {
             onClickEdit={handleEdit}
             />
             <h2 className="sr-only">읽고있는 책</h2>
+            {currentBooks && (
                 <>
                     <ReadingForm session={session}/>
                     <div className="mt-[35px]">
+                        <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
                         <ReadingContent
                         books={books}
                         checkId={checkIdRef}
@@ -108,6 +112,7 @@ export default function ReadingPage() {
                         logWatchNum={logWatchNum}
                         setLogWatchNum={setLogWatchNum}
                         />
+                        </ErrorBoundary>
                     </div>
                     {EditPopup &&
                         <EditModal
@@ -122,6 +127,7 @@ export default function ReadingPage() {
                         setLogWatchNum={setLogWatchNum}/>
                     }
                 </>
+            )}
         </MemoWrap>
     )
 }

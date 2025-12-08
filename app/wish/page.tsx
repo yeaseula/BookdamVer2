@@ -62,7 +62,6 @@ export default function WishPage() {
     return (
         <>
             <WishWrap>
-                <h2 className="sr-only">위시리스트</h2>
                     <Modal
                     state={modal}
                     setModal={setModal}
@@ -73,24 +72,28 @@ export default function WishPage() {
                     setEditPopup={setEditPopup}
                     onClickEdit={handleEdit}
                     />
-
-                    <WishForm session={session} />
-                    <div className="mt-[35px]">
-                        <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
-                            <WishContent
-                            wish={currentWish}
-                            checkId={checkIdRef}
-                            modal={modal}
-                            setModal={setModal}
+                    <h2 className="sr-only">위시리스트</h2>
+                    {currentWish && (
+                        <>
+                        <WishForm session={session} />
+                        <div className="mt-[35px]">
+                            <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
+                                <WishContent
+                                wish={currentWish}
+                                checkId={checkIdRef}
+                                modal={modal}
+                                setModal={setModal}
+                                />
+                            </ErrorBoundary>
+                        </div>
+                        {EditPopup &&
+                            <EditModal
+                            editObj={editObjRef.current}
+                            setEditPopup={setEditPopup}
                             />
-                        </ErrorBoundary>
-                    </div>
-                {EditPopup &&
-                    <EditModal
-                    editObj={editObjRef.current}
-                    setEditPopup={setEditPopup}
-                    />
-                }
+                        }
+                        </>
+                    )}
             </WishWrap>
         </>
 

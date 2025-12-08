@@ -8,10 +8,9 @@ import { DataState,Memo } from "../lib/userfetch"
 import { useEffect, useState, useRef } from "react"
 import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
-import SettingModal from "../components/modal/ModalSetting"
 import Modal from "../components/modal/Modal"
-
-
+import { ErrorBoundary } from "react-error-boundary"
+import { CompoErrorFallBack } from "../error/CompoErrorFallBack"
 
 const MemoWrap = styled.section`
     padding: 80px 15px 65px;
@@ -79,12 +78,14 @@ export default function MemoPage() {
                 <>
                     <MemoForm session={session}/>
                     <div className="mt-[35px]">
+                        <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
                         <MemoContent
                         memo={currentMemo}
                         checkId={checkIdRef}
                         modal={modal}
                         setModal={setModal}
                         />
+                        </ErrorBoundary>
                     </div>
                     {EditPopup &&
                         <EditModal

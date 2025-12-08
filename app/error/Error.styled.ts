@@ -2,7 +2,7 @@ import styled from "styled-components"
 
 
 export const Container = styled.section`
-    padding: 50px 15px;
+    padding: 80px 15px;
     text-align: center;
 `
 export const Title = styled.h2`
