@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import styled from "styled-components";
 import { useNavStore } from "@/app/lib/useNavStore";
+import { useAuthStore } from "@/app/lib/userfetch";
 
 import home from '../../nav-animation/home.json'
 import review from '../../nav-animation/review.json'
@@ -78,9 +79,9 @@ export default function NavBar() {
     const lottieRef = useRef<LottieRefCurrentProps>(null);
     const pathname = usePathname();
     const currentPath = pathname.slice(0) || '/'
+    const { hasGlobalError } = useAuthStore()
 
     useEffect(() => {
-
         if (!lottieRef.current) return;
 
         if (currentPath == '/mypage') return;
@@ -101,6 +102,8 @@ export default function NavBar() {
             return
         }
     }, [pathname])
+
+    if(hasGlobalError) return null
 
     if(type === 'normal') {
         return(

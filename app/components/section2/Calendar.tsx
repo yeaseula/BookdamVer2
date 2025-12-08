@@ -106,7 +106,6 @@ export default function Calendar() {
 
     const { isReviewLoaded, reviews } = useAuthStore()
     const { userSetting } = useSettingStore()
-    const [isReview,setIsReview] = useState<boolean>(false)
     const [stampDate,setStampDate] = useState<string[]>([])
 
 

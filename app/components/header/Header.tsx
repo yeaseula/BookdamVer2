@@ -8,6 +8,7 @@ import { useEffect } from "react"
 import HeaderButton from "./HeaderButton"
 import FloatWrite from "../common/Write"
 import Search from "../common/Search"
+import { useAuthStore } from "@/app/lib/userfetch"
 
 const Container = styled.header`
     position: fixed;
@@ -70,6 +71,7 @@ export default function Header() {
     const setHeader = useHeaderStore(state => state.setHeader)
     const { title, type } = useHeaderStore()
     const router = useRouter();
+    const { hasGlobalError } = useAuthStore()
 
     useEffect(() => {
         if (HEADER_CONFIG[pathname]) {
@@ -80,6 +82,9 @@ export default function Header() {
 
     }, [pathname, setHeader])
 
+    if(hasGlobalError) {
+        return null
+    }
     if(type === 'detail') {
         return (
             <Container>
@@ -116,5 +121,6 @@ export default function Header() {
     if(type === 'none') {
         return null
     }
+
     return null
 }

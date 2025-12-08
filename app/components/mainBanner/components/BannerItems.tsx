@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/app/lib/userfetch";
 import MainSwiper from "./MainSwiper"
-import UserName from "./UserName";
 import BannerButton from "../../mainButton/bannerButton";
 import { ErrorBoundary } from "react-error-boundary";
 import { CompoErrorFallBack } from "@/app/error/CompoErrorFallBack";

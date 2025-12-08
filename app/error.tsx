@@ -1,4 +1,7 @@
 "use client"
+import { Button, Button2 } from "./error/Error.styled"
+import { useAuthStore } from "./lib/userfetch"
+import { useEffect } from "react"
 
 export default function Error({
         error,
@@ -7,6 +10,13 @@ export default function Error({
         error: Error & { digest?: string }
         reset: () => void
     }) {
+
+    const setGlobalError = useAuthStore((s) => s.setGlobalError)
+    useEffect(() => {
+        setGlobalError(true)
+        return () => setGlobalError(false)
+    }, [])
+
     return (
         <div className="flex flex-col items-center justify-center min-h-screen p-4">
             <div className="text-center max-w-md">
@@ -16,18 +26,14 @@ export default function Error({
                 { '페이지를 불러올 수 없습니다'}
             </p>
             <div className="space-x-4">
-                <button
-                onClick={reset}
-                className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                >
+                <Button onClick={reset}>
                 다시 시도
-                </button>
-                <button
+                </Button>
+                <Button2
                 onClick={() => window.location.href = '/'}
-                className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
                 >
                 홈으로
-                </button>
+                </Button2>
             </div>
             </div>
         </div>

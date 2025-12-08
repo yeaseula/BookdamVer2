@@ -2,6 +2,8 @@ import styled from "styled-components"
 import WaveBack from "./WaveBack"
 import BannerItems from "./components/BannerItems"
 import UserName from "./components/UserName"
+import { ErrorBoundary } from "react-error-boundary"
+import { CompoErrorFallBack } from "@/app/error/CompoErrorFallBack"
 
 const Container = styled.section`
     position: relative;
@@ -20,7 +22,9 @@ export default function MainBanner() {
             <div className="relative z-5">
                 <UserName />
                 <div className='mt-[20px] relative flex justify-center items-center h-[174px]'>
-                    <BannerItems />
+                    <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
+                        <BannerItems />
+                    </ErrorBoundary>
                 </div>
             </div>
         </Container>

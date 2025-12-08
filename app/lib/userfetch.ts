@@ -84,6 +84,10 @@ interface AuthState {
     isBooksLoaded: boolean;
     isLogLoaded: boolean;
     isWishLoaded: boolean;
+
+    hasGlobalError: boolean;
+    setGlobalError: (hasError: boolean) => void;
+
     setSession: (session: Session | null) => void;
     setProfile: (profile: DataState<Profiles> | null) => void;
     setData: <T extends { id: string }>(
@@ -129,6 +133,8 @@ export const useAuthStore = create<AuthState>()(
             isBooksLoaded: false,
             isLogLoaded: false,
             isWishLoaded: false,
+            hasGlobalError: false,
+            setGlobalError: (hasError) => set({ hasGlobalError: hasError }),
             setSession:(session)=>set({session, user: session?.user ?? null}),
             setProfile: (profile) => set({ profile }),
             fetchSession: async()=>{

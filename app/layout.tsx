@@ -32,7 +32,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     reviews, memo, books, log, wish, settings
   } = await createClient()
 
-
   return (
     <html lang="en" className={AppleSDGothicNeo.className}>
       <body>

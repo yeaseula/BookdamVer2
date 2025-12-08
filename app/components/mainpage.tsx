@@ -7,11 +7,11 @@ import SectionPageOne from "./section1/SectionPage"
 import Calendar from "./section2/Calendar"
 import SpinnerArea from "./spinner/SpinnerArea"
 import { ErrorBoundary } from "react-error-boundary"
+import { CompoErrorFallBack } from "../error/CompoErrorFallBack"
 import { GlobalErrorFallback } from "../error/GlobalErrorFallBack"
 
 export default function MainPage() {
     const { session, profile, isReviewLoaded } = useAuthStore()
-
     return(
         <>
         <ErrorBoundary FallbackComponent={GlobalErrorFallback}>
@@ -20,7 +20,9 @@ export default function MainPage() {
             <>
                 <MainBanner />
                 <SectionPageOne />
-                <Calendar/>
+                <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
+                    <Calendar/>
+                </ErrorBoundary>
                 <SectionPageThree />
             </>
         )}
