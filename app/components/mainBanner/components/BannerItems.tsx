@@ -7,7 +7,7 @@ import BannerButton from "../../mainButton/bannerButton";
 import { ErrorBoundary } from "react-error-boundary";
 import { CompoErrorFallBack } from "@/app/error/CompoErrorFallBack";
 import Skeleton from "react-loading-skeleton";
-
+import PageError from "@/app/error/PageError";
 
 export default function BannerItems() {
 
@@ -26,33 +26,40 @@ export default function BannerItems() {
         }
     },[isReviewLoaded])
 
-    return(
-        <div className="relative z-5">
-            <UserName />
-            <div className='mt-[20px] relative flex justify-center items-center h-[174px]'>
-
-                {!isReview && //초기 review 데이터 로드 실패할 때
-                <>
+    if(!isReviewLoaded) {
+        return (
+            <>
                 <Skeleton width={125} height={174} className="" />
                 <BannerButton isContent={true}/>
-                </>
-                }
+            </>
+        )
+    }
 
-                {(isReview) &&
-                    <>
-                    {isContent &&
-                        <div className="w-[125px] h-[100%]">
-                            <ErrorBoundary
-                            FallbackComponent={CompoErrorFallBack}
-                            >
-                                <MainSwiper />
-                            </ErrorBoundary>
-                        </div>
-                    }
-                    <BannerButton isContent={isContent}/>
-                    </>
-                }
+    if(!reviews.ok || reviews.error) {
+        return (
+            <>
+            <div className="bg-amber-100
+            w-[125px] h-[174px] flex justify-center items-center px-5">
+                <PageError />
             </div>
-        </div>
+            <BannerButton isContent={true}/>
+            </>
+        )
+    }
+
+    return(
+        <>
+
+        {isContent &&
+            <div className="w-[125px] h-[100%]">
+                <ErrorBoundary
+                FallbackComponent={CompoErrorFallBack}
+                >
+                    <MainSwiper />
+                </ErrorBoundary>
+            </div>
+        }
+        <BannerButton isContent={isContent}/>
+        </>
     )
 }

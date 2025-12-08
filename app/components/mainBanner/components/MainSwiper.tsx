@@ -74,7 +74,7 @@ export default function MainSwiper() {
             } catch(err) {
                 throwError(err)
             } finally {
-                setIsReady(true)
+                setTimeout(()=>setIsReady(true), 700)
             }
         }
 

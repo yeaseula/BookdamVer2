@@ -1,6 +1,7 @@
 import styled from "styled-components"
 import WaveBack from "./WaveBack"
 import BannerItems from "./components/BannerItems"
+import UserName from "./components/UserName"
 
 const Container = styled.section`
     position: relative;
@@ -16,7 +17,12 @@ export default function MainBanner() {
         <Container>
             <h2 className="sr-only bg">내가 기록한 독서리뷰 목록</h2>
             <WaveBack />
-            <BannerItems />
+            <div className="relative z-5">
+                <UserName />
+                <div className='mt-[20px] relative flex justify-center items-center h-[174px]'>
+                    <BannerItems />
+                </div>
+            </div>
         </Container>
     )
 }
