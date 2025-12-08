@@ -10,6 +10,7 @@ import createClient from "@/utils/supabase/client";
 import { useToastStore } from "../lib/useToastStore";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "../lib/userfetch";
+import { useSettingStore } from "../lib/userfetch";
 //util function
 import { UserInfoInitial, UserReviewInitial, UserMemoInitial,
     UserBooksInitial, UserLogInitial, UserWishInitial, UserSetting
@@ -56,6 +57,7 @@ export default function Login() {
     const setSession = useAuthStore((state)=>state.setSession)
     const setProfile = useAuthStore((state)=>state.setProfile)
     const setData = useAuthStore((state)=>state.setData)
+    const initSettings = useSettingStore((state)=>state.initSettings)
 
     const handleLogin = async(email:string, password:string) => {
         if(loading) return
@@ -70,14 +72,19 @@ export default function Login() {
                 throw new Error("회원 정보를 확인해주세요.")
             }
 
+            //get session
             setSession(data.session)
             const UserId = data.session.user.id
 
+            //get profile
             const UserInfor = await UserInfoInitial(UserId)
+
             if(!UserInfor.ok || !UserInfor.data) {
+
                 console.log(UserInfor.error)
                 setToast('프로필 데이터 로드에 실패했습니다', 'info')
                 throw new Error('프로필 데이터를 읽어오지 못했습니다.')
+
             } else {
                 const UserProrile = {
                     data: {
@@ -89,13 +96,20 @@ export default function Login() {
                 setProfile(UserProrile)
             }
 
+            //get setting 정보 : 로드 실패해도 치명적 에러가 아님
+            const UserSettings = await UserSetting(UserId)
+            if(!UserSettings) {
+                setToast('초기 셋팅 정보를 가져오지 못했습니다', 'info')
+            } else {
+                initSettings(UserSettings)
+            }
+
             const results = await Promise.all([
                     UserReviewInitial(UserId),
                     UserMemoInitial(UserId),
                     UserBooksInitial(UserId),
                     UserLogInitial(UserId),
                     UserWishInitial(UserId),
-                    UserSetting(UserId)
                 ])
 
                 const [UserReview, UserMemo, UserBooks, UserLog, UserWish] = results

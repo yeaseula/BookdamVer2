@@ -19,22 +19,10 @@ export default function Myinfo() {
     const supabase = createClient()
     const router = useRouter()
 
-    const setSession = useAuthStore((state)=>state.setSession)
-    const setProfile = useAuthStore((state)=>state.setProfile)
-    const setData = useAuthStore((state)=>state.setData)
-
     const handleLogout = async() => {
 
         const { error } = await supabase.auth.signOut();
         if (error) return console.error("로그아웃 실패:", error);
-
-        setSession(null)
-        setProfile(null)
-        setData('reviews',{data: null, error: null, ok: true})
-        setData('memo',{data: null, error: null, ok: true})
-        setData('books',{data: null, error: null, ok: true})
-        setData('log',{data: null, error: null, ok: true})
-        setData('wish',{data: null, error: null, ok: true})
 
         router.push('/login')
     }

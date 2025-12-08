@@ -106,6 +106,10 @@ export const UserSetting = async(userId: string) => {
     .order('updated_at', { ascending: false })
     .single()
 
-    const UserSettings: SettingDefault = data
+    if(error) {
+        return null
+    }
+
+    const UserSettings: SettingDefault | null = data
     return UserSettings
 }
