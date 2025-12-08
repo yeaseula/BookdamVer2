@@ -2,12 +2,12 @@
 
 import styled from "styled-components"
 import InterestList from "@/app/components/form/Interest/InterestList"
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef } from "react"
 import { EditButtonInterest } from "../components/EditButton"
 import createClient from "@/utils/supabase/client"
 import { useToastStore } from "@/app/lib/useToastStore"
 import { useRouter } from "next/navigation"
-import { useAuthStore } from "@/app/lib/userfetch"
+import { useAuthStore, DataState, Profiles } from "@/app/lib/userfetch"
 import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
 const ProfileWrap = styled.section`
@@ -52,18 +52,27 @@ export default function EditInterest() {
                 .eq("id", session.user.id);
 
             if (error) throw new Error('관심사 변경에 실패했습니다.')
+            const newProfile:DataState<Profiles> = {
+                data: {
+                    ...profile.data,
+                    interests: newInterest
+                },
+                error: error,
+                ok: !error
+            }
+
 
             router.push('/profileedit')
 
             // zustand 상태 업데이트
-            setProfile({ username: profile.username, interests: newInterest });
-            setToast('관심사 변경이 완료되었습니다','success')
+            setProfile(newProfile);
+            setToast('관심사 수정이 완료되었습니다','success')
 
         } catch (err) {
             console.error(err);
             const errorMessage = err instanceof Error
                 ? err.message
-                : '회원가입 중 오류가 발생했습니다'
+                : '관심사 수정 중 오류가 발생했습니다'
             setToast(errorMessage, "error")
             debounce = false
             setLoading(false)
@@ -76,7 +85,7 @@ export default function EditInterest() {
             setIsOriginFecth(false)
             originListRef.current = []
         } else {
-            originListRef.current = profile.interests
+            originListRef.current = profile.data.interests
             setNewInterest(prev => [
                 ...new Set([...prev, ...originListRef.current])
             ])

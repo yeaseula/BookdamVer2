@@ -66,7 +66,7 @@ export default function EditNickname() {
             console.error(err);
             const errorMessage = err instanceof Error
                 ? err.message
-                : '회원가입 중 오류가 발생했습니다'
+                : '닉네임 수정 중 오류가 발생했습니다'
             setToast(errorMessage, "error")
             debounce = false
             setLoading(false)
