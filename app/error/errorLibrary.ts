@@ -1,3 +1,5 @@
+import { PostgrestError } from "@supabase/supabase-js";
+
 export const ERROR_MESSAGES: Record<number, string> = {
     400: '잘못된 요청입니다',
     401: '로그인이 필요합니다',
@@ -62,6 +64,39 @@ export class ValidationError extends LocalError {
 export function isCriticalError(error: unknown): boolean {
     return error instanceof CriticalError;
 }
+
+export function supabaseErrorToHttpStatus(error: PostgrestError | null): number | null {
+    if (!error) return null;
+
+    const code = error.code;
+
+    // PostgREST Errors (API 레벨: HTTP 에러)
+    if (code === 'PGRST205') return 404;
+    if (code.startsWith('PGRST30')) return 400;
+    if (code.startsWith('PGRST4')) return 403;
+    if (code.startsWith('PGRST5')) return 500;
+
+    // Postgres Errors (DB 레벨)
+    if (code === '42501') return 403;
+    if (code === '23505') return 409;
+    if (code.startsWith('22')) return 400;
+
+    // 기타 알 수 없는 오류 → 서버 오류 취급
+    return 500;
+}
+export function throwSupabaseError(error: PostgrestError) {
+    const status = supabaseErrorToHttpStatus(error);
+    const message = ERROR_MESSAGES[status] ?? '알 수 없는 오류가 발생했습니다.';
+
+    if (status === 400) throw new LocalError(message);
+    if (status === 401) throw new UnauthorizedError;
+    if (status === 403) throw new LocalError(message);
+    if (status === 404) throw new LocalError(message);
+    if (status >= 500) throw new ServerError(message);
+
+    throw new LocalError('데이터를 불러올 수 없습니다.');
+}
+
 
 export function throwHttpError(res: Response): never {
     const message = ERROR_MESSAGES[res.status]

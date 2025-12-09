@@ -6,9 +6,10 @@ import styled from "styled-components";
 import { useAuthStore, useSettingStore } from "@/app/lib/userfetch";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'
+import { throwSupabaseError } from "@/app/error/errorLibrary";
 
 const FullCalBox = styled.div`
-    padding: 15px 15px 10px 15px;
+    padding: 15px 10px 15px;
     border-radius: 12px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
     border: 1px solid #e0e0e0;
@@ -108,7 +109,6 @@ export default function Calendar() {
     const { userSetting } = useSettingStore()
     const [stampDate,setStampDate] = useState<string[]>([])
 
-
     useEffect(()=>{
         if(!isReviewLoaded) return
         let isCancelled = false
@@ -124,10 +124,12 @@ export default function Calendar() {
         }
     },[reviews.data])
 
-    if(!reviews.ok) throw new Error('리뷰 정보 로드에 실패했습니다.')
+    if(!reviews.ok) {
+        throwSupabaseError(reviews.error)
+    }
 
     return (
-        <section className="pt-8 pr-5 pl-5">
+        <section>
             <h2 className="sr-only">나의 독서 스탬프 캘린더</h2>
             <div id="calendar-skeleton" className="calendar-skeleton"></div>
             {!isReviewLoaded && (

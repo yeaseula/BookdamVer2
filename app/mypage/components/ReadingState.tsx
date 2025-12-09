@@ -1,6 +1,6 @@
 import Image from "next/image"
 import styled from "styled-components"
-import PageError from "@/app/error/PageError"
+import { throwSupabaseError } from "@/app/error/errorLibrary"
 
 const Highlight = styled.span`
     position: relative;
@@ -19,9 +19,7 @@ const Img = styled(Image)`
 export default function ReadingState({ reviews }) {
 
     if(!reviews.ok || reviews.error) {
-        return (
-            <PageError />
-        )
+        throwSupabaseError(reviews.error)
     }
 
     return(

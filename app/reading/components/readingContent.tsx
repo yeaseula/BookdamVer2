@@ -4,7 +4,7 @@ import InputCheck from "../../components/form/inputCheck"
 import { Books } from "@/app/lib/userfetch"
 import RecoardButton from "./RecoardButton"
 import ProgressBar from "./ProgressBar"
-import PageError from "@/app/error/PageError"
+import { throwSupabaseError } from "@/app/error/errorLibrary"
 
 const List = styled.div`
     position: relative;
@@ -42,7 +42,9 @@ export default function ReadingContent({
     currentBooks
 }) {
 
-    if(!books.ok || books.error) throw new Error('읽고있는 책 정보 로드에 실패했습니다.')
+    if(!books.ok || books.error) {
+        throwSupabaseError(books.error)
+    }
 
     if(books.data?.length === 0) {
         return (

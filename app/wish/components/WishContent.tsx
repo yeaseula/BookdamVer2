@@ -2,8 +2,7 @@
 import styled from "styled-components"
 import InputCheck from "../../components/form/inputCheck"
 import { Wish } from "@/app/lib/userfetch"
-import PageError from "@/app/error/PageError"
-import { useEffect } from "react"
+import { throwSupabaseError } from "@/app/error/errorLibrary"
 
 const List = styled.div`
     position: relative;
@@ -35,7 +34,9 @@ const CheckBox = styled.div`
 export default function WishContent({wish,checkId,modal,setModal}) {
     const formatMoney = (num:number) => num.toLocaleString();
 
-    if(!wish.ok || wish.error) throw new Error('위시리스트 로드에 실패했습니다.')
+    if(!wish.ok || wish.error) {
+        throwSupabaseError(wish.error)
+    }
 
     if(wish.data?.length === 0) {
         return (

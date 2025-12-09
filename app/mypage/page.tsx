@@ -10,6 +10,7 @@ import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
 import { ErrorBoundary } from "react-error-boundary"
 import { CompoErrorFallBack } from "../error/CompoErrorFallBack"
+import { throwSupabaseError } from "../error/errorLibrary"
 
 const ProfileWrap = styled.section`
     padding: 80px 15px 65px;
@@ -31,11 +32,16 @@ export default function MyPage() {
     const username = profile.data?.username
     const interests = profile.data?.interests
 
+    if(profile.error) {
+        throwSupabaseError(profile.error)
+    }
+
     return(
         <>
         <ProfileWrap>
             <h2 className="sr-only">나의 프로필</h2>
             <CommonBox>
+                <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
                 {username &&
                     <Profile username={username} interests={interests}/>
                 }
@@ -45,6 +51,7 @@ export default function MyPage() {
                         <Skeleton width={258} height={22}/>
                     </>
                 }
+                </ErrorBoundary>
             </CommonBox>
             <CommonBoxStyle>
                 {isReviewLoaded &&

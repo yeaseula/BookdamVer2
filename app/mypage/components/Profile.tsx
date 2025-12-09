@@ -1,16 +1,14 @@
-import styled from "styled-components"
 import { useAuthStore } from "@/app/lib/userfetch"
 
-const HashTag = styled.span`
-    border: 1px solid #bdbdbd;
-    border-radius: 50px;
-`
 
 export default function Profile({username,interests}) {
 
+    const { profile } = useAuthStore()
+
+    if(profile.error) throw new Error('유저 닉네임을 불러올 수 없습니다.')
+
     return(
         <>
-            <div></div>
             <div>
                 <p className="text-4xl font-bold">{username}</p>
                 <p className="mt-3">

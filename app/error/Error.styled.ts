@@ -1,8 +1,12 @@
 import styled from "styled-components"
 
-
 export const Container = styled.section`
     padding: 80px 15px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     text-align: center;
 `
 export const Title = styled.h2`
@@ -11,7 +15,7 @@ export const Title = styled.h2`
 `
 export const Button = styled.button`
     display: inline-block;
-    padding: 3px 10px 1px;
+    padding: 4px 16px 2px;
     background: var(--sub_color);
     color: #fff;
     border-radius: 5px;

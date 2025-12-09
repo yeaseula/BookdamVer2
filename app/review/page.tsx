@@ -3,10 +3,9 @@ import styled from "styled-components"
 import { useAuthStore, useSettingStore } from "../lib/userfetch"
 import Skeleton,{SkeletonTheme} from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
-import { RiFileWarningFill } from "@remixicon/react"
 import GalleryList from "./components/Gallery"
 import List from "./components/List"
-import PageError from "../error/PageError"
+import { throwSupabaseError } from "../error/errorLibrary"
 import Image from "next/image"
 
 
@@ -39,7 +38,9 @@ export default function ReviewList() {
             </ReviewWrap>
         )
     }
-    if(!reviews.ok || reviews.error) throw new Error('리뷰 정보 로드에 실패했습니다.')
+    if(!reviews.ok || reviews.error) {
+        throwSupabaseError(reviews.error)
+    }
 
     if(reviews.data?.length === 0) {
         return (

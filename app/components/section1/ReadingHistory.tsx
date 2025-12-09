@@ -2,8 +2,8 @@
 import styled from "styled-components"
 import { useAuthStore } from "@/app/lib/userfetch"
 import Skeleton from "react-loading-skeleton"
-import { UserReviewInitial } from "@/app/lib/readingInfo"
 import { useEffect, useState } from "react"
+import { throwSupabaseError } from "@/app/error/errorLibrary"
 
 const HisBox = styled.div`
     text-align: center;
@@ -25,7 +25,7 @@ export default function ReadingHistory() {
     },[reviews.data])
 
     if(!reviews.ok || reviews.error) {
-        throw new Error('리뷰 정보 로드에 실패했습니다.')
+        throwSupabaseError(reviews.error)
     }
 
     return (

@@ -7,7 +7,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { CompoErrorFallBack } from "@/app/error/CompoErrorFallBack";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'
-
+import { throwSupabaseError } from "@/app/error/errorLibrary";
 
 export default function BannerItems() {
 
@@ -16,7 +16,7 @@ export default function BannerItems() {
 
     useEffect(()=>{
         if(isReviewLoaded) {
-            reviews.data.length > 0 ? setIsContent(true) : setIsContent(false)
+            reviews.data?.length > 0 ? setIsContent(true) : setIsContent(false)
         }
     },[isReviewLoaded])
     useEffect(()=>{console.log(isContent)},[isContent])
@@ -27,6 +27,10 @@ export default function BannerItems() {
                 <Skeleton height={174} className="w-[100%]" style={{ lineHeight: '1.6' }}/>
             </div>
         )
+    }
+
+    if(!reviews.ok || reviews.error) {
+        throwSupabaseError(reviews.error)
     }
 
     if(isContent === null) {

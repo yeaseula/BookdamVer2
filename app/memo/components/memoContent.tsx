@@ -2,7 +2,7 @@
 import styled from "styled-components"
 import InputCheck from "../../components/form/inputCheck"
 import { Memo } from "@/app/lib/userfetch"
-import PageError from "@/app/error/PageError"
+import { throwSupabaseError } from "@/app/error/errorLibrary"
 
 const List = styled.div`
     position: relative;
@@ -48,7 +48,9 @@ const CheckBox = styled.div`
 
 export default function MemoContent({memo,setModal,modal,checkId}) {
 
-    if(!memo.ok || memo.error) throw new Error('메모 정보 로드에 실패했습니다.')
+    if(!memo.ok || memo.error) {
+        throwSupabaseError(memo.error)
+    }
 
     if(memo.data?.length === 0) {
         return (

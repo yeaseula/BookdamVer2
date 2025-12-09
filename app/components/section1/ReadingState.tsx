@@ -3,6 +3,7 @@ import { useAuthStore } from "@/app/lib/userfetch"
 import Image from "next/image"
 import Skeleton from "react-loading-skeleton"
 import styled from "styled-components"
+import { throwSupabaseError } from "@/app/error/errorLibrary"
 
 const ReadBox = styled.div`
     text-align: center;
@@ -21,7 +22,7 @@ export default function ReadingState() {
     const { isBooksLoaded, books } = useAuthStore()
 
     if(!books.ok || books.error) {
-        throw new Error('읽고있는 책 로드에 실패했습니다.')
+        throwSupabaseError(books.error)
     }
 
     return (

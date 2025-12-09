@@ -20,9 +20,11 @@ export default function MainPage() {
             <>
                 <MainBanner />
                 <SectionPageOne />
+                <div className="mt-5 px-[15px] pt-[15px] pb-[10x]">
                 <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
                     <Calendar/>
                 </ErrorBoundary>
+                </div>
                 <SectionPageThree />
             </>
         )}

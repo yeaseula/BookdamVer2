@@ -6,6 +6,7 @@ import { RiArrowRightSLine } from "@remixicon/react"
 import { useAuthStore } from "../lib/userfetch"
 import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
+import { throwSupabaseError } from "../error/errorLibrary"
 
 const ProfileWrap = styled.section`
     padding: 80px 15px 65px;
@@ -31,6 +32,10 @@ const Inner = styled(Link)`
 
 export default function ProfileEdit() {
     const { session, profile } = useAuthStore()
+
+    if(profile.error) {
+        throwSupabaseError(profile.error)
+    }
 
     return(
         <ProfileWrap>

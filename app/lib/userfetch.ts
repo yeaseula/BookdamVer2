@@ -7,7 +7,7 @@ import { persist } from "zustand/middleware"
 export type DataState<T> = {
     data: T | null;
     ok: boolean;
-    error: PostgrestError | null | string;
+    error: PostgrestError | null;
 }
 
 interface BaseType {
