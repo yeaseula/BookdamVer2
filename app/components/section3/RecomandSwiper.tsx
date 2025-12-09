@@ -19,6 +19,7 @@ import { fetchBookAI } from '@/app/lib/fetchBookCover';
 import { useErrorUtil } from '@/app/error/useErrorUtil';
 
 const SliderWrap = styled.div`
+    position: relative;
     margin-top: 13px;
 `
 const StyleSwiper = styled(Swiper)`
@@ -113,6 +114,7 @@ const Button = styled(Link)`
     background-color: var(--sub_color);
     color: #fff
 `
+
 interface BookAiType {
     isbn: string;
     thumbnail: string;
@@ -201,12 +203,18 @@ export default function RecomandSwiper(){
                 }}
                 spaceBetween={'15'}
                 loop={true}
+                keyboard={{ enabled: true }}
                 a11y={{ enabled: true }}
                 slidesPerView={1.15}
                 className='my-recomand-book'
             >
-            {AithumbArr.map((book)=>(
-                <SwiperSlide key={book.isbn}>
+            {AithumbArr.map((book,index)=>(
+                <SwiperSlide
+                key={book.isbn}
+                tabIndex={0}
+                inert={false}
+                aria-label={`${index}번째 슬라이드`}
+                >
                     <SwiperDepth>
                         <BookCover>
                             {book.thumbnail !== '' ? (
@@ -224,9 +232,11 @@ export default function RecomandSwiper(){
                             </div>
                             <ButtonWrap>
                                 <DefaultBtnStyle
+                                aria-label='읽고싶은 책 목록에 추가'
                                 onClick={()=>handleWishAdd(book.title,book.authors[0],book.price)}
                                 >Wish</DefaultBtnStyle>
                                 <Button
+                                aria-label='예스24 판매페이지로 이동'
                                 href={`https://www.yes24.com/product/search?domain=ALL&query=${encodeURIComponent(book.title)}`} target='_blank'>More View</Button>
                             </ButtonWrap>
                         </BookDesc>

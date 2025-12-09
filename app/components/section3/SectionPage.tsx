@@ -39,11 +39,6 @@ export default function SectionPageThree() {
                         <span className="font-extrabold">{username}</span>님을 위해<br/>
                         AI가 추천해드려요!
                     </Title>
-                    <div className="swiper-btn">
-                        <button className="sr-only swiper-play-pause-btn" aria-label="슬라이드 재생과 정지">정지</button>
-                        <button className="sr-only prev-slide" aria-label="이전 슬라이드">이전 슬라이드</button>
-                        <button className="sr-only next-slide" aria-label="다음 슬라이드">다음 슬라이드</button>
-                    </div>
                 </TitleSection>
                 <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
                     <RecomandSwiper />

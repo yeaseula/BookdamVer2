@@ -50,22 +50,6 @@ const Infor = styled.button`
     padding: 8px;
     animation: ${wiggle} 1.1s ease-in-out infinite;
 `
-const SlideButtonWrap = styled.div`
-    position: absolute;
-    bottom: 0;
-    z-index: 20;
-`
-const SlideButton = styled.button`
-    display: block;
-    background: var(--sub_color);
-    font-size: 1.2rem;
-    color: #fff;
-    padding: 2px 10px;
-    border-radius: 5px;
-    &:focus {
-        border: 2px solid var(--point_color);
-    }
-`
 
 interface BannerBook {
     bookThumb: string;
@@ -118,7 +102,7 @@ export default function MainSwiper() {
             if(isInfo) return
             setTimeout(()=>{
                 setIsInfo(true)
-            },1000)
+            },6000)
         }
     },[isReady])
 
@@ -187,10 +171,6 @@ export default function MainSwiper() {
                     </>
                 ))}
             </StyleSwiper>
-            {/* <SlideButtonWrap>
-                <SlideButton className='prev-slide-main'>이전 슬라이드</SlideButton>
-                <SlideButton className='next-slide-main mt-1'>다음 슬라이드</SlideButton>
-            </SlideButtonWrap> */}
             </>
             }
         </>
