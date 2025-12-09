@@ -11,6 +11,7 @@ interface Props{
 }
 const GoReview = styled(Link)`
     position: relative;
+    z-index: 10;
     overflow: hidden;
     width: 100%;
     height: 100%;
@@ -40,19 +41,18 @@ const Icon = styled(RiAddLargeLine)<{$isActive:boolean}>`
     color: ${(p)=>p.$isActive ? '#fff' :'#757575'};
 `
 
-
 export default function Button({href,title,buttonText,onClick}:Props) {
 
     const [isActive,setIsActive] = useState(false)
 
     return (
         <GoReview href={href}>
-                <p className="text-xl">{title}</p>
-                <span className="font-bold">{buttonText}</span>
-                <BackImage
-                onMouseEnter={()=>setIsActive(true)}
-                onMouseLeave={()=>setIsActive(false)}
-                $isActive={isActive}><Icon $isActive={isActive}/></BackImage>
+            <p className="text-xl">{title}</p>
+            <span className="font-bold">{buttonText}</span>
+            <BackImage
+            onMouseEnter={()=>setIsActive(true)}
+            onMouseLeave={()=>setIsActive(false)}
+            $isActive={isActive}><Icon $isActive={isActive}/></BackImage>
         </GoReview>
     )
 }

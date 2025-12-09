@@ -22,48 +22,26 @@ import { motion } from 'framer-motion';
 const StyleSwiper = styled(Swiper)`
     position: relative;
     width: 125px;
-    aspectratio: 3/4;
-    overflow: hidden;
+    aspect-ratio: 3.3/4.6;
     border-radius: 10px;
-    .swiper-wrapper {
-        align-items: center;
-    }
+    overflow: hidden;
     .swiper-slide {
-        width: 125px;
-        aspect-ratio: 3.3/4.6;
-        margin: 0 6.5px;
-        background-color: #bdbdbd;
         opacity: 1;
         background-position: center;
         background-size: cover;
-        border-radius: 5px;
-        overflow: hidden;
     }
-    .swiper-slide:nth-child(1n) {
-        background-color: #fffdf5;
-    }
-
-    .swiper-slide:nth-child(2n) {
-        background-color: #fff7cc;
-    }
-
-    .swiper-slide:nth-child(3n) {
-        background-color: #ffef99;
-    }
-
 `
-
 const wiggle = keyframes`
     0% { transform: translateX(-7%) translateX(0px); }
     50% { transform: translateX(-7%) translateX(4px); }
     100% { transform: translateX(-7%) translateX(0px); }
 `;
-
-const Infor = styled.div`
+const Infor = styled.button`
     width: 100%;
     height: 100%;
     z-index: 3;
     background: #fff;
+    opacity: 0.85;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -71,6 +49,22 @@ const Infor = styled.div`
     text-align: center;
     padding: 8px;
     animation: ${wiggle} 1.1s ease-in-out infinite;
+`
+const SlideButtonWrap = styled.div`
+    position: absolute;
+    bottom: 0;
+    z-index: 20;
+`
+const SlideButton = styled.button`
+    display: block;
+    background: var(--sub_color);
+    font-size: 1.2rem;
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 5px;
+    &:focus {
+        border: 2px solid var(--point_color);
+    }
 `
 
 interface BannerBook {
@@ -135,12 +129,11 @@ export default function MainSwiper() {
 
     return (
         <>
-            {/* <div className='prev-main-slide'>이전 슬라이드</div>
-            <div className='next-slide-main'>다음 슬라이드</div> */}
             {!isReady &&
                 <Skeleton height={174} style={{ lineHeight: '1.6', borderRadius: '10px' }} />
             }
             {isReady &&
+            <>
             <StyleSwiper
                 modules={[Navigation, A11y, Keyboard, Autoplay]}
                 onSwiper={(swiper)=>SwiperRef.current = swiper}
@@ -148,10 +141,11 @@ export default function MainSwiper() {
                     nextEl: '.next-slide-main',
                     prevEl: '.prev-slide-main',
                 }}
-                centeredSlides={true}
                 loop={true}
-                a11y={{ enabled: true }}
                 slidesPerView={'auto'}
+                keyboard={{ enabled: true }}
+                a11y={{ enabled: true }}
+                onSlideChange={handleHint}
             >
                 <AnimatePresence>
                 {isInfo &&
@@ -162,7 +156,7 @@ export default function MainSwiper() {
                     transition={{ ease: "easeOut", duration: 0.3 }}
                     className='absolute top-0 left-0 w-[100%] h-[100%] z-10'
                     >
-                        <Infor onPointerEnter={handleHint}>
+                        <Infor onPointerEnter={handleHint} aria-label='내가 쓴 리뷰 슬라이드입니다'>
                             <RiExpandHorizontalLine size={24} className='text-gray-500'/>
                             <p className='mt-2 text-xl text-gray-600'>좌 우로<br /> 움직여보세요</p>
                         </Infor>
@@ -172,21 +166,32 @@ export default function MainSwiper() {
                 {reviewThumb.map((ele:BannerBook,idx:string | number)=>(
                     <>
                     {!ele.bookThumb &&
-                    <SwiperSlide key={idx}
+                        <SwiperSlide
+                        key={idx}
+                        tabIndex={0}
+                        aria-label={`${ele.booktitle} 표지`}
                         style={{ backgroundImage: 'url("/images/noThumb.svg")' }}
-                    >
-                        <p className='mt-5 text-center text-xl'>{ele.booktitle}</p>
-                        <p className='text-center text-xl'>썸네일이 없습니다</p>
-                    </SwiperSlide>
+                        >
+                            <p className='mt-5 text-center text-xl'>{ele.booktitle}</p>
+                            <p className='text-center text-xl'>썸네일이 없습니다</p>
+                        </SwiperSlide>
                     }
                     {ele.bookThumb &&
-                    <SwiperSlide key={idx}
+                        <SwiperSlide
+                        key={idx}
+                        tabIndex={0}
+                        aria-label={`${ele.booktitle} 표지`}
                         style={{ backgroundImage : `url(${ele.bookThumb})` }}
                         />
                     }
                     </>
                 ))}
             </StyleSwiper>
+            {/* <SlideButtonWrap>
+                <SlideButton className='prev-slide-main'>이전 슬라이드</SlideButton>
+                <SlideButton className='next-slide-main mt-1'>다음 슬라이드</SlideButton>
+            </SlideButtonWrap> */}
+            </>
             }
         </>
     )

@@ -21,3 +21,7 @@ body {
 main {
   position: relative;
 }
+
+button,a:focus {
+  outline: 2px solid var(--point-color)
+}
