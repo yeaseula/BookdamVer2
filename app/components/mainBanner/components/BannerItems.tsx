@@ -6,11 +6,13 @@ import BannerButton from "../../mainButton/bannerButton";
 import { ErrorBoundary } from "react-error-boundary";
 import { CompoErrorFallBack } from "@/app/error/CompoErrorFallBack";
 import Skeleton from "react-loading-skeleton";
-import PageError from "@/app/error/PageError";
+import 'react-loading-skeleton/dist/skeleton.css'
+
 
 export default function BannerItems() {
 
     const { reviews, isReviewLoaded } = useAuthStore()
+    const [isReady,setIsReady] = useState(false)
     const [isContent,setIsContent] = useState<boolean | null>(null)
 
     useEffect(()=>{
@@ -18,31 +20,27 @@ export default function BannerItems() {
             reviews.data.length > 0 ? setIsContent(true) : setIsContent(false)
         }
     },[isReviewLoaded])
+    useEffect(()=>{console.log(isContent)},[isContent])
 
     if(!isReviewLoaded) {
         return (
-            <>
-                <Skeleton width={125} height={174} className="" />
-                <BannerButton isContent={true}/>
-            </>
-        )
-    }
-
-    if(!reviews.ok || reviews.error) {
-        return (
-            <>
-            <div className="bg-amber-100
-            w-[125px] h-[174px] flex justify-center items-center px-5">
-                <PageError />
+            <div className="w-[100%] rounded-3xl overflow-hidden">
+                <Skeleton height={174} className="w-[100%]" style={{ lineHeight: '1.6' }}/>
             </div>
-            <BannerButton isContent={true}/>
-            </>
         )
     }
 
-    return(
+    if(isContent === null) {
+        return (
+            <div className="w-[100%] rounded-3xl overflow-hidden">
+                <Skeleton height={174} className="w-[100%]" style={{ lineHeight: '1.6' }}/>
+            </div>
+        )
+    }
+
+    if(isContent) {
+        return (
         <>
-        {isContent &&
             <div className="w-[125px] h-[100%]">
                 <ErrorBoundary
                 FallbackComponent={CompoErrorFallBack}
@@ -50,8 +48,14 @@ export default function BannerItems() {
                     <MainSwiper />
                 </ErrorBoundary>
             </div>
-        }
-        <BannerButton isContent={isContent}/>
+            <BannerButton/>
+        </>
+        )
+    }
+
+    return(
+        <>
+            <BannerButton />
         </>
     )
 }

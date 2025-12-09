@@ -1,29 +1,27 @@
 import styled from "styled-components"
 import Button from "./Button"
 
-const WriteButton = styled.div<{$isContent:boolean}>`
+const WriteButton = styled.div`
     display: flex;
-    flex-direction: ${(p)=>p.$isContent ? 'column' : 'initial'};
+    flex-direction: column;
     gap: 20px;
-    width: ${(p)=>p.$isContent ? 'calc(100% - 160px)' : '100%'};
-    height: ${(p)=>p.$isContent ? '100%' : '70%'};
+    flex: 1;
+    height: 100%;
 `
 
-export default function BannerButton({isContent}) {
+export default function BannerButton() {
 
     return (
-        <WriteButton $isContent={isContent}>
+        <WriteButton>
             <Button
             href={'/write'}
             title={'리뷰 먼저 써볼까요?'}
             buttonText={'리뷰 쓰러 가기'}
-            isContent={isContent}
             />
             <Button
             href={'/reading'}
             title={'읽고있는 책이 있나요?'}
             buttonText={'등록 하러 가기'}
-            isContent={isContent}
             />
         </WriteButton>
     )

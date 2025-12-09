@@ -7,14 +7,14 @@ interface Props{
     href?: string;
     title: string;
     buttonText: string;
-    isContent: boolean;
     onClick?:()=>void;
 }
-const GoReview = styled(Link)<{$isContent:boolean}>`
+const GoReview = styled(Link)`
     position: relative;
     overflow: hidden;
-    width: ${(p)=>p.$isContent ? '100%' : 'calc(50% - 10px)'};
-    height: ${(p)=>p.$isContent ? 'calc(50% - 10px)' : 'auto'};
+    width: 100%;
+    height: 100%;
+    min-height: 70px;
     background: var(--main-color-light);
     display: flex;
     flex-direction: column;
@@ -41,12 +41,12 @@ const Icon = styled(RiAddLargeLine)<{$isActive:boolean}>`
 `
 
 
-export default function Button({href,title,buttonText,isContent,onClick}:Props) {
+export default function Button({href,title,buttonText,onClick}:Props) {
 
     const [isActive,setIsActive] = useState(false)
 
     return (
-        <GoReview href={href} $isContent={isContent}>
+        <GoReview href={href}>
                 <p className="text-xl">{title}</p>
                 <span className="font-bold">{buttonText}</span>
                 <BackImage

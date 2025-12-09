@@ -21,7 +21,7 @@ export default function MainBanner() {
             <WaveBack />
             <div className="relative z-5">
                 <UserName />
-                <div className='mt-[20px] relative flex justify-center items-center h-[174px]'>
+                <div className='mt-[20px] relative flex gap-[10px] justify-between items-center h-[174px]'>
                     <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
                         <BannerItems />
                     </ErrorBoundary>
