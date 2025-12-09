@@ -124,6 +124,8 @@ export default function Calendar() {
         }
     },[reviews.data])
 
+    if(!reviews.ok) throw new Error('리뷰 정보 로드에 실패했습니다.')
+
     return (
         <section className="pt-8 pr-5 pl-5">
             <h2 className="sr-only">나의 독서 스탬프 캘린더</h2>

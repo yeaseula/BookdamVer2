@@ -42,11 +42,7 @@ export default function ReadingContent({
     currentBooks
 }) {
 
-    if(!books.ok || books.error) {
-        return (
-            <PageError />
-        )
-    }
+    if(!books.ok || books.error) throw new Error('읽고있는 책 정보 로드에 실패했습니다.')
 
     if(books.data?.length === 0) {
         return (

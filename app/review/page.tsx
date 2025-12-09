@@ -39,13 +39,7 @@ export default function ReviewList() {
             </ReviewWrap>
         )
     }
-    if(!reviews.ok || reviews.error) {
-        return (
-            <ReviewWrap>
-                <PageError />
-            </ReviewWrap>
-        )
-    }
+    if(!reviews.ok || reviews.error) throw new Error('리뷰 정보 로드에 실패했습니다.')
 
     if(reviews.data?.length === 0) {
         return (

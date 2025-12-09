@@ -17,12 +17,16 @@ const HisBox = styled.div`
 
 export default function ReadingHistory() {
 
-    const { session, reviews, isReviewLoaded } = useAuthStore()
+    const { reviews, isReviewLoaded } = useAuthStore()
     const [reading,setReading] = useState<number | null>(null)
 
     useEffect(()=>{
         reviews.data ? setReading(reviews.data.length) : setReading(null)
     },[reviews.data])
+
+    if(!reviews.ok || reviews.error) {
+        throw new Error('리뷰 정보 로드에 실패했습니다.')
+    }
 
     return (
         <HisBox>

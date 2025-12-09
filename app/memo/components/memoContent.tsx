@@ -48,11 +48,7 @@ const CheckBox = styled.div`
 
 export default function MemoContent({memo,setModal,modal,checkId}) {
 
-    if(!memo.ok || memo.error) {
-        return (
-            <PageError />
-        )
-    }
+    if(!memo.ok || memo.error) throw new Error('메모 정보 로드에 실패했습니다.')
 
     if(memo.data?.length === 0) {
         return (

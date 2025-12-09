@@ -12,7 +12,6 @@ import 'react-loading-skeleton/dist/skeleton.css'
 export default function BannerItems() {
 
     const { reviews, isReviewLoaded } = useAuthStore()
-    const [isReady,setIsReady] = useState(false)
     const [isContent,setIsContent] = useState<boolean | null>(null)
 
     useEffect(()=>{

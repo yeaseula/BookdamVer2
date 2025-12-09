@@ -35,11 +35,7 @@ const CheckBox = styled.div`
 export default function WishContent({wish,checkId,modal,setModal}) {
     const formatMoney = (num:number) => num.toLocaleString();
 
-    if(!wish.ok || wish.error) {
-        return (
-            <PageError />
-        )
-    }
+    if(!wish.ok || wish.error) throw new Error('위시리스트 로드에 실패했습니다.')
 
     if(wish.data?.length === 0) {
         return (

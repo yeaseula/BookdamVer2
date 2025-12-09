@@ -11,6 +11,7 @@ import { DataState, Reviews, useAuthStore } from "../lib/userfetch"
 import { useSearchParams } from "next/navigation"
 import { useToastStore } from "../lib/useToastStore"
 import { useRouter } from "next/navigation"
+import Picker from "react-mobile-picker"
 import SpinnerArea from "../components/spinner/SpinnerArea"
 
 const FieldList = styled.div`
@@ -41,7 +42,6 @@ export default function Write() {
     const searchParams = useSearchParams()
     const postId = searchParams.get('id')
     const setToast = useToastStore((state)=>state.setToast)
-    const setWorking = useToastStore((state)=>state.setWorking)
     const router = useRouter();
 
     const handlePoint = (e:React.MouseEvent<HTMLButtonElement>) => {

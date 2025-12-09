@@ -19,6 +19,11 @@ const ReadBoxP = styled.p`
 
 export default function ReadingState() {
     const { isBooksLoaded, books } = useAuthStore()
+
+    if(!books.ok || books.error) {
+        throw new Error('읽고있는 책 로드에 실패했습니다.')
+    }
+
     return (
         <ReadBox>
             <Image

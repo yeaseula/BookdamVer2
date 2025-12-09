@@ -4,6 +4,7 @@ import { isCriticalError } from "./errorLibrary";
 import { Button } from "./Error.styled";
 
 export function CompoErrorFallBack({ error, resetErrorBoundary }: any) {
+
     if(isCriticalError(error)) {
         throw error
     }
@@ -12,7 +13,7 @@ export function CompoErrorFallBack({ error, resetErrorBoundary }: any) {
     return (
         <div className="bg-amber-100 text-center py-6 px-4 rounded-2xl h-[100%] flex flex-col justify-center items-center">
             <p className="text-4xl mb-4">⚠️</p>
-            <p className="text-xl mb-2">데이터를 읽을 수 없습니다.</p>
+            <p className="text-xl mb-2">{error.message || '데이터 로드에 실패했습니다.'}</p>
             <Button onClick={resetErrorBoundary}>재시도</Button>
         </div>
     );

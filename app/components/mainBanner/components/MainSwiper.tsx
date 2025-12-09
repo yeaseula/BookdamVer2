@@ -111,6 +111,10 @@ export default function MainSwiper() {
         setIsInfo(false)
     }
 
+    if(!reviews.ok || reviews.error) {
+        throw new Error('리뷰 정보 로드에 실패했습니다.')
+    }
+
     return (
         <>
             {!isReady &&
