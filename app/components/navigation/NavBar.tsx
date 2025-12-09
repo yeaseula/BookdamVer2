@@ -1,17 +1,18 @@
 "use client"
 import Link from "next/link"
-import Lottie, {LottieRefCurrentProps} from 'lottie-react';
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import styled from "styled-components";
 import { useNavStore } from "@/app/lib/useNavStore";
 import { useAuthStore } from "@/app/lib/userfetch";
 
-import home from '../../nav-animation/home.json'
-import review from '../../nav-animation/review.json'
-import memo from '../../nav-animation/memo.json'
-import wish from '../../nav-animation/wish.json'
-import mypage from '../../nav-animation/mypage.json'
+import { RiHome9Line, RiHome9Fill,
+    RiDraftLine, RiDraftFill,
+    RiEdit2Line, RiEdit2Fill,
+    RiHeartAdd2Line, RiHeartAdd2Fill,
+    RiUserHeartLine, RiUserHeartFill,
+} from "@remixicon/react";
+
 
 const NavWrap = styled.nav`
     max-width: 450px;
@@ -22,7 +23,6 @@ const NavWrap = styled.nav`
 `
 const NavCont = styled.ul`
     width: 100%;
-    padding: 11px 0px;
     box-shadow: 0 -2px 15px 0 rgba(0, 0, 0, 0.1);
     display: flex;
     flex-wrap: wrap;
@@ -35,15 +35,40 @@ const NavList = styled.li`
     flex: 1 1 20%;
     text-align: center;
     position: relative;
+    z-index: 10
 `
 const NavLink = styled(Link)`
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 12px 0px;
     p {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
         color: #424242;
     }
+`
+const BallBox = styled.div<{$trans}>`
+    width: calc(100% / 5);
+    height: 100%;
+    position:absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: translateX(calc(100% * ${(p)=>p.$trans}));
+    transition: all 0.35s
+`
+const Ball = styled.div<{$opaticy}>`
+    position: relative;
+    top: -5.5px;
+    width: 65px;
+    aspect-ratio: 1;
+    height: auto;
+    background-color: ${(p)=>p.$opaticy ? 'transparent' : 'var(--main-color)'};
+    border-radius: 100%;
+    box-shadow: ${(p)=>p.$opaticy ? 'none' : '0 2px 6px rgba(0,0,0,0.15)'};
 `
 
 const NAV_CONFIG = {
@@ -68,33 +93,40 @@ const NAV_CONFIG = {
 export default function NavBar() {
 
     const animIcons = [
-        {pages:'home', name: home},
-        {pages:'review',name: review},
-        {pages:'memo', name: memo},
-        {pages:'wish', name: wish},
-        {pages:'mypage', name: mypage},
+        {pages:'/', icon: RiHome9Line, active: RiHome9Fill, name: 'home'},
+        {pages:'/review',icon: RiDraftLine, active:RiDraftFill, name: 'review'},
+        {pages:'/memo', icon: RiEdit2Line, active:RiEdit2Fill, name: 'memo'},
+        {pages:'/wish', icon: RiHeartAdd2Line, active:RiHeartAdd2Fill, name: 'wish'},
+        {pages:'/mypage', icon: RiUserHeartLine, active:RiUserHeartFill, name: 'mypage'},
     ]
+
     const setNav = useNavStore((s)=>s.setNav)
     const { type } = useNavStore()
-    const lottieRef = useRef<LottieRefCurrentProps>(null);
     const pathname = usePathname();
-    const currentPath = pathname.slice(0) || '/'
     const { hasGlobalError } = useAuthStore()
+    const [opaticy, setOpacity] = useState(false)
+    const [trans,setTrans] = useState(0)
 
-    useEffect(() => {
-        if (!lottieRef.current) return;
-
-        if (currentPath == '/mypage') return;
-        const frame = currentPath == '/mypage' ? 0 : 80;
-
-        lottieRef.current.stop();
-
-        setTimeout(() => {
-            if (lottieRef.current) {
-                lottieRef.current.goToAndStop(frame, true);
-            }
-        }, 0);
-    }, [currentPath]);
+    useEffect(()=>{
+        if(pathname === '/') {
+            setTrans(0)
+            setOpacity(false)
+        } else if(pathname === '/review') {
+            setTrans(1)
+            setOpacity(false)
+        } else if(pathname === '/memo') {
+            setTrans(2)
+            setOpacity(false)
+        } else if(pathname === '/wish') {
+            setTrans(3)
+            setOpacity(false)
+        } else if(pathname === '/mypage' || pathname.includes('profileedit')) {
+            setTrans(4)
+            setOpacity(false)
+        } else {
+            setOpacity(true)
+        }
+    },[pathname])
 
     useEffect(() => {
         if (NAV_CONFIG[pathname]) {
@@ -107,26 +139,23 @@ export default function NavBar() {
     if(hasGlobalError) return null
 
     if(type === 'normal') {
-        return(
-            <NavWrap key={type}>
-                <NavCont key={pathname}>
-                    {animIcons.map((icon,idx)=>{
-                        const pagename = icon.pages == 'home' ? '/' : `/${icon.pages}`;
-                        const isMypage = icon.pages == 'mypage';
-
-                        return <NavList key={icon.pages}>
-                            <NavLink href={pagename}>
-                            <Lottie
-                                lottieRef={isMypage && lottieRef}
-                                animationData={animIcons[idx].name}
-                                loop={false}
-                                autoplay={pagename == currentPath ? true : false}
-                                className={`w-[40px] h-[40px] relative ${pagename == '/review'? 'top-[-4px]':''}`}
-                            />
-                            <p>{icon.pages}</p>
+        return (
+            <NavWrap>
+                <NavCont>
+                    <BallBox $trans={trans}>
+                        <Ball $opaticy={opaticy}/>
+                    </BallBox>
+                    {animIcons.map((icon,idx)=> (
+                        <NavList key={`${idx}`}>
+                            <NavLink href={icon.pages}>
+                                {pathname === icon.pages ?
+                                <icon.active size={24} /> :
+                                <icon.icon size={24}/>
+                                }
+                                <p className="mt-1">{icon.name}</p>
                             </NavLink>
                         </NavList>
-                    })}
+                    ))}
                 </NavCont>
             </NavWrap>
         )
