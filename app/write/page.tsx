@@ -47,6 +47,9 @@ export default function Write() {
     const handlePoint = (e:React.MouseEvent<HTMLButtonElement>) => {
         const target = e.currentTarget.dataset.score;
         setRating(Number(target))
+        if(rating === 2) {
+            rating === Number(target) && setRating(0)
+        }
     }
 
     useEffect(()=>{ //수정 시 기존 review를 불러옵니다
