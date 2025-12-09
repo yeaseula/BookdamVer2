@@ -45,6 +45,8 @@ export default function ClientRoot({
       document.documentElement.style.fontSize = `${percent}%`;
     }
 
+    console.log(initialSettings)
+
     useEffect(()=>{
       setSession(initialSession)
       setProfile(initialProfile)
@@ -53,7 +55,7 @@ export default function ClientRoot({
       setData('books',initialBooks)
       setData('log',initialLog)
       setData('wish',initialWish)
-      initSettings(initialSettings)
+      initSettings(initialSettings.data[0])
     },[])
 
     useEffect(()=>{
