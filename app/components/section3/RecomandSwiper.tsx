@@ -22,7 +22,7 @@ const SliderWrap = styled.div`
     position: relative;
     margin-top: 13px;
 `
-const StyleSwiper = styled(Swiper)`
+const StyleSwipers = styled(Swiper)`
     overflow:visible;
     .swiper-slide { opacity: 0.5 };
     .swiper-slide-active { opacity: 1 !important; }
@@ -190,13 +190,9 @@ export default function RecomandSwiper(){
 
     return (
         <SliderWrap>
-            <StyleSwiper
+            <StyleSwipers
                 modules={[Navigation, A11y, Keyboard, Autoplay]}
                 onSwiper={(swiper)=>SwiperRef.current = swiper}
-                navigation={{
-                    nextEl: '.next-slide',
-                    prevEl: '.prev-slide',
-                }}
                 autoplay={{
                     delay: 2500,
                     disableOnInteraction: false,
@@ -206,13 +202,11 @@ export default function RecomandSwiper(){
                 keyboard={{ enabled: true }}
                 a11y={{ enabled: true }}
                 slidesPerView={1.15}
-                className='my-recomand-book'
             >
             {AithumbArr.map((book,index)=>(
                 <SwiperSlide
                 key={book.isbn}
                 tabIndex={0}
-                inert={false}
                 aria-label={`${index}번째 슬라이드`}
                 >
                     <SwiperDepth>
@@ -243,7 +237,7 @@ export default function RecomandSwiper(){
                     </SwiperDepth>
                 </SwiperSlide>
             ))}
-            </StyleSwiper>
+            </StyleSwipers>
         </SliderWrap>
     )
 }

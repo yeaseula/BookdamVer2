@@ -44,9 +44,6 @@ export default function ClientRoot({
       const percent = (px / 16) * 62.5;
       document.documentElement.style.fontSize = `${percent}%`;
     }
-
-    console.log(initialSettings)
-
     useEffect(()=>{
       setSession(initialSession)
       setProfile(initialProfile)

@@ -19,7 +19,6 @@ export default function BannerItems() {
             reviews.data?.length > 0 ? setIsContent(true) : setIsContent(false)
         }
     },[isReviewLoaded])
-    useEffect(()=>{console.log(isContent)},[isContent])
 
     if(!isReviewLoaded) {
         return (
