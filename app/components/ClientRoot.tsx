@@ -5,7 +5,6 @@ import { Session } from "@supabase/supabase-js"
 import { DataState,Reviews, Memo, Books, Log, Wish } from "../lib/userfetch"
 import StopWatch from "../reading/components/stopwatch/StopWatch"
 import { usePathname } from "next/navigation"
-import 'react-loading-skeleton/dist/skeleton.css'
 import ServerOff from "../error/ServerOff"
 
 interface Props {

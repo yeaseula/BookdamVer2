@@ -1,8 +1,5 @@
 "use client"
-
 import { useRef, useState, useEffect } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, A11y, Keyboard, Autoplay} from 'swiper/modules';
 import 'swiper/css';
@@ -17,6 +14,10 @@ import { useToastStore } from '@/app/lib/useToastStore';
 import { useAuthStore, DataState, Wish } from '@/app/lib/userfetch';
 import { fetchBookAI } from '@/app/lib/fetchBookCover';
 import { useErrorUtil } from '@/app/error/useErrorUtil';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css'
+import BookCover from './components/BookCover';
+import BookDesc from './components/BookDes';
 
 const SliderWrap = styled.div`
     position: relative;
@@ -24,9 +25,10 @@ const SliderWrap = styled.div`
 `
 const StyleSwiper = styled(Swiper)`
     overflow:visible;
+    width: 85%;
     .swiper-slide { opacity: 0.5 };
     .swiper-slide-active { opacity: 1 !important; }
-    .swiper-slide:focus { outline: 2px solid var(--point-color) }
+    .swiper-slide:focus-visible { outline: 2px solid var(--point-color) }
 `
 const SwiperDepth = styled.div`
     display: flex;
@@ -37,83 +39,17 @@ const SwiperDepth = styled.div`
     border-radius: 15px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 `
-const BookCover = styled.div`
-    position: relative;
-    width: 100px;
-    aspect-ratio: 3/4;
-    background-color: #bdbdbd;
-    > img {
-        position: absolute;
-        top: 0;
-        left: 0;
-        max-width: 100%;
-        width: 100%;
-        height: 100%;
-    }
-`
-const EmptyBox = styled.div`
-    width: 100px;
-    height: auto;
-    aspect-ratio: 3/4;
-    background-color: #bdbdbd;
-`
-const BookDesc = styled.div`
-    position: relative;
-    width: calc(100% - 110px);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-`
-const BookTitle = styled.p`
-    font-size: 1.6rem;
-    font-weight: 700;
-    margin-bottom: 5px;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    -webkit-line-clamp: 1;
-`
-const BookIntro = styled.p`
-    font-size: 1.4rem;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    -webkit-line-clamp: 3;
-`
-const ButtonWrap = styled.div`
-    display: flex;
-    gap: 5px;
-    align-items: center;
-`
-const DefaultBtnStyle = styled.button`
-    min-width: 76px;
-    justify-content: center;
-    display: flex;
-    align-items: center;
-    min-height: 24px;
-    padding: 1px 6px;
-    border-radius: 150px;
-    text-align: center;
-    font-size: 1.1rem;
-    border-radius: 500px;
-    background-color: #757575;
-    color: #fff;
-    cursor: pointer;
-`
-const Button = styled(Link)`
-    min-width: 76px;
-    justify-content: center;
-    display: flex;
-    align-items: center;
-    min-height: 24px;
-    padding: 0 4px;
-    border-radius: 150px;
-    text-align: center;
-    font-size: 1.1rem;
-    border-radius: 500px;
-    background-color: var(--sub_color);
-    color: #fff
-`
+
+interface BookAiType {
+    isbn: string;
+    authors: string[]
+    thumbnail: string;
+    title: string;
+    contents: string;
+    price: number;
+    sale_price: number;
+    error?: unknown;
+}
 
 export default function RecomandSwiper(){
     const SwiperRef = useRef(null);
@@ -124,6 +60,7 @@ export default function RecomandSwiper(){
     const [AithumbArr,setAiThumbArr] = useState([])
     const interest = profile.data?.interests
     const throwError = useErrorUtil()
+    let debounse:boolean = false
 
     useEffect(()=>{
         const RecomAi = async(array:string[])=>{
@@ -143,8 +80,9 @@ export default function RecomandSwiper(){
 
     const handleWishAdd = async(title:string,author:string,price:number) => {
 
-        if(isWorking) return
+        if(isWorking || debounse) return
         setIsWorking(true)
+        debounse = true
 
         try {
             const { data, error } = await supabase.from("wish").insert([
@@ -163,10 +101,9 @@ export default function RecomandSwiper(){
             }
 
             if(!newWish.data || !newWish.ok) {
-                setToast("읽고싶은 책 업로드 실패","error")
                 throw new Error('위시리스트 추가 실패')
             } else {
-                setToast("읽고싶은 책 업로드 성공!","success")
+                setToast("읽고싶은 책 추가 성공!","success")
                 useAuthStore.getState().addData('wish',newWish)
             }
 
@@ -174,8 +111,15 @@ export default function RecomandSwiper(){
             setToast("읽고싶은 책 업로드 실패","error")
             throw new Error('위시리스트 추가 실패')
         } finally {
+            debounse = false
             setIsWorking(false)
         }
+    }
+
+    if(AithumbArr.length === 0) {
+        return (
+            <Skeleton height={165}></Skeleton>
+        )
     }
 
     return (
@@ -188,42 +132,24 @@ export default function RecomandSwiper(){
                     disableOnInteraction: false,
                 }}
                 spaceBetween={15}
+                loop={true}
+                loopAdditionalSlides={2}
                 keyboard={{ enabled: true }}
                 a11y={{ enabled: true }}
-                slidesPerView={1.15}
+                slidesPerView={1}
             >
-            {AithumbArr.map((book,index)=>(
+            {AithumbArr.map((book:BookAiType,index)=>(
                 <SwiperSlide
                 key={book.isbn}
                 tabIndex={0}
                 aria-label={`${index}번째 슬라이드`}
                 >
                     <SwiperDepth>
-                        <BookCover>
-                            {book.thumbnail !== '' ? (
-                                <Image src={`${book.thumbnail}`}
-                                alt={book.title}
-                                priority
-                                width={'120'} height={'174'} />
-                            ) : (
-                                <EmptyBox />
-                            )}
-                        </BookCover>
-                        <BookDesc>
-                            <div>
-                                <BookTitle>{book.title}</BookTitle>
-                                <BookIntro>{book.contents ? book.contents.substring(0, 200) + '...' : '설명이 없습니다.'}</BookIntro>
-                            </div>
-                            <ButtonWrap>
-                                <DefaultBtnStyle
-                                aria-label='읽고싶은 책 목록에 추가'
-                                onClick={()=>handleWishAdd(book.title,book.authors[0],book.price)}
-                                >Wish</DefaultBtnStyle>
-                                <Button
-                                aria-label='예스24 판매페이지로 이동'
-                                href={`https://www.yes24.com/product/search?domain=ALL&query=${encodeURIComponent(book.title)}`} target='_blank'>More View</Button>
-                            </ButtonWrap>
-                        </BookDesc>
+                        <BookCover book={book} />
+                        <BookDesc book={book}
+                        onClick={()=>{
+                            handleWishAdd(book.title,book.authors[0],book.price)
+                        }}/>
                     </SwiperDepth>
                 </SwiperSlide>
             ))}
