@@ -22,7 +22,7 @@ const SliderWrap = styled.div`
     position: relative;
     margin-top: 13px;
 `
-const StyleSwipers = styled(Swiper)`
+const StyleSwiper = styled(Swiper)`
     overflow:visible;
     .swiper-slide { opacity: 0.5 };
     .swiper-slide-active { opacity: 1 !important; }
@@ -115,16 +115,6 @@ const Button = styled(Link)`
     color: #fff
 `
 
-interface BookAiType {
-    isbn: string;
-    thumbnail: string;
-    title: string;
-    contents: string;
-    price: number;
-    sale_price: number;
-    err?: unknown;
-}
-
 export default function RecomandSwiper(){
     const SwiperRef = useRef(null);
     const supabase = createClient()
@@ -190,15 +180,14 @@ export default function RecomandSwiper(){
 
     return (
         <SliderWrap>
-            <StyleSwipers
+            <StyleSwiper
                 modules={[Navigation, A11y, Keyboard, Autoplay]}
                 onSwiper={(swiper)=>SwiperRef.current = swiper}
                 autoplay={{
                     delay: 2500,
                     disableOnInteraction: false,
                 }}
-                spaceBetween={'15'}
-                loop={true}
+                spaceBetween={15}
                 keyboard={{ enabled: true }}
                 a11y={{ enabled: true }}
                 slidesPerView={1.15}
@@ -237,7 +226,7 @@ export default function RecomandSwiper(){
                     </SwiperDepth>
                 </SwiperSlide>
             ))}
-            </StyleSwipers>
+            </StyleSwiper>
         </SliderWrap>
     )
 }
