@@ -94,21 +94,15 @@ export default function WishForm({session}) {
             />
             <InputFields
                 type="text"
-                placeholder="가격"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                placeholder="가격(숫자만 입력)"
                 name="price"
                 width="calc((100% - 47px) / 2)"
                 value={price ?? ""}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
-                    const value = e.target.value;
-                    if (value === '') {
-                        setPrice(null);
-                        return;
-                    }
-                    if (/^\d+$/.test(value)) {
-                        setPrice(Number(value));
-                    } else {
-                        setToast("숫자만 입력 가능합니다!","info")
-                    }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const value = e.target.value.replace(/\D/g, '');
+                    setPrice(value ? Number(value) : null);
                 }}
             />
             <AddButton

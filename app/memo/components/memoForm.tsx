@@ -92,21 +92,15 @@ export default function MemoForm({session}) {
             />
             <InputFields
                 type="text"
-                placeholder="페이지"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                placeholder="페이지(숫자만 입력)"
                 name="bookpage"
                 width="calc((100% - 47px) / 2)"
                 value={page ?? ""}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
-                    const value = e.target.value;
-                    if (value === '') {
-                        setPage(null);
-                        return;
-                    }
-                    if (/^\d+$/.test(value)) {
-                        setPage(Number(value));
-                    } else {
-                        setToast("숫자만 입력 가능합니다!","warning")
-                    }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const value = e.target.value.replace(/\D/g, '');
+                    setPage(value ? Number(value) : null);
                 }}
             />
             <AddButton

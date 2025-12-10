@@ -115,21 +115,15 @@ export default function EditModal({editObj,setEditPopup}:ModalProps) {
                     />
                     <InputFields
                         type="text"
-                        placeholder="가격"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        placeholder="가격(숫자만 입력)"
                         name="price"
                         width="calc((100% - 47px) / 2)"
                         value={modalPrice ?? ""}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
-                            const value = e.target.value;
-                            if (value === '') {
-                                setModalPrice(null);
-                                return;
-                            }
-                            if (/^\d+$/.test(value)) {
-                                setModalPrice(Number(value));
-                            } else {
-                                setToast("숫자만 입력 가능합니다!","info")
-                            }
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            const value = e.target.value.replace(/\D/g, '');
+                            setModalPrice(value ? Number(value) : null);
                         }}
                     />
                 </div>

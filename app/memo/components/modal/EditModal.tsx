@@ -118,22 +118,15 @@ export default function EditModal({editObj,setEditPopup,checkId}:ModalProps) {
                     />
                     <InputFields
                         type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
                         placeholder="페이지"
                         name="modalpage"
                         width="calc((100% - 7px) / 2)"
                         value={modalPage ?? ''}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
-                        const value = e.target.value;
-                            if (value === '') {
-                                setModalPage(null);
-                                return;
-                            }
-                            if (/^\d+$/.test(value)) {
-                                setModalPage(Number(value));
-                            } else {
-                                alert('숫자만 입력 가능합니다!');
-                            }
-
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            const value = e.target.value.replace(/\D/g, '');
+                            setModalPage(value ? Number(value) : null);
                         }}
                     />
                     <TextArea
