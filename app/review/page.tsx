@@ -63,8 +63,8 @@ export default function ReviewList() {
             <h2 className="sr-only">내가 쓴 리뷰 리스트</h2>
             <p className="total-count text-s">총 {reviews.data.length}개</p>
             <div className="mt-[10px]">
-                {userSetting.reviewSet === 'gallery' && <GalleryList reviews={reviews.data} />}
-                {userSetting.reviewSet === 'list' && <List reviews={reviews.data} />}
+                {userSetting.data.review_set === 'gallery' && <GalleryList reviews={reviews.data} />}
+                {userSetting.data.review_set === 'list' && <List reviews={reviews.data} />}
             </div>
         </ReviewWrap>
     )

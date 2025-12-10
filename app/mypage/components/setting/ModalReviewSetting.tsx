@@ -21,7 +21,7 @@ export default function ModalReviewSetting() {
     const { userSetting } = useSettingStore()
     const setUserCustom = useSettingStore((s)=>s.setUserCustom)
 
-    const LibraryType = userSetting.reviewSet;
+    const LibraryType = userSetting.data.review_set;
 
     const LibraryRef = useRef(LibraryType)
 
@@ -45,7 +45,7 @@ export default function ModalReviewSetting() {
                 console.error(error);
                 throw new Error ('서재 스타일 수정에 실패했습니다.')
             }
-            setUserCustom('reviewSet', LibraryRef.current)
+            setUserCustom('review_set', LibraryRef.current)
 
         } catch(err) {
             console.error(err);

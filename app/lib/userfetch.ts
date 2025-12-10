@@ -227,16 +227,16 @@ export const useAuthStore = create<AuthState>()(
 )
 
 export interface SettingDefault {
-    reviewSet: 'list' | 'gallery',
-    calendarStart: 'sun' | 'mon',
-    calendarStamp: 'star' | 'gook',
+    review_set: 'list' | 'gallery',
+    calendar_start: 'sun' | 'mon',
+    calendar_stamp: 'star' | 'gook',
     font: number,
-    timerSet: 'normal' | 'bottom'
+    timer_set: 'normal' | 'bottom'
 }
 
 export interface UserSetting {
-    userSetting: SettingDefault
-    initSettings: (settings: any) => void
+    userSetting: DataState<SettingDefault>
+    initSettings: (settings:DataState<SettingDefault>) => void
     setUserCustom: <K extends keyof SettingDefault>(
         key: K,
         value: SettingDefault[K]
@@ -245,29 +245,39 @@ export interface UserSetting {
 
 export const useSettingStore = create<UserSetting>((set) => ({
     userSetting: {
-        reviewSet: 'list',
-        calendarStart: 'sun',
-        calendarStamp: 'star',
-        font: 16,
-        timerSet: 'normal',
+        ...initialLoadState,
+        data : {
+            review_set: 'list',
+            calendar_start: 'sun',
+            calendar_stamp: 'star',
+            font: 16,
+            timer_set: 'normal',
+        }
     },
     initSettings: (settings) => {
         if(!settings) return
 
         const newSettings = {
-            reviewSet: settings.review_set || 'list',
-            calendarStart: settings .calendar_start || 'sun',
-            calendarStamp: settings.calendar_stamp || 'star',
-            font: settings.font || 16,
-            timerSet: settings.timer_set || 'normal',
+            review_set: settings.data[0].review_set || 'list',
+            calendar_start: settings.data[0].calendar_start || 'sun',
+            calendar_stamp: settings.data[0].calendar_stamp || 'star',
+            font: settings.data[0].font || 16,
+            timer_set: settings.data[0].timer_set || 'normal',
         }
-        set({ userSetting: newSettings })
+        set({ userSetting: {
+            data: newSettings,
+            error: settings.error,
+            ok: !settings.error
+        } })
     },
     setUserCustom: (key, value) =>
         set((state) => ({
             userSetting: {
                 ...state.userSetting,
-                [key]: value
+                data : {
+                    ...state.userSetting.data,
+                    [key]: value
+                }
             }
         }))
 }))

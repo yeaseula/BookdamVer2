@@ -1,3 +1,5 @@
+import { SettingDefault } from '@/app/lib/userfetch';
+import { DataState } from '@/app/lib/userfetch';
 import createClient from "@/utils/supabase/client";
 import { DataState, Profiles, Reviews, Memo, Books, Log, Wish, SettingDefault } from "./userfetch";
 
@@ -106,12 +108,12 @@ export const UserSetting = async(userId: string) => {
     .select('*')
     .eq('user_id', userId)
     .order('updated_at', { ascending: false })
-    .single()
 
-    if(error) {
-        return null
+    const userSettingInfo:DataState<SettingDefault[]> = {
+        data: data,
+        error: error,
+        ok: !error
     }
 
-    const UserSettings: SettingDefault | null = data
-    return UserSettings
+    return userSettingInfo
 }

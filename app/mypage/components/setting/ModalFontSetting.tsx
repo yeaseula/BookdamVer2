@@ -10,7 +10,7 @@ import { useToastStore } from "@/app/lib/useToastStore"
 export default function ModalFontSetting({setFontUI}) {
     const { session } = useAuthStore()
     const { userSetting } = useSettingStore()
-    const [fontSize, setFontSize] = useState(userSetting.font)
+    const [fontSize, setFontSize] = useState(userSetting.data.font)
     const [loading,setLoading] = useState(false)
     const setUserCustom = useSettingStore((p)=>p.setUserCustom)
     const setToast = useToastStore((s)=>s.setToast)

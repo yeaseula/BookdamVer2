@@ -64,7 +64,7 @@ export default function ClientRoot({
       setData('books',initialBooks)
       setData('log',initialLog)
       setData('wish',initialWish)
-      initSettings(initialSettings.data[0])
+      initSettings(initialSettings)
       handleServerOffDetection() //server연결 탐지
 
       return ()=>{
@@ -74,8 +74,8 @@ export default function ClientRoot({
     },[])
 
     useEffect(()=>{
-      applyFontSize(userSetting.font);
-    },[userSetting.font])
+      applyFontSize(userSetting.data.font);
+    },[userSetting.data.font])
 
     if(isServerOff) {
       return (

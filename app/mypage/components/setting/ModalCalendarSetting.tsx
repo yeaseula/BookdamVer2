@@ -19,26 +19,26 @@ export default function ModalCalendarSetting() {
     const setUserCustom = useSettingStore((s)=>s.setUserCustom)
 
     const SettingKey = {
-        reviewSet: 'review_set',
-        calendarStart: 'calendar_start',
-        calendarStamp: 'calendar_stamp',
+        review_set: 'review_set',
+        calendar_start: 'calendar_start',
+        calendar_stamp: 'calendar_stamp',
         font: 'font',
-        timerSet: 'timer_set',
+        timer_set: 'timer_set',
     } as const
 
     const handleToggle = async() => {
         if(!session) return
-        const RealTarget = userSetting.calendarStart === 'sun' ? 'mon' : 'sun'
+        const RealTarget = userSetting.data.calendar_start === 'sun' ? 'mon' : 'sun'
 
-        await EditFunc('calendarStart',RealTarget)
+        await EditFunc('calendar_start',RealTarget)
 
     }
 
     const handleToggle2 = async() => {
         if(!session) return
-        const RealTarget = userSetting.calendarStamp === 'star' ? 'gook' : 'star'
+        const RealTarget = userSetting.data.calendar_stamp === 'star' ? 'gook' : 'star'
 
-        await EditFunc('calendarStamp',RealTarget)
+        await EditFunc('calendar_stamp',RealTarget)
     }
 
     const EditFunc = async<K extends keyof SettingDefault>(
@@ -79,14 +79,14 @@ export default function ModalCalendarSetting() {
         <ToggleList>
             <p>일요일부터</p>
                 <ToggleSwitch
-                isOn={userSetting.calendarStart === 'sun'}
+                isOn={userSetting.data.calendar_start === 'sun'}
                 onClick={handleToggle}
                 />
         </ToggleList>
         <ToggleListLast>
             <p>월요일부터</p>
                 <ToggleSwitch
-                isOn={userSetting.calendarStart === 'mon'}
+                isOn={userSetting.data.calendar_start === 'mon'}
                 onClick={handleToggle}
                 />
         </ToggleListLast>
@@ -94,14 +94,14 @@ export default function ModalCalendarSetting() {
         <ToggleListLast>
             <p>책도장</p>
                 <ToggleSwitch
-                isOn={userSetting.calendarStamp === 'star'}
+                isOn={userSetting.data.calendar_stamp === 'star'}
                 onClick={handleToggle2}
                 />
         </ToggleListLast>
         <ToggleListLast>
             <p>발자국도장</p>
                 <ToggleSwitch
-                isOn={userSetting.calendarStamp === 'gook'}
+                isOn={userSetting.data.calendar_stamp === 'gook'}
                 onClick={handleToggle2}
                 />
         </ToggleListLast>

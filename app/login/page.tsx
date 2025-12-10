@@ -98,7 +98,7 @@ export default function Login() {
 
             //get setting 정보 : 로드 실패해도 치명적 에러가 아님
             const UserSettings = await UserSetting(UserId)
-            if(!UserSettings) {
+            if(!UserSettings.ok) {
                 setToast('초기 셋팅 정보를 가져오지 못했습니다', 'info')
             } else {
                 initSettings(UserSettings)
