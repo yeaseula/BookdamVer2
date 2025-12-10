@@ -92,7 +92,7 @@ export default function ModalCalendarSetting() {
         </ToggleListLast>
         <p className="mt-[20px] mb-5 font-bold">도장 선택</p>
         <ToggleListLast>
-            <p>별도장</p>
+            <p>책도장</p>
                 <ToggleSwitch
                 isOn={userSetting.calendarStamp === 'star'}
                 onClick={handleToggle2}

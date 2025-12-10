@@ -148,18 +148,11 @@ export default function Calendar() {
                         if (!exist) return;
                         info.el.style.backgroundImage = `
                         ${userSetting.calendarStamp === 'star' ?
-                            'url(/images/stamp.svg)' :
-                            'url(/images/footprint.svg)' }
-                        `;
-                        info.el.style.backgroundSize = `
-                        ${userSetting.calendarStamp === 'star' ?
-                            'auto' : '25px'
-                        }
+                            'url(/images/stamp_book.svg)' :
+                            'url(/images/stamp_gook.svg)' }
                         `;
                         info.el.style.backgroundRepeat = "no-repeat";
-                        info.el.style.backgroundPosition = `
-                        ${userSetting.calendarStamp === 'star' ? 'center' : 'left 10px'}
-                        `;
+                        info.el.style.backgroundPosition = "center"
                     }}
                 />
             </FullCalBox>

@@ -7,7 +7,7 @@ import { throwSupabaseError } from "@/app/error/errorLibrary"
 
 const ReadBox = styled.div`
     text-align: center;
-    padding: 15px;
+    padding: 15px 15px 25px;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     background-color: var(--main-color);
@@ -28,10 +28,11 @@ export default function ReadingState() {
     return (
         <ReadBox>
             <Image
-                src={'/images/bulb-img.webp'}
+                src={'/images/state_book.svg'}
                 alt={''}
-                width={50}
-                height={50}
+                width={80}
+                height={80}
+                priority
                 style={{ display: 'inline-block' }}
             />
             {!isBooksLoaded && (
@@ -43,7 +44,7 @@ export default function ReadingState() {
             {isBooksLoaded && (
                 <>
                 {books.data.length == 0 &&
-                    <p className="mt-8 font-medium">읽고있는 책이 없네요🤔</p>
+                    <p className="mt-2 text-3xl font-bold">읽고있는 책이 없어요!</p>
                 }
                 {books.data.length > 0 && (
                     <ReadBoxP>

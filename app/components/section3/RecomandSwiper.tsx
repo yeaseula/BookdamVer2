@@ -20,7 +20,7 @@ import { useErrorUtil } from '@/app/error/useErrorUtil';
 
 const SliderWrap = styled.div`
     position: relative;
-    margin-top: 13px;
+    margin-top: 5px;
 `
 const StyleSwiper = styled(Swiper)`
     overflow:visible;
@@ -203,6 +203,7 @@ export default function RecomandSwiper(){
                             {book.thumbnail !== '' ? (
                                 <Image src={`${book.thumbnail}`}
                                 alt={book.title}
+                                priority
                                 width={'120'} height={'174'} />
                             ) : (
                                 <EmptyBox />
