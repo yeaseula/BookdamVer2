@@ -127,6 +127,10 @@ export default function StopWatch() {
             setToast('페이지를 입력해주세요','info');
             return
         }
+        if(timeObj.total_pages < radingPage) {
+            setToast('총 페이지보다 읽은 페이지수가 많아요!', 'info')
+            return
+        }
 
         setIsValidLoading(true)
 
