@@ -1,11 +1,12 @@
 "use client"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Profiles, useAuthStore, useSettingStore } from "../lib/userfetch"
 import { Session } from "@supabase/supabase-js"
 import { DataState,Reviews, Memo, Books, Log, Wish } from "../lib/userfetch"
 import StopWatch from "../reading/components/stopwatch/StopWatch"
 import { usePathname } from "next/navigation"
 import 'react-loading-skeleton/dist/skeleton.css'
+import ServerOff from "../error/ServerOff"
 
 interface Props {
   initialSession: Session | null
@@ -30,6 +31,7 @@ export default function ClientRoot({
   initialSettings,
   children}:Props) {
 
+    const [isServerOff,setIsServerOff] = useState(false)
     const pathname = usePathname()
     const setSession = useAuthStore((state)=>state.setSession)
     const setProfile = useAuthStore((state)=>state.setProfile)
@@ -44,6 +46,16 @@ export default function ClientRoot({
       const percent = (px / 16) * 62.5;
       document.documentElement.style.fontSize = `${percent}%`;
     }
+
+    const handleServerOffDetection = () => {
+      window.addEventListener('offline',()=>{
+        setIsServerOff(true)
+      })
+      window.addEventListener('online',()=>{
+        setIsServerOff(false)
+      })
+    }
+
     useEffect(()=>{
       setSession(initialSession)
       setProfile(initialProfile)
@@ -53,12 +65,23 @@ export default function ClientRoot({
       setData('log',initialLog)
       setData('wish',initialWish)
       initSettings(initialSettings.data[0])
+      handleServerOffDetection() //server연결 탐지
+
+      return ()=>{
+        window.removeEventListener('online',handleServerOffDetection)
+        window.removeEventListener('offline',handleServerOffDetection)
+      }
     },[])
 
     useEffect(()=>{
       applyFontSize(userSetting.font);
     },[userSetting.font])
 
+    if(isServerOff) {
+      return (
+        <ServerOff />
+      )
+    }
     return (
     <>
       {children}

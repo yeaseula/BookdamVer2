@@ -10,11 +10,7 @@ export function GlobalErrorFallback({ error,resetErrorBoundary}:any) {
     if (error instanceof UnauthorizedError) {
         return (
         <Container>
-            <Image src={'/images/fox_guard_need_login.svg'}
-            alt=""
-            width={230}
-            height={230}
-            />
+            <p className="text-7xl">😎</p>
             <Title>로그인이 필요합니다</Title>
             <Button onClick={() => router.push('/login')}>
             로그인하기
@@ -27,12 +23,8 @@ export function GlobalErrorFallback({ error,resetErrorBoundary}:any) {
     if (error instanceof NetworkError) {
         return (
         <Container>
-            <Image src={'/images/fox_error404.svg'}
-            alt=""
-            width={230}
-            height={230}
-            />
-            <Title>네트워크 연결 끊김</Title>
+            <p className="text-7xl">😭</p>
+            <Title>네트워크 연결이 끊겼습니다.</Title>
             <p className="text-3xl mb-7">error : {error.message}</p>
             <Button onClick={resetErrorBoundary}>다시 시도</Button>
         </Container>
@@ -43,12 +35,8 @@ export function GlobalErrorFallback({ error,resetErrorBoundary}:any) {
     if (error instanceof ServerError) {
         return (
             <Container>
-                <Image src={'/images/fox_error404.svg'}
-                alt=""
-                width={230}
-                height={230}
-                />
-                <Title>서버 오류</Title>
+                <p className="text-7xl">⚠️</p>
+                <Title>서버 오류가 발생했습니다.</Title>
                 <p className="text-3xl mb-7">error : {error.message}</p>
                 <div className="flex gap-4 justify-center">
                 <Button onClick={resetErrorBoundary}>다시 시도</Button>
@@ -61,11 +49,7 @@ export function GlobalErrorFallback({ error,resetErrorBoundary}:any) {
     // 알 수 없는 에러
     return (
         <Container>
-            <Image src={'/images/fox_error404.svg'}
-            alt=""
-            width={230}
-            height={230}
-            />
+            <p className="text-7xl">⚠️</p>
             <Title>예상치 못한 오류 발생</Title>
             <p className="text-3xl mb-7">{error.message}</p>
             <Button onClick={resetErrorBoundary}>다시 시도</Button>

@@ -1,4 +1,4 @@
-import { NetworkError } from '@/app/error/errorLibrary'
+import { NetworkError, ServerError } from '@/app/error/errorLibrary'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
@@ -35,9 +35,7 @@ export default async function createClient() {
   .eq('id', session.user.id)
   .single();
 
-  if(profileError) {
-    throw new Error('프로필 데이터 로드 실패')
-  }
+  if(profileError) throw new Error('프로필 데이터를 불러올 수 없습니다.')
 
   const [ reviews, memo, books, log, wish, settings ] = await Promise.all([
     supabase

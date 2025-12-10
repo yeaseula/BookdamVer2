@@ -1,5 +1,6 @@
 import createClient from "@/utils/supabase/client";
 import { DataState, Profiles, Reviews, Memo, Books, Log, Wish, SettingDefault } from "./userfetch";
+
 const supabase = createClient()
 
 //profile
@@ -9,6 +10,7 @@ export const UserInfoInitial = async (userId:string)=>{
     .select('*')
     .eq('id', userId)
     .single();
+
     const userInfor:DataState<Profiles> = {
         data: data,
         error: error,

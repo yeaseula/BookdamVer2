@@ -81,7 +81,7 @@ export function supabaseErrorToHttpStatus(error: PostgrestError | null): number 
     if (code === '23505') return 409;
     if (code.startsWith('22')) return 400;
 
-    // 기타 알 수 없는 오류 → 서버 오류 취급
+    // 기타 알 수 없는 오류->서버 오류 취급
     return 500;
 }
 export function throwSupabaseError(error: PostgrestError) {
@@ -96,7 +96,28 @@ export function throwSupabaseError(error: PostgrestError) {
 
     throw new LocalError('데이터를 불러올 수 없습니다.');
 }
+export async function safeSupabaseQuery<T>(
+    queryFn: () => Promise<{ data: T | null; error: PostgrestError | null }>
+    ): Promise<T | null> {
 
+    try {
+        const { data, error } = await queryFn();
+
+        if (error) {
+            throwSupabaseError(error);
+        }
+
+        return data;
+    } catch (err) {
+        // 네트워크 에러 처리
+        if (err instanceof TypeError && err.message.includes('fetch')) {
+            throw new ServerError('네트워크 연결을 확인해주세요');
+        }
+
+        // 이미 throw된 커스텀 에러는 그대로 전파
+        throw err;
+    }
+}
 
 export function throwHttpError(res: Response): never {
     const message = ERROR_MESSAGES[res.status]
