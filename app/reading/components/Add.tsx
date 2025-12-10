@@ -9,12 +9,13 @@ interface ButtonProps {
     title: string;
     page: number;
     readPage: number;
+    loading: boolean;
     onClick:()=>Promise<void>;
 }
 
 export default function AddButton({...props}:ButtonProps) {
 
-    const isValid = props.title && props.page && props.readPage
+    const isValid = props.title && props.page && props.readPage && !props.loading
 
     return(
         <AddButtonstyle aria-label={props.arialabel} disabled={!isValid} onClick={props.onClick}>

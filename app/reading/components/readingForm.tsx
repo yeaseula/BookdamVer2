@@ -14,16 +14,36 @@ const FormWrap = styled.div`
 `
 
 export default function ReadingForm({ session }) {
-
     const [title,setTitle] = useState<string>('')
     const [page, setPage] = useState<number | null>(null)
     const [radingPage, setReadingPage] = useState<number | null>(null)
+    const [loading,setIsLoading] = useState<boolean>(false)
     const supabase = createClient()
     const setToast = useToastStore((state)=>state.setToast)
+    let debounce:boolean = false;
 
     const userId = session.user.id
 
+    const handlePageNumeric = () => {
+        if(!page || !radingPage) return
+
+        if(page < radingPage) {
+            return false
+        }
+        return true
+    }
+
     const handleSubmit = async() => {
+
+        if(!handlePageNumeric()) {
+            setToast('총 페이지보다 읽은 페이지수가 많아요!','info')
+            return
+        }
+
+        if(debounce || loading) return
+        debounce = true;
+        setIsLoading(true)
+
         try {
             const { data, error } = await supabase.from("books").insert([
                 {
@@ -59,14 +79,9 @@ export default function ReadingForm({ session }) {
                 ? error.message
                 : '업로드 중 오류가 발생했습니다'
             setToast(errorMessage, "error")
-        }
-    }
-
-    const handlePageNumeric = () => {
-        if(!page || !radingPage) return
-
-        if(page < radingPage) {
-            setToast('총 페이지보다 많이 읽을 수 없습니다.','info')
+        } finally {
+            debounce = false;
+            setIsLoading(false)
         }
     }
 
@@ -92,7 +107,6 @@ export default function ReadingForm({ session }) {
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     const value = e.target.value.replace(/\D/g, '');
                     setPage(value ? Number(value) : null);
-                    handlePageNumeric()
                 }}
             />
             <InputFields
@@ -106,7 +120,6 @@ export default function ReadingForm({ session }) {
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     const value = e.target.value.replace(/\D/g, '');
                     setReadingPage(value ? Number(value) : null);
-                    handlePageNumeric()
                 }}
             />
             <AddButton
@@ -115,6 +128,7 @@ export default function ReadingForm({ session }) {
             title={title}
             page={page}
             readPage={radingPage}
+            loading={loading}
             onClick={handleSubmit} />
         </FormWrap>
     )

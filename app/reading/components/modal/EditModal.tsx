@@ -42,7 +42,22 @@ export default function EditModal({editObj,setEditPopup,checkIdRef}:ModalProps) 
     const [loading,setIsLoading] = useState<boolean>(false)
     let debounce:boolean = false;
 
+    const handlePageNumeric = () => {
+        if(!modalPage || !modalCurrentPage) return
+
+        if(modalPage < modalCurrentPage) {
+            return false
+        }
+        return true
+    }
+
     const handleModalEdit = async () => {
+
+        if(!handlePageNumeric()) {
+            setToast('총 페이지보다 읽은 페이지수가 많아요!','info')
+            return
+        }
+
         if(debounce || loading) return
         debounce = true;
         setIsLoading(true)
@@ -114,40 +129,28 @@ export default function EditModal({editObj,setEditPopup,checkIdRef}:ModalProps) 
                     />
                     <InputFields
                         type="text"
-                        placeholder="총 페이지"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        placeholder="총 페이지(숫자만 입력)"
                         name="modalpage"
                         width="calc((100% - 7px) / 2)"
                         value={modalPage ?? ''}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
-                        const value = e.target.value;
-                            if (value === '') {
-                                setModalPage(null);
-                                return;
-                            }
-                            if (/^\d+$/.test(value)) {
-                                setModalPage(Number(value));
-                            } else {
-                                alert('숫자만 입력 가능합니다!');
-                            }
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            const value = e.target.value.replace(/\D/g, '');
+                            setModalPage(value ? Number(value) : null);
                         }}
                     />
                     <InputFields
                         type="text"
-                        name="current-page"
-                        placeholder="읽고있는 페이지"
-                        width="calc((100% - 7px) / 2)"
-                        value={modalCurrentPage}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
-                        const value = e.target.value;
-                            if (value === '') {
-                                setModalCurrentPage(null);
-                                return;
-                            }
-                            if (/^\d+$/.test(value)) {
-                                setModalCurrentPage(Number(value));
-                            } else {
-                                alert('숫자만 입력 가능합니다!');
-                            }
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        placeholder="읽은 페이지(숫자만 입력)"
+                        name="bookpage-read"
+                        width="calc((100% - 47px) / 2)"
+                        value={modalCurrentPage ?? ''}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            const value = e.target.value.replace(/\D/g, '');
+                            setModalCurrentPage(value ? Number(value) : null);
                         }}
                     />
                 </div>

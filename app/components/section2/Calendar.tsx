@@ -141,13 +141,13 @@ export default function Calendar() {
                     key={stampDate.join()}
                     plugins={[dayGridPlugin]}
                     initialView="dayGridMonth"
-                    firstDay={userSetting.calendarStart === 'sun' ? 0 : 1}
+                    firstDay={userSetting.data.calendar_start === 'sun' ? 0 : 1}
                     dayCellDidMount={(info) => {
                         const dateStr = info.date.toLocaleDateString("en-CA");
                         const exist = stampDate.find(e => e === dateStr);
                         if (!exist) return;
                         info.el.style.backgroundImage = `
-                        ${userSetting.calendarStamp === 'star' ?
+                        ${userSetting.data.calendar_stamp === 'star' ?
                             'url(/images/stamp_book.svg)' :
                             'url(/images/stamp_gook.svg)' }
                         `;
