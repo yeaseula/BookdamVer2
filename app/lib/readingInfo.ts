@@ -1,5 +1,3 @@
-import { SettingDefault } from '@/app/lib/userfetch';
-import { DataState } from '@/app/lib/userfetch';
 import createClient from "@/utils/supabase/client";
 import { DataState, Profiles, Reviews, Memo, Books, Log, Wish, SettingDefault } from "./userfetch";
 
