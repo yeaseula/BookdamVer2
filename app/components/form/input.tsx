@@ -30,6 +30,8 @@ interface FiledType {
     name: string;
     value?: string | number;
     width?:  string | number | undefined;
+    pattern?: string;
+    inputMode?: string;
     onBlur?:(e:React.ChangeEvent<HTMLInputElement>)=>void;
     onChange?:(e:React.ChangeEvent<HTMLInputElement>)=>void;
 }

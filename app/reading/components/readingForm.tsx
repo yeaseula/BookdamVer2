@@ -62,6 +62,14 @@ export default function ReadingForm({ session }) {
         }
     }
 
+    const handlePageNumeric = () => {
+        if(!page || !radingPage) return
+
+        if(page < radingPage) {
+            setToast('총 페이지보다 많이 읽을 수 없습니다.','info')
+        }
+    }
+
     return (
         <FormWrap>
             <InputFields
@@ -75,40 +83,30 @@ export default function ReadingForm({ session }) {
             />
             <InputFields
                 type="text"
-                placeholder="총 페이지"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                placeholder="총 페이지(숫자만 입력)"
                 name="bookpage"
                 width="calc((100% - 47px) / 2)"
                 value={page ?? ""}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
-                    const value = e.target.value;
-                    if (value === '') {
-                        setPage(null);
-                        return;
-                    }
-                    if (/^\d+$/.test(value)) {
-                        setPage(Number(value));
-                    } else {
-                        setToast("숫자만 입력 가능합니다!","warning")
-                    }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const value = e.target.value.replace(/\D/g, '');
+                    setPage(value ? Number(value) : null);
+                    handlePageNumeric()
                 }}
             />
             <InputFields
                 type="text"
-                placeholder="읽은 페이지"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                placeholder="읽은 페이지(숫자만 입력)"
                 name="bookpage-read"
                 width="calc((100% - 47px) / 2)"
                 value={radingPage ?? ""}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
-                    const value = e.target.value;
-                    if (value === '') {
-                        setReadingPage(null);
-                        return;
-                    }
-                    if (/^\d+$/.test(value)) {
-                        setReadingPage(Number(value));
-                    } else {
-                        setToast("숫자만 입력 가능합니다!","warning")
-                    }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const value = e.target.value.replace(/\D/g, '');
+                    setReadingPage(value ? Number(value) : null);
+                    handlePageNumeric()
                 }}
             />
             <AddButton
