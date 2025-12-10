@@ -9,8 +9,6 @@ import { throwSupabaseError } from "@/app/error/errorLibrary"
 const List = styled.div`
     position: relative;
     width: 100%;
-    display: flex;
-    align-items: start;
     padding: 10px 0 0 0;
     gap: 10px;
     border-bottom: 1px solid #e0e0e0;
@@ -78,6 +76,9 @@ export default function ReadingContent({
                     currentBooks={currentBooks}
                     />
                 </ListInfo>
+                {m.total_pages === m.current_page &&
+                    <p className="text-xl mb-3 font-medium text-blue-500">다 읽었어요! 😄🎉</p>
+                }
             </List>
             <ProgressBar total={m.total_pages} current={m.current_page} />
             </div>
