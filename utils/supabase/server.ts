@@ -67,7 +67,8 @@ export default async function createClient() {
     .from('user_settings')
     .select('*')
     .eq('user_id', session.user.id)
-    .order('updated_at', { ascending: false }),
+    .order('updated_at', { ascending: false })
+    .single(),
   ])
 
   return {

@@ -243,6 +243,18 @@ export interface UserSetting {
     )=>void
 }
 
+const initialLoadSetting = {
+    data: {
+        review_set: 'list',
+        calendar_start: 'sun',
+        calendar_stamp: 'star',
+        font: 16,
+        timer_set: 'normal'
+    },
+    error: null,
+    ok: true
+}
+
 export const useSettingStore = create<UserSetting>((set) => ({
     userSetting: {
         ...initialLoadState,
@@ -257,13 +269,15 @@ export const useSettingStore = create<UserSetting>((set) => ({
     initSettings: (settings) => {
         if(!settings) return
 
-        const newSettings = {
+        const newSettings =
+        {
             review_set: settings.data[0].review_set || 'list',
             calendar_start: settings.data[0].calendar_start || 'sun',
             calendar_stamp: settings.data[0].calendar_stamp || 'star',
             font: settings.data[0].font || 16,
             timer_set: settings.data[0].timer_set || 'normal',
         }
+
         set({ userSetting: {
             data: newSettings,
             error: settings.error,

@@ -106,8 +106,9 @@ export const UserSetting = async(userId: string) => {
     .select('*')
     .eq('user_id', userId)
     .order('updated_at', { ascending: false })
+    .single()
 
-    const userSettingInfo:DataState<SettingDefault[]> = {
+    const userSettingInfo:DataState<SettingDefault> = {
         data: data,
         error: error,
         ok: !error
