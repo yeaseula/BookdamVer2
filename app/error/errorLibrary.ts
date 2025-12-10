@@ -1,4 +1,8 @@
-import { PostgrestError } from "@supabase/supabase-js";
+import {
+    PostgrestError,
+    FunctionsHttpError,
+    FunctionsRelayError,
+    FunctionsFetchError } from "@supabase/supabase-js";
 
 export const ERROR_MESSAGES: Record<number, string> = {
     400: '잘못된 요청입니다',
@@ -65,60 +69,6 @@ export function isCriticalError(error: unknown): boolean {
     return error instanceof CriticalError;
 }
 
-export function supabaseErrorToHttpStatus(error: PostgrestError | null): number | null {
-    if (!error) return null;
-
-    const code = error.code;
-
-    // PostgREST Errors (API 레벨: HTTP 에러)
-    if (code === 'PGRST205') return 404;
-    if (code.startsWith('PGRST30')) return 400;
-    if (code.startsWith('PGRST4')) return 403;
-    if (code.startsWith('PGRST5')) return 500;
-
-    // Postgres Errors (DB 레벨)
-    if (code === '42501') return 403;
-    if (code === '23505') return 409;
-    if (code.startsWith('22')) return 400;
-
-    // 기타 알 수 없는 오류->서버 오류 취급
-    return 500;
-}
-export function throwSupabaseError(error: PostgrestError) {
-    const status = supabaseErrorToHttpStatus(error);
-    const message = ERROR_MESSAGES[status] ?? '알 수 없는 오류가 발생했습니다.';
-
-    if (status === 400) throw new LocalError(message);
-    if (status === 401) throw new UnauthorizedError;
-    if (status === 403) throw new LocalError(message);
-    if (status === 404) throw new LocalError(message);
-    if (status >= 500) throw new ServerError(message);
-
-    throw new LocalError('데이터를 불러올 수 없습니다.');
-}
-export async function safeSupabaseQuery<T>(
-    queryFn: () => Promise<{ data: T | null; error: PostgrestError | null }>
-    ): Promise<T | null> {
-
-    try {
-        const { data, error } = await queryFn();
-
-        if (error) {
-            throwSupabaseError(error);
-        }
-
-        return data;
-    } catch (err) {
-        // 네트워크 에러 처리
-        if (err instanceof TypeError && err.message.includes('fetch')) {
-            throw new ServerError('네트워크 연결을 확인해주세요');
-        }
-
-        // 이미 throw된 커스텀 에러는 그대로 전파
-        throw err;
-    }
-}
-
 export function throwHttpError(res: Response): never {
     const message = ERROR_MESSAGES[res.status]
 
@@ -136,6 +86,34 @@ export function throwHttpError(res: Response): never {
 
     if (res.status >= 500) {
         throw new ServerError(message ?? '서버 오류')
+    }
+
+    throw new LocalError('데이터를 읽을 수 없습니다')
+}
+
+export function throwSupabaseError(error: PostgrestError | null) {
+
+    if(!error) return
+
+    if(error instanceof FunctionsHttpError) {
+        const message = ERROR_MESSAGES[error.code]
+        if(message < 400) {
+            console.log(`${error.code} : ${error.message}`)
+            throw new LocalError('데이터를 읽을 수 없습니다.')
+        } else if(message >= 500) {
+            console.log(`${error.code} : ${error.message}`)
+            throw new ServerError('서버 연결에 문제가 발생했습니다.')
+        }
+    }
+
+    if(error instanceof FunctionsRelayError) {
+        console.log(`(${error.code}) : ${error.message}`)
+        throw new LocalError('서버 네트워크 통신 문제가 발생했습니다.')
+    }
+
+    if(error instanceof FunctionsFetchError) {
+        console.log(` (${error.code}) : ${error.message}`)
+        throw new LocalError('데이터에 접근할 수 없습니다.')
     }
 
     throw new LocalError('데이터를 읽을 수 없습니다')
