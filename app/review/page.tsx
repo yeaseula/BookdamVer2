@@ -38,6 +38,7 @@ export default function ReviewList() {
             </ReviewWrap>
         )
     }
+
     if(!reviews.ok || reviews.error) {
         throwSupabaseError(reviews.error)
     }

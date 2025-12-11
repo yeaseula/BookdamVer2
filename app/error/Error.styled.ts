@@ -8,6 +8,7 @@ export const Container = styled.section`
     justify-content: center;
     align-items: center;
     text-align: center;
+    background: #fff;
 `
 export const Title = styled.h2`
     font-weight: bold;

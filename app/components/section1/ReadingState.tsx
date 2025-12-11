@@ -48,8 +48,8 @@ export default function ReadingState() {
                 }
                 {books.data.length > 0 && (
                     <ReadBoxP>
-                        현재
-                        <span className="reading-name font-bold"> {books.data[0].title}</span>을 읽고 계시네요!<br />
+                        현재 읽고있는 책은
+                        <span className="reading-name font-bold"> {books.data[0].title}</span>!<br />
                         <span className="reading-page font-bold">{books.data[0].current_page} 페이지</span>까지 읽었어요.
                     </ReadBoxP>
                 )}
