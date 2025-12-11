@@ -1,5 +1,4 @@
 import styled from "styled-components"
-import {  RiCloseLine } from "@remixicon/react"
 import ModalBack from "@/app/components/modal/ModalBack"
 
 const Container = styled.div`
@@ -17,7 +16,8 @@ const Container = styled.div`
 `
 
 interface ModalProps {
-    type: 'popup' | 'bottom' | 'stopwatch'
+    type: 'popup' | 'bottom' | 'stopwatch' | 'delete'
+    deleteState?: boolean
     onClose: ()=>void
     children: React.ReactNode
 }
@@ -27,7 +27,9 @@ export default function SettingModal({type,onClose,children}:ModalProps) {
         <>
         <ModalBack onClick={onClose}></ModalBack>
         {type == 'popup' && (
-            <Container>{children}</Container>
+            <Container>
+                {children}
+            </Container>
         )}
         {type == 'bottom' && (
             <>{children}</>

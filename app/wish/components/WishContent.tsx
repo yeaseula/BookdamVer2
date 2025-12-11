@@ -31,7 +31,7 @@ const CheckBox = styled.div`
     z-index: 10;
 `
 
-export default function WishContent({wish,checkId,modal,setModal}) {
+export default function WishContent({wish,setCheckId,modal,setModal}) {
     const formatMoney = (num:number) => num.toLocaleString();
 
     if(!wish.ok || wish.error) {
@@ -53,7 +53,7 @@ export default function WishContent({wish,checkId,modal,setModal}) {
                         type={'checkbox'}
                         name={'list-check'}
                         index={w.id}
-                        checkId={checkId}
+                        setCheckId={setCheckId}
                         modal={modal}
                         setModal={setModal}
                         />
