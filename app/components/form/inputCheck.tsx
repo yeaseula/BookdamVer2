@@ -17,8 +17,6 @@ interface CheckProps {
     name: string;
     index: string;
     setCheckId: Dispatch<SetStateAction<string | null>>;
-    modal: boolean;
-    setModal: Dispatch<SetStateAction<boolean>>
 }
 
 export default function InputCheck({ name, index, setCheckId }:CheckProps) {

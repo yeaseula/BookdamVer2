@@ -34,8 +34,8 @@ const CheckBox = styled.div`
 `
 
 export default function ReadingContent({
-    books, checkId,
-    modal, setModal,
+    books,
+    setCheckId,
     logWatchNum, setLogWatchNum,
     currentBooks
 }) {
@@ -57,12 +57,9 @@ export default function ReadingContent({
             <List>
                 <CheckBox>
                     <InputCheck
-                    type={'checkbox'}
                     name={'list-check'}
                     index={m.id}
-                    modal={modal}
-                    setModal={setModal}
-                    checkId={checkId} />
+                    setCheckId={setCheckId} />
                 </CheckBox>
                 <ListInfo>
                     <div className="w-[100%]">

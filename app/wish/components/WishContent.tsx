@@ -50,12 +50,9 @@ export default function WishContent({wish,setCheckId,modal,setModal}) {
                 <List key={`${w.title}-${idx}`}>
                     <CheckBox>
                         <InputCheck
-                        type={'checkbox'}
                         name={'list-check'}
                         index={w.id}
                         setCheckId={setCheckId}
-                        modal={modal}
-                        setModal={setModal}
                         />
                     </CheckBox>
                     <ListInfo>

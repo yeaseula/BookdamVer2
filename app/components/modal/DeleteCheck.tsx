@@ -58,7 +58,7 @@ export default function DeleteCheck({onReject,onItemDelete,loading}) {
                 zIndex: 100
             }}
         >
-            <ReactFocusLock>
+            <ReactFocusLock returnFocus={true}>
             <Container>
                 <h2 className="text-3xl font-bold">게시물을 삭제할까요?</h2>
                 <div className="flex justify-center gap-3 mt-10">

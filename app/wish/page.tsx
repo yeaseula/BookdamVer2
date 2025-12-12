@@ -119,68 +119,68 @@ export default function WishPage() {
     return (
         <>
             <WishWrap>
-                    <h2 className="sr-only">위시리스트</h2>
-                    {currentWish && (
-                        <>
-                        <WishForm session={session} />
-                        <div className="mt-[35px]">
-                            <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
-                                <WishContent
-                                wish={currentWish}
-                                setCheckId={setCheckId}
-                                modal={modal}
-                                setModal={setModal}
+                <h2 className="sr-only">위시리스트</h2>
+                {currentWish && (
+                    <>
+                    <WishForm session={session} />
+                    <div className="mt-[35px]">
+                        <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
+                            <WishContent
+                            wish={currentWish}
+                            setCheckId={setCheckId}
+                            modal={modal}
+                            setModal={setModal}
+                            />
+                        </ErrorBoundary>
+                    </div>
+                    <AnimatePresence>
+                    {modal && (
+                        <SettingModal
+                        deleteState={deleteModal}
+                        onClose={()=>{
+                            AllModalClose({
+                                setModal,
+                                setSelectModal,
+                                setEditPopup,
+                                setDeleteModal
+                            })
+                        }}
+                        >
+                            {selectModal &&
+                                <ModalBottom
+                                onClickEdit={handleEdit}
+                                onClickDelete={()=>{
+                                    handleDelete({setDeleteModal,setSelectModal})
+                                }}
+                                onClickClose={()=>{
+                                    SelectModalClose({setModal, setSelectModal})
+                                }}
                                 />
-                            </ErrorBoundary>
-                        </div>
-                        <AnimatePresence>
-                        {modal && (
-                            <SettingModal
-                            deleteState={deleteModal}
-                            onClose={()=>{
-                                AllModalClose({
-                                    setModal,
-                                    setSelectModal,
-                                    setEditPopup,
-                                    setDeleteModal
-                                })
-                            }}
-                            >
-                                {selectModal &&
-                                    <ModalBottom
-                                    onClickEdit={handleEdit}
-                                    onClickDelete={()=>{
-                                        handleDelete({setDeleteModal,setSelectModal})
-                                    }}
-                                    onClickClose={()=>{
-                                        SelectModalClose({setModal, setSelectModal})
-                                    }}
-                                    />
-                                }
-                                {deleteModal &&
-                                    <DeleteCheck
-                                    onItemDelete={handleItemDelete}
-                                    loading={loading}
-                                    onReject={()=>{
-                                        DeleteModalClose({setDeleteModal, setModal})
-                                    }}
-                                    />
-                                }
-                                {EditPopup &&
-                                    <EditModal
-                                    setModal={setModal}
-                                    setEditPopup={setEditPopup}
-                                    editObj={editObjRef.current}
-                                    onClick={()=>{
-                                        handleEditClose({setEditPopup,setModal})
-                                    }}
-                                    />
-                                }
-                            </SettingModal>
-                        )}
-                        </AnimatePresence>
-                        </>
+                            }
+                            {deleteModal &&
+                                <DeleteCheck
+                                onItemDelete={handleItemDelete}
+                                loading={loading}
+                                onReject={()=>{
+                                    DeleteModalClose({setDeleteModal, setModal})
+                                }}
+                                />
+                            }
+                            {EditPopup &&
+                                <EditModal
+                                setModal={setModal}
+                                setEditPopup={setEditPopup}
+                                editObj={editObjRef.current}
+                                onClick={()=>{
+                                    handleEditClose({setEditPopup,setModal})
+                                }}
+                                />
+                            }
+                        </SettingModal>
                     )}
+                    </AnimatePresence>
+                    </>
+                )}
             </WishWrap>
         </>
 

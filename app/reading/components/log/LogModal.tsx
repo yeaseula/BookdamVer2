@@ -1,9 +1,10 @@
 import styled from "styled-components"
-import ModalBack from "@/app/components/modal/ModalBack"
+import ReactFocusLock from "react-focus-lock"
 import { LogContainer, Card, Close, Title } from "../Modal.styled"
 import { RiCloseLine } from "@remixicon/react"
 import { Log } from "@/app/lib/userfetch"
 import { Dispatch, SetStateAction } from "react";
+import { motion } from "framer-motion"
 
 const Th = styled.th`
     padding: 8px 0;
@@ -15,11 +16,12 @@ const Td = styled.td`
 `
 
 interface LogProps {
-    logObj: Log[];
+    logObj: Log[]
+    setLogPopup: Dispatch<SetStateAction<boolean>>
     setLogWatchNum: Dispatch<SetStateAction<string[]>>
 }
 
-export default function LogModal({logObj,setLogWatchNum}:LogProps) {
+export default function LogModal({logObj,setLogPopup,setLogWatchNum}:LogProps) {
     const formatDuration = (sec) => {
         const h = Math.floor(sec / 3600);
         const m = Math.floor((sec % 3600) / 60);
@@ -31,11 +33,28 @@ export default function LogModal({logObj,setLogWatchNum}:LogProps) {
     }
 
     return(
-        <>
-        <ModalBack onClick={()=>{}}></ModalBack>
+        <motion.div
+            initial={{ opacity:0 }}
+            animate={{  opacity: 1 }}
+            exit={{  opacity: 0 }}
+            transition={{ ease: "easeOut", duration: 0.15 }}
+            style={{
+                position: 'fixed',
+                top: '50%',
+                left: '50%',
+                translateX: '-50%',
+                maxWidth: '450px',
+                width: '100%',
+                zIndex: 100
+            }}
+        >
+        <ReactFocusLock returnFocus={true}>
         <LogContainer>
             <Card>
-                <Close><RiCloseLine onClick={()=>{setLogWatchNum([])}}/></Close>
+                <Close onClick={()=>{
+                    setLogPopup(false);
+                    setLogWatchNum([])
+                }}><RiCloseLine/></Close>
                 <Title>독서 기록</Title>
                 {logObj.length === 0 &&
                     <p className="text-center text-amber-50">독서 기록이 없습니다 😭</p>
@@ -73,6 +92,8 @@ export default function LogModal({logObj,setLogWatchNum}:LogProps) {
                 }
             </Card>
         </LogContainer>
-        </>
+        </ReactFocusLock>
+        </motion.div>
+
     )
 }
