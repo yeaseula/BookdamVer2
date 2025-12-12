@@ -46,7 +46,7 @@ const CheckBox = styled.div`
     z-index: 10;
 `
 
-export default function MemoContent({memo,setModal,modal,checkId}) {
+export default function MemoContent({memo,setModal,modal,setCheckId}) {
 
     if(!memo.ok || memo.error) {
         throwSupabaseError(memo.error)
@@ -66,7 +66,7 @@ export default function MemoContent({memo,setModal,modal,checkId}) {
                         type={'checkbox'}
                         name={'list-check'}
                         index={m.id}
-                        checkId={checkId}
+                        setCheckId={setCheckId}
                         modal={modal}
                         setModal={setModal}
                         />

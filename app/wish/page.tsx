@@ -8,6 +8,7 @@ import { ErrorBoundary } from "react-error-boundary"
 import { CompoErrorFallBack } from "../error/CompoErrorFallBack"
 import { AnimatePresence } from "framer-motion"
 import Skeleton from "react-loading-skeleton"
+import 'react-loading-skeleton/dist/skeleton.css'
 
 import WishForm from "./components/wishForm"
 import WishContent from "./components/WishContent"

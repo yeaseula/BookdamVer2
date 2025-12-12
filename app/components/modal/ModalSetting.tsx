@@ -12,7 +12,7 @@ export default function SettingModal({onClose,children}:ModalProps) {
     return (
         <>
         <ModalBack onClick={onClose}></ModalBack>
-                {children}
+        {children}
         </>
     )
 }

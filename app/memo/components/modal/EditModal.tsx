@@ -9,7 +9,8 @@ import EditCloseButton from "./EditCloseButton"
 import createClient from "@/utils/supabase/client"
 import { useAuthStore } from "@/app/lib/userfetch"
 import { useToastStore } from "@/app/lib/useToastStore"
-import ModalBack from "@/app/components/modal/ModalBack"
+import { motion } from "framer-motion"
+import ReactFocusLock from "react-focus-lock"
 
 const Modal = styled.section`
     max-width: 400px;
@@ -28,20 +29,20 @@ const Modal = styled.section`
 `
 
 interface ModalProps {
+    setModal: Dispatch<SetStateAction<boolean>>
     setEditPopup: Dispatch<SetStateAction<boolean>>
-    checkId: React.RefObject<string[]>
     editObj: Memo
+    onClick: ()=>void
 }
 
-export default function EditModal({editObj,setEditPopup,checkId}:ModalProps) {
-    const supabase = createClient()
-    const editingId = editObj.id
+export default function EditModal({setModal,setEditPopup,editObj,onClick}:ModalProps) {
     const [modalTitle,setModalTitle] = useState<string>(editObj.title)
     const [modalPage,setModalPage] = useState<number | null>(editObj.page)
     const [modalContent,setModalContent] = useState<string>(editObj.content)
+    const editingId = editObj.id
+    const supabase = createClient()
     const [isLoading,setIsLoading] = useState<boolean>(false)
     const setToast = useToastStore((state)=>state.setToast)
-
     let debounce:boolean = false;
 
     const handleModalEdit = async () => {
@@ -78,9 +79,8 @@ export default function EditModal({editObj,setEditPopup,checkId}:ModalProps) {
             } else {
                 useAuthStore.getState().updateData('memo',updatedMemo);
                 setToast("수정이 완료됐습니다!", "success")
-
+                setModal(false)
                 setEditPopup(false)
-                checkId.current = []
             }
         } catch (err) {
             const errorMessage = err instanceof Error
@@ -91,20 +91,30 @@ export default function EditModal({editObj,setEditPopup,checkId}:ModalProps) {
             debounce = false;
             setIsLoading(false)
         }
-
     };
-
-    const handleClose = () => {
-        setEditPopup(false)
-        checkId.current = []
-    }
 
     return(
         <>
-        <ModalBack onClick={handleClose}/>
+        <motion.div
+            initial={{ opacity:0 }}
+            animate={{  opacity: 1 }}
+            exit={{  opacity: 0 }}
+            transition={{ ease: "easeOut", duration: 0.15 }}
+            style={{
+                position: 'fixed',
+                top: '50%',
+                left: '50%',
+                translateX: '-50%',
+                maxWidth: '450px',
+                width: '100%',
+                zIndex: 100
+            }}
+        >
+        <ReactFocusLock returnFocus={true}>
         <Modal>
             <div className="relative">
                 <h2 className="mb-8 text-center font-bold text-3xl">메모 수정하기</h2>
+                <EditCloseButton onClick={onClick} />
                 <div className="flex flex-wrap gap-[7px]">
                     <InputFields
                         type="text"
@@ -139,7 +149,6 @@ export default function EditModal({editObj,setEditPopup,checkId}:ModalProps) {
                         }
                     />
                 </div>
-                <EditCloseButton onClick={handleClose} />
                 <div className="mt-8">
                     <EditModalButton
                     modalTitle={modalTitle}
@@ -151,6 +160,8 @@ export default function EditModal({editObj,setEditPopup,checkId}:ModalProps) {
                 </div>
             </div>
         </Modal>
+        </ReactFocusLock>
+        </motion.div>
         </>
     )
 }
