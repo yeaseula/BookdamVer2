@@ -12,6 +12,7 @@ const List = styled.div`
     padding: 10px 0 0 0;
     gap: 10px;
     border-bottom: 1px solid #e0e0e0;
+    color: var(--color_black);
 `
 const ListInfo = styled.div`
     width: 100%;
@@ -23,6 +24,7 @@ const ListInfo = styled.div`
 const EmptyMessage = styled.p`
     text-align: center;
     padding-bottom: 10px;
+    color: var(--color_black);
 `
 const CheckBox = styled.div`
     position: absolute;

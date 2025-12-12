@@ -6,9 +6,8 @@ const Check = styled.input`
 `
 const Label = styled.label<{$ischecking:boolean}>`
     font-size: 1.3rem;
-    background: ${(props)=>props.$ischecking ? 'var(--sub_color)' : '#fff'};
+    background: ${(props)=>props.$ischecking ? 'var(--sub_color)' : 'var(--background-color-light)'};
     color: ${(props)=>props.$ischecking ? '#fff' : 'initial'};
-    border: 1px solid var(--sub_color);
     display: inline-block;
     padding: 2px 16px 1px;
     border-radius: 100px;

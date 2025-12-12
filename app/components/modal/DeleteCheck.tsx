@@ -9,6 +9,7 @@ const Container = styled.div`
     border-radius: 10px;
     text-align: center;
     padding: 35px 20px;
+    background: var(--board_background);
 `
 const ButtonStyle = styled.button`
     width: 80px;
@@ -60,7 +61,7 @@ export default function DeleteCheck({onReject,onItemDelete,loading}) {
         >
             <ReactFocusLock returnFocus={true}>
             <Container>
-                <h2 className="text-3xl font-bold">게시물을 삭제할까요?</h2>
+                <h2 className="text-3xl font-bold" style={{ color: 'var(--color_black)' }}>게시물을 삭제할까요?</h2>
                 <div className="flex justify-center gap-3 mt-10">
                     <ButtonStyle
                     type="button"

@@ -25,6 +25,7 @@ const Modal = styled.section`
     background-color: #fff;
     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
     padding: 25px 15px;
+    background: var(--board_background);
 `
 
 interface ModalProps {
@@ -127,7 +128,7 @@ export default function EditModal({setModal,setEditPopup,editObj,onClick}:ModalP
         <ReactFocusLock returnFocus={true}>
         <Modal>
             <div className="relative">
-                <h2 className="mb-8 text-center font-bold text-3xl">읽고있는 책 수정하기</h2>
+                <h2 className="mb-8 text-center font-bold text-3xl" style={{ color: 'var(--color_black)' }}>읽고있는 책 수정하기</h2>
                 <EditCloseButton onClick={onClick} />
                 <div className="flex flex-wrap gap-[7px]">
                     <InputFields
@@ -158,7 +159,7 @@ export default function EditModal({setModal,setEditPopup,editObj,onClick}:ModalP
                         pattern="[0-9]*"
                         placeholder="읽은 페이지(숫자만 입력)"
                         name="bookpage-read"
-                        width="calc((100% - 47px) / 2)"
+                        width="calc((100% - 7px) / 2)"
                         value={modalCurrentPage ?? ''}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             const value = e.target.value.replace(/\D/g, '');

@@ -31,7 +31,7 @@ export default function InputCheck({ name, index, setCheckId }:CheckProps) {
             id={index}
             aria-label="목록 선택" >
                 <RiMore2Fill size={14}
-                color="#757575"
+                style={{ color: "var(--color_dark_gray)" }}
                 />
             </CheckStyle>
         </>

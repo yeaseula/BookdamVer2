@@ -11,8 +11,8 @@ import { DataState, Reviews, useAuthStore } from "../lib/userfetch"
 import { useSearchParams } from "next/navigation"
 import { useToastStore } from "../lib/useToastStore"
 import { useRouter } from "next/navigation"
-import Picker from "react-mobile-picker"
 import SpinnerArea from "../components/spinner/SpinnerArea"
+import { SubWrap } from "../components/common/container.styled"
 
 const FieldList = styled.div`
     margin-bottom: 20px;
@@ -25,6 +25,7 @@ const FieldName = styled.span`
     margin-bottom: 7px;
     font-size: 1.6rem;
     font-weight: bold;
+    color: var(--color_black);
 `
 
 export default function Write() {
@@ -181,7 +182,7 @@ export default function Write() {
     }
 
     return (
-        <div style={{ padding: '80px 15px 65px' }}>
+        <SubWrap>
             {loading && <SpinnerArea text="글 등록중.."/>}
 
             <form>
@@ -312,6 +313,6 @@ export default function Write() {
                 onClick={()=>{handleSubmit(userId,category,title,author,startDate,endDate,oneLine,review,rating)}}
                 />
             </div>
-        </div>
+        </SubWrap>
     )
 }

@@ -51,7 +51,7 @@ const Wave2 = styled(Wave)`
 `
 const Wave3 = styled(Wave)`
     animation: drift 7500ms infinite linear;
-    background-color: #ffee9b;
+    background-color: var(--main-color-dark);
     opacity: 0.7;
     z-index: 1;
 `

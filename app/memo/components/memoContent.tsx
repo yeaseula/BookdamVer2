@@ -20,6 +20,7 @@ const ListInfo = styled.div`
     flex-direction: column;
     align-items: start;
     justify-content: start;
+    color: var(--color_black);
 `
 const Cite = styled.cite`
     display: block;
@@ -38,6 +39,7 @@ const BookTitle = styled.span`
 const EmptyMessage = styled.p`
     padding-bottom: 10px;
     text-align: center;
+    color: var(--color_black);
 `
 const CheckBox = styled.div`
     position: absolute;
@@ -46,7 +48,7 @@ const CheckBox = styled.div`
     z-index: 10;
 `
 
-export default function MemoContent({memo,setModal,modal,setCheckId}) {
+export default function MemoContent({memo,setCheckId}) {
 
     if(!memo.ok || memo.error) {
         throwSupabaseError(memo.error)

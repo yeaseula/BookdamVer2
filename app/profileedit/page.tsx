@@ -7,10 +7,8 @@ import { useAuthStore } from "../lib/userfetch"
 import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
 import { throwSupabaseError } from "../error/errorLibrary"
+import { SubWrap } from "../components/common/container.styled"
 
-const ProfileWrap = styled.section`
-    padding: 80px 15px 65px;
-`
 const Container = styled.div`
     position: relative;
     display: flex;
@@ -20,6 +18,7 @@ const Container = styled.div`
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     margin-bottom: 10px;
+    background-color: var(--background-color-light)
 `
 const Inner = styled(Link)`
     position: absolute;
@@ -28,6 +27,10 @@ const Inner = styled(Link)`
     width: 100%;
     height: 100%;
     padding: 10px 20px;
+`
+const SubText = styled.span`
+    font-size: 1.1rem;
+    color: var(--color_dark_gray);
 `
 
 export default function ProfileEdit() {
@@ -38,14 +41,14 @@ export default function ProfileEdit() {
     }
 
     return(
-        <ProfileWrap>
+        <SubWrap>
             <h2 className="sr-only">프로필 수정</h2>
             {profile && session ? (
             <>
             <Container>
                 <p>
                     이메일 수정<br />
-                    <span className="text-xl text-gray-600">{session.user.email}</span>
+                    <SubText>{session.user.email}</SubText>
                 </p>
                 <RiArrowRightSLine size={18} />
                 <Inner href={'/profileedit/email'} />
@@ -58,7 +61,7 @@ export default function ProfileEdit() {
             <Container>
                 <p>
                     닉네임 수정<br />
-                    <span className="text-xl text-gray-600">{profile.data.username}</span>
+                    <SubText>{profile.data.username}</SubText>
                 </p>
                 <RiArrowRightSLine size={18} />
                 <Inner href={'/profileedit/nickname'} />
@@ -67,7 +70,7 @@ export default function ProfileEdit() {
                 <p>
                     관심사 수정<br />
                     {profile.data?.interests.map((ele,index)=>(
-                        <span key={`${index}-${ele}`} className="text-xl text-gray-600 mr-1.5">#{ele}</span>
+                        <SubText key={`${index}-${ele}`} className="mr-1.5">#{ele}</SubText>
                     ))}
                 </p>
                 <RiArrowRightSLine size={18} />
@@ -83,6 +86,6 @@ export default function ProfileEdit() {
                 </>
             )}
 
-        </ProfileWrap>
+        </SubWrap>
     )
 }

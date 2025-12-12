@@ -24,6 +24,8 @@ const Container = styled.header`
     border-bottom: 1px solid #e0e0e0;
     box-shadow: 0 0 16px rgba(0, 0, 0, .15);
     z-index: 99;
+    background: var(--board_background);
+    color: var(--color_black);
 `
 const Depth = styled.div`
     width: 100%;
@@ -85,6 +87,9 @@ export default function Header() {
     if(hasGlobalError) {
         return null
     }
+    if(type === 'none') {
+        return null
+    }
     if(type === 'detail') {
         return (
             <Container>
@@ -117,9 +122,6 @@ export default function Header() {
                 </Depth>
             </Container>
         )
-    }
-    if(type === 'none') {
-        return null
     }
 
     return null

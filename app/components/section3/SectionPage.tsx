@@ -18,6 +18,7 @@ const TitleImage = styled(Image)`
 `
 const Title = styled.p`
     font-size: 2rem;
+    color: var(--color_black);
 `
 
 export default function SectionPageThree() {

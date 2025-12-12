@@ -9,12 +9,9 @@ import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
 import { ErrorBoundary } from "react-error-boundary"
 import { CompoErrorFallBack } from "@/app/error/CompoErrorFallBack"
-import { throwSupabaseError } from "@/app/error/errorLibrary"
+import { SubWrap } from "@/app/components/common/container.styled"
 
-const ReivewWrap = styled.div`
-    padding: 80px 15px 0;
-    overflow: hidden;
-`
+
 const ReivewHead = styled.section`
     display: flex;
     gap: 15px;
@@ -42,7 +39,7 @@ const ReviewBody = styled.section`
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-    background-color: var(--background-color);
+    background: var(--background-color-light);
 `
 export default function ReviewDetail({postNumber}) {
 
@@ -73,7 +70,7 @@ export default function ReviewDetail({postNumber}) {
 
     if(!reviewArr) {
         return (
-            <ReivewWrap>
+            <SubWrap>
                 <ReivewHead>
                     <BookThumbnail>
                         <Skeleton height={'100%'} borderRadius={5}/>
@@ -104,13 +101,13 @@ export default function ReviewDetail({postNumber}) {
                         <Skeleton height={20} borderRadius={5}></Skeleton>
                     </div>
                 </ReviewBody>
-            </ReivewWrap>
+            </SubWrap>
         )
     }
 
     if(reviewArr) {
         return(
-            <ReivewWrap>
+            <SubWrap style={{ color: 'var(--color_black)' }}>
                 <ReivewHead>
                     <h2 className="sr-only">책 정보</h2>
                     <BookThumbnail>
@@ -146,7 +143,7 @@ export default function ReviewDetail({postNumber}) {
                         <p dangerouslySetInnerHTML={{ __html: reviewArr?.data[0].content }}></p>
                     </div>
                 </ReviewBody>
-            </ReivewWrap>
+            </SubWrap>
         )
     }
 

@@ -12,6 +12,8 @@ const ModalWrap = styled.div`
     background: #fff;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
+    background: var(--board_background);
+    color: var(--color_black);
 `
 const Text = styled(Link)`
     display: block;
@@ -77,7 +79,7 @@ export default function ModalBottom({
                 <Button type="button" style={{ color: 'red' }}
                 onClick={onClickDelete}>삭제</Button>
             </div>
-            <div className="mt-2 bg-gray-200 rounded-2xl">
+            <div className="mt-2 bg-gray-200 rounded-2xl text-gray-800">
                 <Button type="button" onClick={onClickClose}>닫기</Button>
             </div>
         </ModalWrap>

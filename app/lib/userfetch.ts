@@ -232,7 +232,7 @@ export interface SettingDefault {
     calendar_start: 'sun' | 'mon',
     calendar_stamp: 'star' | 'gook',
     font: number,
-    timer_set: 'normal' | 'bottom'
+    timer_set: 'normal' | 'dark' //darkmode 변경
 }
 
 export interface UserSetting {

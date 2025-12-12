@@ -2,11 +2,13 @@ import { RiWrenchLine } from "@remixicon/react"
 import { useState } from "react"
 import styled from "styled-components"
 import SettingModal from "@/app/components/modal/ModalSetting"
-import ModalPopUp from "@/app/components/modal/popup/ModalPopup"
+import ModalPopUp from "@/app/components/modal/ModalPopup"
 import ModalReviewSetting from "./setting/ModalReviewSetting"
 import ModalCalendarSetting from "./setting/ModalCalendarSetting"
 import ModalFontSetting from "./setting/ModalFontSetting"
+import ModalDarkModeSetting from "./setting/ModalDarkMode"
 import ListItem from "../List"
+import { AnimatePresence } from "framer-motion"
 
 const MenuTitle = styled.div`
     display: flex;
@@ -21,10 +23,11 @@ export default function Setting() {
     const [fontUI,setFontUI] = useState(false)
     const [calendarUI,setCalendarUI] = useState(false)
     const [reviewUI,setReviewUI] = useState(false)
+    const [viewModeUI,setViewModeUI] = useState(false)
 
 const List = [
     { onClick: ()=>setFontUI(!fontUI), text: '폰트 설정'},
-    { onClick: ()=>{}, text: '타이머 설정'},
+    { onClick: ()=>setViewModeUI(!viewModeUI), text: '다크모드 설정'},
     { onClick: ()=>setReviewUI(!reviewUI), text: '서재 화면 설정'},
     { onClick: ()=>setCalendarUI(!calendarUI), text: '캘린더 설정'},
 ]
@@ -39,6 +42,7 @@ const List = [
                     text={list.text} />
                 ))}
             </ul>
+            <AnimatePresence>
             {fontUI &&
             <SettingModal
             onClose={()=>{setFontUI(false)}}>
@@ -48,6 +52,16 @@ const List = [
                     <ModalFontSetting setFontUI={setFontUI} />
                 </ModalPopUp>
             </SettingModal>
+            }
+            {viewModeUI &&
+                <SettingModal
+                onClose={()=>{setViewModeUI(false)}}>
+                    <ModalPopUp
+                    title={'다크모드 설정'}
+                    onClose={()=>setViewModeUI(false)}>
+                        <ModalDarkModeSetting />
+                    </ModalPopUp>
+                </SettingModal>
             }
             {calendarUI &&
             <SettingModal
@@ -68,6 +82,7 @@ const List = [
                 </ModalPopUp>
             </SettingModal>
             }
+            </AnimatePresence>
         </>
     )
 }

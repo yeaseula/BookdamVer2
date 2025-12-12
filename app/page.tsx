@@ -1,15 +1,16 @@
 "use client"
 import Footer from "./components/footer/Footer";
 import MainPage from "./components/mainpage";
+import { Main, CommonWrap } from "./components/common/container.styled";
 
 export default function MainRoot() {
 
   return(
-    <div className="common-wrap">
-      <main>
+    <CommonWrap>
+      <Main>
         <MainPage />
-      </main>
+      </Main>
       <Footer />
-    </div>
+    </CommonWrap>
   )
 }

@@ -17,14 +17,11 @@ import SettingModal from "../components/modal/ModalSetting"
 import ModalBottom from "../components/modal/ModalBottom"
 import DeleteCheck from "../components/modal/DeleteCheck"
 import { handleDeletUtil } from "../lib/delete"
+import { SubWrap } from "../components/common/container.styled"
 
 import { useInitialToggle,
     AllModalClose, SelectModalClose, DeleteModalClose,
     handleEditClose, handleDelete } from "../hook/useModal"
-
-const MemoWrap = styled.section`
-    padding: 80px 15px 65px;
-`
 
 export default function MemoPage() {
     const { session, isMemoRoaded, removeData } = useAuthStore()
@@ -97,7 +94,7 @@ export default function MemoPage() {
 
     if(!isMemoRoaded) {
         return (
-            <MemoWrap>
+            <SubWrap>
                 <Skeleton height={37} borderRadius={5}/>
                 <div className="mt-1.5">
                     <Skeleton height={90} borderRadius={5} />
@@ -111,12 +108,12 @@ export default function MemoPage() {
                 <div className="mt-[5px] text-right">
                     <Skeleton width={150} height={25} borderRadius={5}/>
                 </div>
-            </MemoWrap>
+            </SubWrap>
         )
     }
 
     return(
-        <MemoWrap>
+        <SubWrap>
             <h2 className="sr-only">기억에 남는 구절</h2>
             {currentMemo && (
                 <>
@@ -126,8 +123,6 @@ export default function MemoPage() {
                             <MemoContent
                             memo={currentMemo}
                             setCheckId={setCheckId}
-                            modal={modal}
-                            setModal={setModal}
                             />
                         </ErrorBoundary>
                     </div>
@@ -180,6 +175,6 @@ export default function MemoPage() {
                 </>
             )}
 
-        </MemoWrap>
+        </SubWrap>
     )
 }

@@ -10,9 +10,8 @@ import { useRouter } from "next/navigation"
 import { useAuthStore, DataState, Profiles } from "@/app/lib/userfetch"
 import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
-const ProfileWrap = styled.section`
-    padding: 80px 15px 65px;
-`
+import { SubWrap } from "@/app/components/common/container.styled"
+
 const Button = styled.button<{$isOriginFetch:boolean}>`
     background: ${(p)=>p.$isOriginFetch ? 'var(--point-color)' :'var(--sub_color)' };
     color: #fff;
@@ -94,7 +93,7 @@ export default function EditInterest() {
     }
 
     return(
-        <ProfileWrap>
+        <SubWrap>
             {!profile &&
                 <>
                 <Skeleton width={150} height={22}/>
@@ -143,6 +142,6 @@ export default function EditInterest() {
             onClick={handleSubmit} />
             </>
             }
-        </ProfileWrap>
+        </SubWrap>
     )
 }

@@ -13,6 +13,8 @@ const FullCalBox = styled.div`
     border-radius: 12px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
     border: 1px solid #e0e0e0;
+    background: var(--board_background);
+    color: var(--color_black);
 
     .fc-theme-standard .fc-scrollgrid,
     .fc-theme-standard td,

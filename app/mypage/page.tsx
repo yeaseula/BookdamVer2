@@ -11,13 +11,11 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { ErrorBoundary } from "react-error-boundary"
 import { CompoErrorFallBack } from "../error/CompoErrorFallBack"
 import { throwSupabaseError } from "../error/errorLibrary"
+import { SubWrap } from "../components/common/container.styled"
 
-const ProfileWrap = styled.section`
-    padding: 80px 15px 65px;
-`
 const CommonBox = styled.div`
     position: relative;
-    background-color: var(--background-color);
+    background-color: var(--background-color-light);
     border-radius: 12px;
     padding: 20px 15px;
     box-shadow: 0 2px 13px rgba(0, 0, 0, .15);
@@ -38,7 +36,7 @@ export default function MyPage() {
 
     return(
         <>
-        <ProfileWrap>
+        <SubWrap>
             <h2 className="sr-only">나의 프로필</h2>
             <CommonBox>
                 <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
@@ -75,9 +73,7 @@ export default function MyPage() {
             <CommonBoxStyle>
                 <Myinfo />
             </CommonBoxStyle>
-        </ProfileWrap>
-
+        </SubWrap>
         </>
-
     )
 }

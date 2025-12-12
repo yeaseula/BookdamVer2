@@ -14,7 +14,7 @@ export default function Profile({username,interests}) {
                 <p className="mt-3">
                     {interests.map((ele:string,index:number)=>(
                         <span key={`${index}-${ele}`}
-                        className="mr-1.5 border border-gray-400
+                        className="mr-1.5 border border-gray-400 bg-white
                         pt-1 pb-1 pr-4 pl-4 rounded-4xl text-lg
                         ">#{ele}</span>
                     ))}

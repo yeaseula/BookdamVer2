@@ -9,13 +9,13 @@ export const metadata = {
 export default function RootLayout({ children }){
 
     return(
-        <div className="sub-wrap">
+        <>
             <main>
                 <ErrorBoundary FallbackComponent={GlobalErrorFallback}>
                 {children}
                 </ErrorBoundary>
             </main>
             <Footer />
-        </div>
+        </>
     )
 }

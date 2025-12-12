@@ -5,7 +5,7 @@ const Container = styled.div`
     width: 100%;
     max-width: 450px;
     height: 100%;
-    background-color: rgba(0,0,0, 0.15);
+    background-color: var(--modal_back);
     position: fixed;
     top:0;
     left: 50%;

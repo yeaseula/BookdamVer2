@@ -26,7 +26,7 @@ const SliderWrap = styled.div`
 const StyleSwiper = styled(Swiper)`
     overflow:visible;
     width: 85%;
-    .swiper-slide { opacity: 0.5 };
+    .swiper-slide { opacity: 0.5; };
     .swiper-slide-active { opacity: 1 !important; }
     .swiper-slide:focus-visible { outline: 2px solid var(--point-color) }
 `
@@ -34,7 +34,8 @@ const SwiperDepth = styled.div`
     display: flex;
     gap: 10px;
     padding: 15px;
-    background-color: #fff;
+    background-color: var(--board_background);
+    color: var(--color_black);
     border: 1px solid #e0e0e0;
     border-radius: 15px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);

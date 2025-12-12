@@ -6,6 +6,7 @@ import { DataState,Reviews, Memo, Books, Log, Wish } from "../lib/userfetch"
 import StopWatch from "../reading/components/stopwatch/StopWatch"
 import { usePathname } from "next/navigation"
 import ServerOff from "../error/ServerOff"
+import { UserSetting } from "../lib/readingInfo"
 
 interface Props {
   initialSession: Session | null
@@ -75,6 +76,14 @@ export default function ClientRoot({
     useEffect(()=>{
       applyFontSize(userSetting.data.font);
     },[userSetting.data.font])
+
+    useEffect(()=>{
+      if(userSetting.data.timer_set === 'dark') {
+        document.documentElement.classList.add("dark")
+      } else {
+        document.documentElement.classList.remove("dark")
+      }
+    },[userSetting.data.timer_set])
 
     if(isServerOff) {
       return (

@@ -7,10 +7,8 @@ export const metadata = {
 export default function RootLayout({children}){
     return(
         <>
-        <div className="sub-wrap">
             <main>{children}</main>
             <Footer />
-        </div>
         </>
     )
 }

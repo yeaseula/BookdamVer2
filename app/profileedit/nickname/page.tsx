@@ -11,15 +11,8 @@ import { useRouter } from "next/navigation"
 import { useAuthStore } from "@/app/lib/userfetch"
 import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
-
-const ProfileWrap = styled.section`
-    padding: 80px 15px 65px;
-`
-const Label = styled.div`
-    width: 100%;
-    display: block;
-    > span { font-size: 12px; color: #616161 }
-`
+import { SubWrap } from "@/app/components/common/container.styled"
+import { LabelStyle } from "@/app/components/form/Label"
 
 export default function EditNickname() {
     const [newNickname,setNewNickname] = useState<string>('');
@@ -74,10 +67,10 @@ export default function EditNickname() {
     }
 
     return(
-        <ProfileWrap>
+        <SubWrap>
             {session && profile ? (
                 <>
-                <Label>
+                <LabelStyle>
                     <span>닉네임</span>
                     <InputFields type={"nickname"}
                     name={"login-nickname"}
@@ -85,7 +78,7 @@ export default function EditNickname() {
                     placeholder={"닉네임을 입력해주세요"}
                     onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setNewNickname(e.currentTarget.value)}
                     />
-                </Label>
+                </LabelStyle>
                 <EditButton type="nickname" vlaue={newNickname} loading={loading} onClick={handleSubmit}></EditButton>
                 </>
             ) : (
@@ -96,6 +89,6 @@ export default function EditNickname() {
                 </>
             )}
 
-        </ProfileWrap>
+        </SubWrap>
     )
 }

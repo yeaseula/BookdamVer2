@@ -2,6 +2,7 @@ import styled from "styled-components"
 import ToggleSwitch from "./ToggleSwitch"
 import createClient from "@/utils/supabase/client"
 import { useAuthStore, useSettingStore, SettingDefault } from "@/app/lib/userfetch"
+import { SettingKey } from "./SettingKey"
 
 const ToggleList = styled.div`
     display: flex;
@@ -18,20 +19,11 @@ export default function ModalCalendarSetting() {
     const { userSetting } = useSettingStore()
     const setUserCustom = useSettingStore((s)=>s.setUserCustom)
 
-    const SettingKey = {
-        review_set: 'review_set',
-        calendar_start: 'calendar_start',
-        calendar_stamp: 'calendar_stamp',
-        font: 'font',
-        timer_set: 'timer_set',
-    } as const
-
     const handleToggle = async() => {
         if(!session) return
         const RealTarget = userSetting.data.calendar_start === 'sun' ? 'mon' : 'sun'
 
         await EditFunc('calendar_start',RealTarget)
-
     }
 
     const handleToggle2 = async() => {

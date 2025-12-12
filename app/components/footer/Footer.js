@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useState } from "react";
 
 const FooterCont = styled.footer`
-    background-color: #fafafa;
+    background-color: var(--color_light_gray);
     padding: 20px 7px;
     padding-bottom: 110px;
 `

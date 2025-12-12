@@ -10,7 +10,8 @@ const ToggleHead = styled.div`
     align-items:center;
     cursor: pointer;
     padding: 5px 10px;
-    background: #eee;
+    background: var(--background-color-light);
+    border: 1px solid #e0e0e0;
     border-radius: 5px;
 `
 const Button = styled.button`

@@ -26,8 +26,8 @@ const NavCont = styled.ul`
     box-shadow: 0 -2px 15px 0 rgba(0, 0, 0, 0.1);
     display: flex;
     flex-wrap: wrap;
-    background-color: #fafafa;
-    border-top: 1px solid #fafafa;
+    background-color: var(--board_background);
+    border-top: 1px solid var(--color_light_gray);
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
 `
@@ -44,7 +44,7 @@ const NavLink = styled(Link)`
     padding: 12px 0px;
     p {
         font-size: 1.2rem;
-        color: #424242;
+        color: var(--color_black);
     }
 `
 const BallBox = styled.div<{$trans}>`
@@ -129,6 +129,10 @@ export default function NavBar() {
     },[pathname])
 
     useEffect(() => {
+        if(pathname.includes('review')) {
+            setNav('나의 리뷰','normal')
+            return
+        }
         if (NAV_CONFIG[pathname]) {
             const { title, type } = NAV_CONFIG[pathname]
             setNav(title, type)
@@ -149,8 +153,8 @@ export default function NavBar() {
                         <NavList key={`${idx}`}>
                             <NavLink href={icon.pages}>
                                 {pathname === icon.pages ?
-                                <icon.active size={24} /> :
-                                <icon.icon size={24}/>
+                                <icon.active size={24} style={{ color: 'var(--color_black)' }}/> :
+                                <icon.icon size={24} style={{ color: 'var(--color_black)' }}/>
                                 }
                                 <p className="mt-1">{icon.name}</p>
                             </NavLink>

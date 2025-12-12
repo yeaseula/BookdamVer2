@@ -10,15 +10,8 @@ import { useRouter } from "next/navigation"
 import { CheckPassword, handlePassCheck } from "@/app/signup/Valid"
 import { WarningMessage } from "@/app/signup/warningMsg"
 import SpinnerArea from "@/app/components/spinner/SpinnerArea"
-
-const ProfileWrap = styled.section`
-    padding: 80px 15px 65px;
-`
-const Label = styled.div`
-    width: 100%;
-    display: block;
-    > span { font-size: 12px; color: #616161 }
-`
+import { SubWrap } from "@/app/components/common/container.styled"
+import { LabelStyle } from "@/app/components/form/Label"
 
 export default function EditPass() {
     const [passValue,setPassValue] = useState<boolean | null>(null) //pass 유효성
@@ -76,9 +69,9 @@ export default function EditPass() {
     }
 
     return(
-        <ProfileWrap>
+        <SubWrap>
             {loading && <SpinnerArea text="비밀번호 변경 처리중..." />}
-            <Label>
+            <LabelStyle>
                 <span>비밀번호</span>
                 <InputFields type={"password"}
                 name={"password"}
@@ -92,8 +85,8 @@ export default function EditPass() {
                     handlePassCheck(newPassRef, newPass2Ref ,setPassCheck )
                 }}
                 />
-            </Label>
-            <Label style={{ marginTop: '10px' }}>
+            </LabelStyle>
+            <LabelStyle style={{ marginTop: '10px' }}>
                 <span>비밀번호 확인</span>
                 <InputFields type={"password"}
                 name={"password-check"}
@@ -105,7 +98,7 @@ export default function EditPass() {
                 }}
                 />
                 <WarningMessage state={passCheck} text="비밀번호를 정확하게 입력해주세요." />
-            </Label>
+            </LabelStyle>
             <EditButton
             type="pass"
             vlaue={newPassRef.current}
@@ -113,6 +106,6 @@ export default function EditPass() {
             passCheck={passCheck}
             loading={loading}
             onClick={handleSubmit} />
-        </ProfileWrap>
+        </SubWrap>
     )
 }

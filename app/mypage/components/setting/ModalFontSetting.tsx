@@ -1,5 +1,3 @@
-import styled from "styled-components"
-
 import { useSettingStore, useAuthStore } from "@/app/lib/userfetch"
 import { useState } from "react"
 import RangeInput from "./Range"

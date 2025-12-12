@@ -7,11 +7,7 @@ import GalleryList from "./components/Gallery"
 import List from "./components/List"
 import { throwSupabaseError } from "../error/errorLibrary"
 import Image from "next/image"
-
-
-const ReviewWrap = styled.section`
-    padding: 80px 15px 65px;
-`
+import { SubWrap } from "../components/common/container.styled"
 
 export default function ReviewList() {
     const { reviews,isReviewLoaded } = useAuthStore()
@@ -19,7 +15,7 @@ export default function ReviewList() {
 
     if(!isReviewLoaded) {
         return (
-            <ReviewWrap>
+            <SubWrap>
                 <>
                     <SkeletonTheme>
                         <Skeleton width={50} height={22} borderRadius={5} />
@@ -35,7 +31,7 @@ export default function ReviewList() {
                         </SkeletonTheme>
                     </div>
                 </>
-            </ReviewWrap>
+            </SubWrap>
         )
     }
 
@@ -45,7 +41,7 @@ export default function ReviewList() {
 
     if(reviews.data?.length === 0) {
         return (
-            <ReviewWrap>
+            <SubWrap>
                 <div className="text-center">
                     <Image src={'/images/fox_review.svg'}
                     alt=""
@@ -55,18 +51,18 @@ export default function ReviewList() {
                     />
                     <p className="text-2xl font-bold">등록된 리뷰가 없습니다.</p>
                 </div>
-            </ReviewWrap>
+            </SubWrap>
         )
     }
 
     return(
-        <ReviewWrap>
+        <SubWrap>
             <h2 className="sr-only">내가 쓴 리뷰 리스트</h2>
             <p className="total-count text-s">총 {reviews.data.length}개</p>
             <div className="mt-[10px]">
                 {userSetting.data.review_set === 'gallery' && <GalleryList reviews={reviews.data} />}
                 {userSetting.data.review_set === 'list' && <List reviews={reviews.data} />}
             </div>
-        </ReviewWrap>
+        </SubWrap>
     )
 }

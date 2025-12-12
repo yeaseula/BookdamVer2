@@ -18,14 +18,11 @@ import SettingModal from "../components/modal/ModalSetting"
 import ModalBottom from "../components/modal/ModalBottom"
 import DeleteCheck from "../components/modal/DeleteCheck"
 import { handleDeletUtil } from "../lib/delete"
+import { SubWrap } from "../components/common/container.styled"
 
 import { useInitialToggle,
     AllModalClose, SelectModalClose, DeleteModalClose,
     handleEditClose, handleDelete } from "../hook/useModal"
-
-const WishWrap = styled.section`
-    padding: 80px 15px 65px;
-`
 
 export default function WishPage() {
     const { session, isWishLoaded, removeData } = useAuthStore()
@@ -98,7 +95,7 @@ export default function WishPage() {
 
     if(!isWishLoaded) {
         return (
-            <WishWrap>
+            <SubWrap>
                 <Skeleton height={37} borderRadius={5}/>
                 <div className="mt-1.5">
                     <Skeleton height={90} borderRadius={5} />
@@ -112,13 +109,13 @@ export default function WishPage() {
                 <div className="mt-[5px] text-right">
                     <Skeleton width={150} height={25} borderRadius={5}/>
                 </div>
-            </WishWrap>
+            </SubWrap>
         )
     }
 
     return (
         <>
-            <WishWrap>
+            <SubWrap>
                 <h2 className="sr-only">위시리스트</h2>
                 {currentWish && (
                     <>
@@ -181,7 +178,7 @@ export default function WishPage() {
                     </AnimatePresence>
                     </>
                 )}
-            </WishWrap>
+            </SubWrap>
         </>
 
     )

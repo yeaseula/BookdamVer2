@@ -15,13 +15,13 @@ interface LayoutProps {
 export default function RootLayout({ children }: LayoutProps){
 
     return(
-        <div className="sub-wrap">
+        <>
             <main>
                 <ErrorBoundary FallbackComponent={GlobalErrorFallback}>
                 {children}
                 </ErrorBoundary>
                 </main>
             <Footer />
-        </div>
+        </>
     )
 }

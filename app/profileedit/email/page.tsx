@@ -1,21 +1,10 @@
 "use client"
 
-import styled from "styled-components"
 import InputFields from "@/app/components/form/input"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import EditButton from "../components/EditButton"
-import createClient from "@/utils/supabase/client"
-import { useToastStore } from "@/app/lib/useToastStore"
-import { useRouter } from "next/navigation"
-
-const ProfileWrap = styled.section`
-    padding: 80px 15px 65px;
-`
-const Label = styled.div`
-    width: 100%;
-    display: block;
-    > span { font-size: 12px; color: #616161 }
-`
+import { SubWrap } from "@/app/components/common/container.styled"
+import { LabelStyle } from "@/app/components/form/Label"
 
 export default function EditEmail() {
     const [newEmail,setEmail] = useState<string>('');
@@ -26,16 +15,16 @@ const handleSubmit = async() => {
 }
 
     return(
-        <ProfileWrap>
-            <Label>
+        <SubWrap>
+            <LabelStyle>
                 <span>이메일</span>
                 <InputFields type={"email"}
                 name={"login-emapl"}
                 placeholder={"이메일을 입력해주세요"}
                 onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setEmail(e.currentTarget.value)}
                 />
-            </Label>
+            </LabelStyle>
             <EditButton type="email" vlaue={newEmail} loading={loading} onClick={handleSubmit}></EditButton>
-        </ProfileWrap>
+        </SubWrap>
     )
 }

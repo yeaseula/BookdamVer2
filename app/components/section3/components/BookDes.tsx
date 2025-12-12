@@ -42,8 +42,8 @@ const DefaultBtnStyle = styled.button<{disabled:boolean}>`
     text-align: center;
     font-size: 1.1rem;
     border-radius: 500px;
-    background-color: ${(p)=>p.disabled ? '#bdbdbd' : 'var(--main-color)'};
-    color: var(--sub_color);
+    background-color: ${(p)=>p.disabled ? '#bdbdbd' : 'var(--point-color)'};
+    color: #000 ;
     cursor: ${(p)=>p.disabled ? 'initial' : 'pointer'};
 `
 const Button = styled(Link)`

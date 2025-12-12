@@ -1,7 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import StyledComponentsRegistry from "./lib/resistry";
 import "./globals.css";
-import '../public/css/common.css';
 import ClientRoot from "./components/ClientRoot";
 import NavBar from "./components/navigation/NavBar";
 import createClient from "@/utils/supabase/server";
