@@ -18,6 +18,10 @@ import ModalBottom from "../components/modal/ModalBottom"
 import DeleteCheck from "../components/modal/DeleteCheck"
 import { handleDeletUtil } from "../lib/delete"
 
+import { useInitialToggle,
+    AllModalClose, SelectModalClose, DeleteModalClose,
+    handleEditClose, handleDelete } from "../hook/useModal"
+
 const WishWrap = styled.section`
     padding: 80px 15px 65px;
 `
@@ -43,16 +47,6 @@ export default function WishPage() {
     useEffect(()=>{
         setCurrentWish(wish)
     },[wish])
-
-    const handleDelete = () =>{ //삭제 버튼 클릭
-        setDeleteModal(true) //삭제여부 모달 오픈
-        setSelectModal(false) //선택 모달 닫기
-    }
-
-    const handleEditClose = () => { //수정 모달 닫기 클릭
-        setEditPopup(false)
-        setModal(false)
-    }
 
     const handleEdit = async() => { //수정 버튼 클릭
         const CheckEdit = currentWish.data.find((m)=>m.id===checkId)
@@ -92,20 +86,14 @@ export default function WishPage() {
         }
     }
 
-    useEffect(()=>{ //check값 유무에 따라 전체 modal open여부 결정
-        if(checkId) {
-            setModal(true)
-            setSelectModal(true)
-        } else {
-            setModal(false)
-            setSelectModal(false)
-        }
-    },[checkId])
-
-    useEffect(()=>{ //전체 modal close시 check에 담긴 값도 사라짐
-        if(modal) return
-        setCheckId(null)
-    },[modal])
+    useInitialToggle({
+        checkId,
+        setCheckId,
+        modal,
+        setModal,
+        selectModal,
+        setSelectModal
+    })
 
     if(!isWishLoaded) {
         return (
@@ -150,16 +138,23 @@ export default function WishPage() {
                             type="bottom"
                             deleteState={deleteModal}
                             onClose={()=>{
-                                setModal(false)
-                                setSelectModal(false)
-                                setEditPopup(false)
-                                setDeleteModal(false)
+                                AllModalClose({
+                                    setModal,
+                                    setSelectModal,
+                                    setEditPopup,
+                                    setDeleteModal
+                                })
                             }}
                             >
                                 {selectModal &&
                                     <ModalBottom
                                     onClickEdit={handleEdit}
-                                    onClickDelete={handleDelete}
+                                    onClickDelete={()=>{
+                                        handleDelete({setDeleteModal,setSelectModal})
+                                    }}
+                                    onClickClose={()=>{
+                                        SelectModalClose({setModal, setSelectModal})
+                                    }}
                                     />
                                 }
                                 {deleteModal &&
@@ -167,8 +162,7 @@ export default function WishPage() {
                                     onItemDelete={handleItemDelete}
                                     loading={loading}
                                     onReject={()=>{
-                                        setDeleteModal(false)
-                                        setModal(false)
+                                        DeleteModalClose({setDeleteModal, setModal})
                                     }}
                                     />
                                 }
@@ -177,7 +171,9 @@ export default function WishPage() {
                                     setModal={setModal}
                                     setEditPopup={setEditPopup}
                                     editObj={editObjRef.current}
-                                    onClick={handleEditClose}
+                                    onClick={()=>{
+                                        handleEditClose({setEditPopup,setModal})
+                                    }}
                                     />
                                 }
                             </SettingModal>

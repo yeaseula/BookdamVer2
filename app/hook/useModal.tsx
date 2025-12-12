@@ -1,38 +1,70 @@
-import { RefObject, useState, useEffect, useRef } from "react"
+import { useEffect } from "react";
 
-export function useCheckId(index: string) {
-    const checkIdRef = useRef<string>(index)
+export function useInitialToggle({
+    checkId,
+    setCheckId,
+    modal,
+    setModal,
+    selectModal,
+    setSelectModal
+}) {
+    useEffect(() => {
+        if (checkId) {
+        setModal(true);
+        setSelectModal(true);
+        } else {
+        setModal(false);
+        setSelectModal(false);
+        }
+    }, [checkId]);
 
-    return checkIdRef.current
+    useEffect(() => {
+        if (!modal) {
+        setCheckId(null);
+        }
+    }, [modal]);
 }
 
-export function useModal(checkId:RefObject<string[]>, index:string) {
-    const [modal,setModal] = useState(false)
-    const [ischecked,setisChecked] = useState(false)
+export function AllModalClose ({
+    setModal,
+    setSelectModal,
+    setEditPopup,
+    setDeleteModal
+}) {
+    setModal(false)
+    setSelectModal(false)
+    setEditPopup(false)
+    setDeleteModal(false)
+}
 
-    useEffect(()=>{
-        //모달 팝업에서 수정했을 시 모든 checkId 배열이 초기화되며 버튼 check여부 초기화
-        if(checkId.current.length === 0) {
-            setisChecked(false)
-        }
-    },[checkId])
+export function SelectModalClose({
+    setModal,
+    setSelectModal
+}) {
+    setModal(false)
+    setSelectModal(false)
+}
 
-    useEffect(()=>{
-        if(ischecked) {
-            //check state
-            checkId.current = [...checkId.current, index]
-        } else {
-            //uncheck state
-            const editResult = checkId.current.filter((val)=>val !== index)
-            checkId.current = editResult
-        }
-    },[ischecked])
+export function handleEditClose ({
+    setEditPopup,
+    setModal
+}) {
+    setEditPopup(false)
+    setModal(false)
+}
 
-    return {
-        modal,
-        setModal,
-        ischecked,
-        setisChecked,
-        checkId
-    };
+export function DeleteModalClose ({
+    setDeleteModal,
+    setModal
+}) {
+    setDeleteModal(false)
+    setModal(false)
+}
+
+export function handleDelete({ //삭제 버튼 클릭
+    setDeleteModal,
+    setSelectModal
+}) {
+    setDeleteModal(true) //삭제여부 모달 오픈
+    setSelectModal(false) //선택 모달 닫기
 }

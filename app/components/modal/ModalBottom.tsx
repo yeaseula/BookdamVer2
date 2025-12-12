@@ -25,15 +25,18 @@ const Button = styled.button`
     font-size: 1.8rem;
     text-align: center;
     cursor: pointer;
+    padding: 8px 0;
 `
 
 interface ModalProps {
     onClickEdit: ()=>void;
     onClickDelete:()=>void;
+    onClickClose:()=>void
 }
 export default function ModalBottom({
     onClickEdit,
-    onClickDelete
+    onClickDelete,
+    onClickClose
 } : ModalProps) {
     const params = useParams()
     const pathname = usePathname()
@@ -55,7 +58,9 @@ export default function ModalBottom({
                 zIndex: 100
             }}
         >
-        <ReactFocusLock>
+        <ReactFocusLock
+        returnFocus={true}
+        >
         <ModalWrap>
             <div>
                 {pathname === '/memo' ||
@@ -68,9 +73,12 @@ export default function ModalBottom({
                 )}
 
             </div>
-            <div className="mt-8">
+            <div className="mt-2">
                 <Button type="button" style={{ color: 'red' }}
                 onClick={onClickDelete}>삭제</Button>
+            </div>
+            <div className="mt-2 bg-gray-200 rounded-2xl">
+                <Button type="button" onClick={onClickClose}>닫기</Button>
             </div>
         </ModalWrap>
         </ReactFocusLock>
