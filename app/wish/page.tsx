@@ -135,7 +135,6 @@ export default function WishPage() {
                         <AnimatePresence>
                         {modal && (
                             <SettingModal
-                            type="bottom"
                             deleteState={deleteModal}
                             onClose={()=>{
                                 AllModalClose({
