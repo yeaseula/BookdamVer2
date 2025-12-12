@@ -84,9 +84,9 @@ export default function ClientRoot({
     return (
     <>
       {children}
-        {isTimer && useTimer &&
-          <StopWatch />
-        }
+      {isTimer && useTimer &&
+        <StopWatch />
+      }
     </>
     )
 }

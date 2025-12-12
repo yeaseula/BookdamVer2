@@ -1,7 +1,5 @@
 "use client"
-
-
-import { useState,useRef,useEffect, Dispatch, SetStateAction } from "react"
+import { useState,useRef,useEffect } from "react"
 import { DataState, Books, Log } from "@/app/lib/userfetch"
 import createClient from "@/utils/supabase/client"
 import { useAuthStore } from "@/app/lib/userfetch"
@@ -11,15 +9,10 @@ import ModalBack from "@/app/components/modal/ModalBack"
 import InputFields from "@/app/components/form/input"
 import { Container, Card, Close, Title, Timer, BtnWrap, Btn, Circle } from "../Modal.styled"
 import { motion, AnimatePresence } from "framer-motion";
-
-interface StopWatchProps {
-    setStopWatchNum: Dispatch<SetStateAction<string[]>>;
-    stopObj: Books;
-}
+import ReactFocusLock from "react-focus-lock"
 
 export default function StopWatch() {
-
-    const { timer, isTimer, timeObj, isMinimalize} = useAuthStore()
+    const { timer, timeObj, isMinimalize} = useAuthStore()
     const [time,setTime] = useState<number>(timer) //초기값:zustand
     const [running,setRunning] = useState<boolean>(false)
     const interval = useRef<NodeJS.Timeout | null>(null)
@@ -189,6 +182,7 @@ export default function StopWatch() {
                     <RiAlarmFill size={28} color="#fff" />
                 </Circle>
             :
+            <ReactFocusLock>
                 <Container>
                     <Card>
                         <Close><RiCloseLine onClick={handleClose}/></Close>
@@ -250,6 +244,7 @@ export default function StopWatch() {
                         }
                     </Card>
                 </Container>
+            </ReactFocusLock>
             }
             </motion.div>
         </div>
