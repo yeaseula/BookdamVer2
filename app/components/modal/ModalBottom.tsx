@@ -29,7 +29,7 @@ const Button = styled.button`
 `
 
 interface ModalProps {
-    onClickEdit: ()=>void;
+    onClickEdit?: ()=>void;
     onClickDelete:()=>void;
     onClickClose:()=>void
 }

@@ -3,6 +3,7 @@ import { PostgrestError, Session, User } from "@supabase/supabase-js";
 import { create } from "zustand";
 import createClient from "@/utils/supabase/client";
 import { persist } from "zustand/middleware"
+import { ParamValue } from "next/dist/server/request/params";
 
 export type DataState<T> = {
     data: T | null;
@@ -102,7 +103,7 @@ interface AuthState {
         key: 'memo' | 'reviews' | 'books' | 'log' | 'wish',
         item: DataState<T>
     ) => void;
-    removeData: (key: 'memo' | 'reviews' | 'books' | 'log' | 'wish', id: string) => void;
+    removeData: (key: 'memo' | 'reviews' | 'books' | 'log' | 'wish', id: string | ParamValue) => void;
     fetchSession: ()=>Promise<void>;
     setTimerObj: (key: 'timer' | 'timeObj' | 'isTimer' | 'isMinimalize', item: any)=> void;
 }

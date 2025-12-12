@@ -9,6 +9,7 @@ import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
 import { ErrorBoundary } from "react-error-boundary"
 import { CompoErrorFallBack } from "@/app/error/CompoErrorFallBack"
+import { throwSupabaseError } from "@/app/error/errorLibrary"
 
 const ReivewWrap = styled.div`
     padding: 80px 15px 0;
@@ -49,8 +50,14 @@ export default function ReviewDetail({postNumber}) {
     const { reviews } = useAuthStore()
 
     useEffect(()=>{
-        const find = reviews.data?.filter((review)=>review.id === postNumber)
-        if(!find) return
+
+        if(!reviews.data) return
+        const find:Reviews[] = reviews.data?.filter((review)=>review.id === postNumber)
+
+        if(find.length === 0) {
+            setReviewArr(null)
+            return
+        }
 
         const reviewdata = {
             data: find,
@@ -60,7 +67,6 @@ export default function ReviewDetail({postNumber}) {
         if(reviews.error) {
             throw new Error
         } else {
-            console.log(reviewdata)
             setReviewArr(reviewdata)
         }
     },[reviews])
@@ -143,4 +149,5 @@ export default function ReviewDetail({postNumber}) {
             </ReivewWrap>
         )
     }
+
 }

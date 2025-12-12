@@ -40,33 +40,6 @@ const ButtonStyleDark = styled(ButtonStyle)`
 
 export default function DeleteCheck({onReject,onItemDelete,loading}) {
 
-    //console.log(postId + ':🚀' + userId + ':🤔🤔🤔')
-
-
-    //삭제는 해당 컴포넌트에서 처리합니다
-    // const handleReviewDelete = async() => {
-    //     if(loading) return
-    //     setLoading(true)
-    //     try {
-    //         const { error } = await deleteReview(postId, userId);
-    //         useAuthStore.getState().removeData("reviews",postId)
-
-    //         if(error) {
-    //             throw new Error("리뷰 삭제에 실패했습니다.")
-    //         }
-    //         setToast("리뷰 삭제 성공했습니다!","success")
-    //         router.push('/review')
-
-    //     } catch (err) {
-    //         console.error('리뷰 삭제 오류:', err)
-    //         const errorMessage = err instanceof Error
-    //             ? err.message
-    //             : '리뷰삭제 중 오류가 발생했습니다.'
-    //         setToast(errorMessage,"error")
-    //         setLoading(false)
-    //     }
-    // }
-
     return (
         <>
         <motion.div
@@ -89,16 +62,10 @@ export default function DeleteCheck({onReject,onItemDelete,loading}) {
             <Container>
                 <h2 className="text-3xl font-bold">게시물을 삭제할까요?</h2>
                 <div className="flex justify-center gap-3 mt-10">
-                        <ButtonStyle
-                        type="button"
-                        disabled={loading}
-                        onClick={onItemDelete}>예</ButtonStyle>
-                    {/* {pathname.includes('review') &&
-                        <ButtonStyle
-                        type="button"
-                        disabled={loading}
-                        onClick={handleReviewDelete}>예</ButtonStyle>
-                    } */}
+                    <ButtonStyle
+                    type="button"
+                    disabled={loading}
+                    onClick={onItemDelete}>예</ButtonStyle>
                     <ButtonStyleDark
                     type="button"
                     disabled={loading}

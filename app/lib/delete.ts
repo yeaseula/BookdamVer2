@@ -1,6 +1,7 @@
 import createClient from "@/utils/supabase/client";
+import { ParamValue } from "next/dist/server/request/params";
 
-export async function deleteReview(id: string, userId: string) {
+export async function deleteReview(id: ParamValue, userId: string) {
     const supabase = createClient();
 
     const { error } = await supabase
