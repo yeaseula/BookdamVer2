@@ -63,12 +63,9 @@ export default function MemoContent({memo,setModal,modal,setCheckId}) {
                 <List key={`${m.title}-${idx}`}>
                     <CheckBox>
                         <InputCheck
-                        type={'checkbox'}
                         name={'list-check'}
                         index={m.id}
                         setCheckId={setCheckId}
-                        modal={modal}
-                        setModal={setModal}
                         />
                     </CheckBox>
                     <ListInfo>

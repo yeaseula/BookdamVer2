@@ -9,14 +9,13 @@ import Image from "next/image";
 export function GlobalErrorFallback({ error,resetErrorBoundary}:any) {
     const router = useRouter()
 
+    const setGlobalError = useAuthStore((s) => s.setGlobalError)
+    useEffect(() => {
+        setGlobalError(true)
+        return () => setGlobalError(false)
+    }, [])
+
     if (error instanceof UnauthorizedError) {
-
-        const setGlobalError = useAuthStore((s) => s.setGlobalError)
-        useEffect(() => {
-            setGlobalError(true)
-            return () => setGlobalError(false)
-        }, [])
-
         return (
         <Container>
             <Image src={'/images/fox_guard_need_login.svg'} alt="" width={230} height={230} />
@@ -30,13 +29,6 @@ export function GlobalErrorFallback({ error,resetErrorBoundary}:any) {
 
     // 네트워크 에러
     if (error instanceof NetworkError) {
-
-        const setGlobalError = useAuthStore((s) => s.setGlobalError)
-        useEffect(() => {
-            setGlobalError(true)
-            return () => setGlobalError(false)
-        }, [])
-
         return (
         <Container>
             <svg
@@ -71,13 +63,6 @@ export function GlobalErrorFallback({ error,resetErrorBoundary}:any) {
 
     // 서버 에러
     if (error instanceof ServerError) {
-
-        const setGlobalError = useAuthStore((s) => s.setGlobalError)
-        useEffect(() => {
-            setGlobalError(true)
-            return () => setGlobalError(false)
-        }, [])
-
         return (
             <Container>
                 <Image src={'/images/fox_error404.svg'} alt="" width={230} height={230} />

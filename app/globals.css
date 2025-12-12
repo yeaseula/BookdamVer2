@@ -8,6 +8,8 @@
   --sub_color: #3a3967;
   --point-color: #6ac8d8;
   --background-color: #fffdfc;
+  --text_color: #000000;
+  --text_white: #ffffff;
 }
 @theme inline {
   --color-background: var(--background);

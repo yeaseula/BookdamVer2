@@ -41,7 +41,6 @@ const List = [
             </ul>
             {fontUI &&
             <SettingModal
-            type="popup"
             onClose={()=>{setFontUI(false)}}>
                 <ModalPopUp
                 title={'폰트 설정'}
@@ -52,7 +51,6 @@ const List = [
             }
             {calendarUI &&
             <SettingModal
-            type="popup"
             onClose={()=>{setCalendarUI(false)}}>
                 <ModalPopUp
                 title={'캘린더 설정'}
@@ -63,7 +61,6 @@ const List = [
             }
             {reviewUI &&
             <SettingModal
-            type="popup"
             onClose={()=>{setReviewUI(false)}}>
                 <ModalPopUp
                 title={'서재 화면 설정'} onClose={()=>{setReviewUI(false)}}>
