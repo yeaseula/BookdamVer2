@@ -3,25 +3,32 @@ import createClient from "@/utils/supabase/client"
 
 const supabase = createClient()
 
-export const CheckEmail = (value:string, setState:(v: boolean | null) => void) => {
-    if(!value) {
-        setState(null)
-        return
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const isValid = emailRegex.test(value);
-    if(isValid) {setState(true)} else {setState(false)}
+export interface EmailValidation {
+    touched?: boolean;
+    valid: boolean | null;
+    exists?: boolean
 }
 
-export const checkEmailExistence = async (email:string, setState2:(v:boolean)=>void , setState:(v:boolean)=>void) => {
-    setState2(true);
+export const CheckEmail = (value:string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValid = emailRegex.test(value);
+    return isValid
+}
+
+export const checkEmailExistence = async (email:string) => {
     const { data, error } = await supabase
         .from('profiles')
         .select('email')
         .eq('email', email)
         .maybeSingle();
 
-    setState(!!data);
+    const ExistEmail = !!data
+
+    if(error) {
+        return error
+    }
+
+    return ExistEmail
 };
 
 export const CheckNickname = (value:string,setState:(v:boolean | null)=>void) => {
@@ -36,7 +43,7 @@ export const CheckNickname = (value:string,setState:(v:boolean | null)=>void) =>
 }
 
 export const CheckPassword = (value: string,setState:(v:boolean | null)=>void) => {
-    if(!value) {
+    if(value === '') {
         setState(null)
         return
     }
@@ -47,10 +54,10 @@ export const CheckPassword = (value: string,setState:(v:boolean | null)=>void) =
 }
 
 export const handlePassCheck = (
-    value:React.RefObject<string>,
-    value2:React.RefObject<string>,
+    value:string,
+    value2:string,
     setState:(v:boolean | null)=>void) => {
 
-    if(!value2?.current) { setState(null); return } //비밀번호 재확인값 없을 시 비교하지 않음
-    setState(value.current === value2.current);
+    if(value2 === '') { setState(null); return } //비밀번호 재확인값 없을 시 비교하지 않음
+    setState(value === value2);
 }

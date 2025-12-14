@@ -2,19 +2,19 @@
 import styled from "styled-components"
 import Image from "next/image"
 import Link from "next/link"
-import React, { useEffect, useState, useRef } from "react"
+import React, { useEffect, useState, useRef, useCallback } from "react"
 import createClient from "@/utils/supabase/client"
 import InputFields from "../components/form/input"
-import SignUpButton from "./components/signupButton"
 import { useToastStore } from "../lib/useToastStore"
 import { useRouter } from "next/navigation"
 import { UserInfoInitial, UserReviewInitial, UserMemoInitial, UserBooksInitial, UserLogInitial, UserWishInitial } from "../lib/readingInfo"
-import { useAuthStore, Reviews, Memo, Books, Log, Wish } from "../lib/userfetch"
+import { useAuthStore} from "../lib/userfetch"
 import InterestList from "../components/form/Interest/InterestList"
-import { motion, AnimatePresence } from "framer-motion"
 import { CheckEmail, checkEmailExistence, CheckNickname, CheckPassword, handlePassCheck } from "./Valid"
 import { WarningMessage } from "./warningMsg"
 import SpinnerArea from "../components/spinner/SpinnerArea"
+import { useForm } from "../hook/useForm"
+import SubmitButton from "../components/common/SubmitButton"
 
 const SignUpWrapper = styled.section`
     display: flex;
@@ -22,6 +22,7 @@ const SignUpWrapper = styled.section`
     justify-content: center;
     align-items: center;
     padding: 50px 15px 150px;
+    background: var(--board_background);
 `
 const Letter = styled.p`
     letter-spacing: 2.4px;
@@ -43,24 +44,27 @@ const ToLoginBox = styled.div`
         text-decoration: underline;
     }
 `
+const ImageStyle = {
+    width: 'auto'
+}
 
 export default function SignUp() {
-    const [email,setEmail] = useState<string>('');
-    const [emailValid,setEmailValid] = useState<boolean | null>(null)
-    const [emailExists, setEmailExists] = useState<boolean>() // 가입된 이메일인지
-    const [emailTouched, setEmailTouched] = useState<boolean>(false); // 가입이메일 check await 방어
-
-    const [nickname,setNickname] = useState<string>('')
+    const emailRef = useRef<HTMLInputElement>(null)
+    const [emailValid,setEmailValid] = useState({
+        valid: null,
+        exists: undefined
+    })
+    const nicknameRef = useRef<HTMLInputElement>(null)
     const [nicknameValue,setNicknameValue] = useState<boolean | null>(null)
 
+    const newPassRef = useRef<HTMLInputElement>(null)
+    const newPass2Ref = useRef<HTMLInputElement>(null)
     const [passValue,setPassValue] = useState<boolean | null>(null) //pass 유효성
     const [passCheck, setPassCheck] = useState<boolean | null>(null) //pass 일치
-    const newPassRef = useRef('')
-    const newPass2Ref = useRef('')
 
     const [interest,setInterest] = useState<string[]>([])
 
-    const [button,setButton] = useState<boolean>(false) // button 활성화 상태
+    //const [button,setButton] = useState<boolean>(false) // button 활성화 상태
     const [loading,setLoading] = useState<boolean>(false)
     const setToast = useToastStore((state)=>state.setToast)
     const setSession = useAuthStore((state)=>state.setSession)
@@ -69,25 +73,22 @@ export default function SignUp() {
     const router = useRouter()
     const supabase = createClient()
 
-    useEffect(()=>{
-        if(emailValid === true &&
-            nicknameValue === true &&
-            passValue === true &&
-            passCheck === true &&
-            !emailExists &&
-            interest.length > 0
-        ) {
-            setButton(true)
-        } else { setButton(false) }
-    },[emailValid,emailExists, nicknameValue,passValue,passCheck,interest])
+    const isFormValid = useForm({
+        emailValid,
+        nicknameValue,
+        passValue,
+        passCheck,
+        interest
+    })
 
     const handleSignUp = async () => {
         if(loading) return
         setLoading(true)
+
         try {
             const { data, error } = await supabase.auth.signUp({
-                email,
-                password : newPassRef.current,
+                email : emailRef.current.value,
+                password : newPassRef.current.value,
             })
 
             if (error) {
@@ -118,9 +119,9 @@ export default function SignUp() {
             //프로필 테이블 생성
             const {error: profileError} = await supabase.from('profiles').insert({
                 id: session.user?.id,
-                username: nickname,
+                username: nicknameRef.current.value,
                 interests: interest,
-                email: email,
+                email: emailRef.current.value,
             })
             if(profileError) {
                 setToast('프로필 생성에 실패했습니다.', 'error')
@@ -183,6 +184,49 @@ export default function SignUp() {
             setLoading(false)
         }
     }
+
+    const handleEmailBlur = useCallback(async (e:React.ChangeEvent<HTMLInputElement>)=>{
+        const value = emailRef.current?.value || ''
+
+        let emailvalid:boolean | null = null;
+        if(!value) {
+            emailvalid = null
+        } else {
+            emailvalid = CheckEmail(e.currentTarget.value)
+        }
+
+        let existEmail = undefined;
+        if(emailvalid) {
+            existEmail = await checkEmailExistence(e.currentTarget.value)
+        }
+
+        setEmailValid({
+            valid: emailvalid,
+            exists: existEmail
+        })
+    },[])
+    const handleNicknameChange = useCallback((e:React.ChangeEvent<HTMLInputElement>)=>{
+        CheckNickname(e.currentTarget.value, setNicknameValue)
+    },[])
+    const passWordChange = useCallback((e:React.ChangeEvent<HTMLInputElement>)=>{
+            newPassRef.current.value = e.currentTarget.value;
+            const passCheck = newPass2Ref.current?.value?.trim() || ''
+            handlePassCheck(newPassRef.current.value, passCheck ,setPassCheck )
+    },[])
+    const passWordBlur = useCallback((e:React.ChangeEvent<HTMLInputElement>)=>{
+            CheckPassword(e.currentTarget.value, setPassValue);
+            const passCheck = newPass2Ref.current?.value?.trim() || ''
+            handlePassCheck(newPassRef.current.value, passCheck,setPassCheck)
+    },[])
+    const passCheckChange = useCallback((e:React.ChangeEvent<HTMLInputElement>)=>{
+            newPass2Ref.current.value = e.currentTarget.value
+            const passOrigin = newPassRef.current?.value?.trim() || ''
+            handlePassCheck(passOrigin, newPass2Ref.current.value ,setPassCheck)
+    },[])
+    const passCheckBlur = useCallback((e:React.ChangeEvent<HTMLInputElement>)=>{
+        handlePassCheck(newPassRef.current.value, newPass2Ref.current.value ,setPassCheck )
+    },[])
+
     return(
         <SignUpWrapper>
             <h2 className="sr-only">책담 회원가입 페이지. 모든 항목은 필수입력 입니다.</h2>
@@ -191,67 +235,56 @@ export default function SignUp() {
             src={'/images/main-logo.svg'}
             alt="로고"
             width={100}
-            height={60} />
+            height={60}
+            style={ImageStyle}
+            priority
+            />
             <Letter>당신의 독서리뷰 다이어리</Letter>
 
             <div style={{ width: '100%', marginTop: '20px' }}>
                 <Label>
                     <span>이메일 <b className="text-red-800">*</b></span>
-                    <InputFields type={"email"}
+                    <InputFields
+                    type={"email"}
                     name={"login-emapl"}
                     placeholder={"이메일을 입력해주세요"}
-                    onBlur={(e:React.ChangeEvent<HTMLInputElement>)=>{
-                        CheckEmail(e.currentTarget.value, setEmailValid);
-                        checkEmailExistence(e.currentTarget.value,setEmailTouched, setEmailExists);
-                    }}
-                    onChange={(e:React.ChangeEvent<HTMLInputElement>)=>
-                        setEmail(e.currentTarget.value)}
+                    onBlur={handleEmailBlur}
+                    ref={emailRef}
                     />
-                    <WarningMessage state={emailValid} text="이메일 형식을 확인해주세요. ex)book@naver.com" />
-                    <WarningMessage state={!emailTouched || !emailExists} text="이미 사용중인 이메일입니다." />
+                    <WarningMessage state={emailValid.valid} text="이메일 형식을 확인해주세요. ex)book@naver.com" />
+                    <WarningMessage state={!emailValid.exists} text="이미 사용중인 이메일입니다." />
                 </Label>
                 <Label style={{ marginTop: '10px' }}>
                     <span>닉네임 <b className="text-red-800">*</b></span>
-                    <InputFields type={"text"}
+                    <InputFields
+                    type={"text"}
                     name={"login-nickname"}
                     placeholder={"닉네임을 입력해주세요 (2글자 이상)"}
-                    onBlur={
-                        (e:React.ChangeEvent<HTMLInputElement>)=>
-                        CheckNickname(e.currentTarget.value, setNicknameValue)
-                    }
-                    onChange={
-                        (e:React.ChangeEvent<HTMLInputElement>)=>
-                        setNickname(e.currentTarget.value)
-                    }
+                    onBlur={handleNicknameChange}
+                    ref={nicknameRef}
                     />
                 <WarningMessage state={nicknameValue} text="닉네임은 두 글자 이상 입력해주세요." />
                 </Label>
                 <Label style={{ marginTop: '10px' }}>
                     <span>비밀번호 <b className="text-red-800">*</b></span>
-                    <InputFields type={"password"}
+                    <InputFields
+                    type={"password"}
                     name={"login-pass"}
                     placeholder={"8자 이상, 숫자/영문 조합해주세요"}
-                    onBlur={(e:React.ChangeEvent<HTMLInputElement>)=>{
-                        CheckPassword(e.currentTarget.value,setPassValue);
-                        handlePassCheck(newPassRef, newPass2Ref ,setPassCheck )
-                    }}
-                    onChange={(e:React.ChangeEvent<HTMLInputElement>)=>{
-                        newPassRef.current = e.currentTarget.value;
-                        handlePassCheck(newPassRef, newPass2Ref ,setPassCheck )
-                    }
-                    }/>
+                    ref={newPassRef}
+                    onBlur={passWordBlur}
+                    onChange={passWordChange}/>
                     <WarningMessage state={passValue} text="비밀번호는 문자+숫자 8자리 이상입니다." />
                 </Label>
                 <Label style={{ marginTop: '10px' }}>
                     <span>비밀번호 확인 <b className="text-red-800">*</b></span>
-                    <InputFields type={"password"}
+                    <InputFields
+                    type={"password"}
                     name={"login-pass-check"}
                     placeholder={"비밀번호를 한번 더 입력해주세요"}
-                    onBlur={()=>handlePassCheck(newPassRef, newPass2Ref ,setPassCheck )}
-                    onChange={(e:React.ChangeEvent<HTMLInputElement>)=>{
-                        newPass2Ref.current = e.currentTarget.value
-                        handlePassCheck(newPassRef, newPass2Ref ,setPassCheck )
-                    }}/>
+                    ref={newPass2Ref}
+                    onBlur={passCheckBlur}
+                    onChange={passCheckChange}/>
                     <WarningMessage state={passCheck} text="비밀번호를 정확하게 입력해주세요." />
                 </Label>
                 <Label style={{ marginTop: '10px' }}>
@@ -260,17 +293,17 @@ export default function SignUp() {
                             {interest.length == 0 &&
                             <p className="inline-block text-[1.2rem] text-green-700 ml-4.5">관심 카테고리를 선택하고 책을 추천받으세요!</p>}</b>
                     </span>
-                        <InterestList
-                        interest={interest}
-                        setInterest={setInterest}/>
+                    <InterestList
+                    interest={interest}
+                    setInterest={setInterest}/>
                 </Label>
             </div>
-            <SignUpButton
-            button={button}
+            <SubmitButton
+            type="button"
+            active={isFormValid}
             loading={loading}
-            interest={interest}
-            onClick={()=>handleSignUp()}
-            />
+            onClick={handleSignUp}
+            >회원가입</SubmitButton>
             <ToLoginBox>
                 <p>회원이신가요?
                 <Link href={'/login'}>로그인 하러가기</Link>

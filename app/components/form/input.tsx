@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, { memo, forwardRef, InputHTMLAttributes, RefObject } from "react";
 import styled from "styled-components"
 
 const InputField = styled.input<{$width:string | number | undefined}>`
@@ -32,19 +32,49 @@ interface FiledType {
     width?:  string | number | undefined;
     pattern?: string;
     inputMode?: string;
+    ref?: RefObject<HTMLInputElement>;
     onBlur?:(e:React.ChangeEvent<HTMLInputElement>)=>void;
     onChange?:(e:React.ChangeEvent<HTMLInputElement>)=>void;
 }
 
-export default function InputFields({type, placeholder, name, value, width,onBlur, onChange }:FiledType) {
-    return(
-        <InputField
-        type={type}
-        placeholder={placeholder}
-        name={name}
-        value={value}
-        onBlur={onBlur}
-        onChange={onChange}
-        $width={width} />
-    )
+interface InputType extends Omit<InputHTMLAttributes<HTMLInputElement>, 'width'> {
+    type: string;
+    placeholder?: string;
+    name: string;
+    width?: string | number;
 }
+
+const InputFields = memo(
+    forwardRef<HTMLInputElement, InputType>(
+        ({ type, placeholder, name, value, width, onBlur, onChange, ...rest },ref)=>{
+            return (
+                <InputField
+                ref={ref}
+                type={type}
+                placeholder={placeholder}
+                name={name}
+                value={value}
+                onBlur={onBlur}
+                onChange={onChange}
+                $width={width}
+                {...rest}
+                />
+            )
+        }
+    )
+)
+
+export default InputFields
+
+// export default function InputFields({type, placeholder, name, value, width, onBlur, onChange }:FiledType) {
+//     return(
+//         <InputField
+//         type={type}
+//         placeholder={placeholder}
+//         name={name}
+//         value={value}
+//         onBlur={onBlur}
+//         onChange={onChange}
+//         $width={width} />
+//     )
+// }

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 import styled from "styled-components"
 
 const Check = styled.input`
@@ -37,7 +37,7 @@ export default function Checkbox({name,id,value,checked,interest,originList,setI
         })
     },[])
 
-    const handleInterest = () => {
+    const handleInterest = useCallback(()=>{
         if(isChecked) {
             setIsChecked(false)
             const interestList:string[] = interest.filter((m)=>m !== value )
@@ -57,7 +57,7 @@ export default function Checkbox({name,id,value,checked,interest,originList,setI
             setIsChecked(true)
             setInterest((prev)=>[...prev,value])
         }
-    }
+    },[])
 
     return (
         <li>

@@ -32,9 +32,9 @@ const CheckBox = styled.div`
     top: 10px;
     z-index: 10;
 `
+const formatMoney = (num:number) => num.toLocaleString();
 
 export default function WishContent({wish,setCheckId,modal,setModal}) {
-    const formatMoney = (num:number) => num.toLocaleString();
 
     if(!wish.ok || wish.error) {
         throwSupabaseError(wish.error)
@@ -49,7 +49,7 @@ export default function WishContent({wish,setCheckId,modal,setModal}) {
     return (
         <>
             {wish.data?.map((w:Wish,idx:number)=>(
-                <List key={`${w.title}-${idx}`}>
+                <List key={w.id || `wish-${idx}`}>
                     <CheckBox>
                         <InputCheck
                         name={'list-check'}
