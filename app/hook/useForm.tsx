@@ -11,6 +11,11 @@ interface ValidationState {
     interest: string[]
 }
 
+interface ValidLoginState {
+        emailValid: boolean,
+        passValid: boolean
+}
+
 export function useForm(state: ValidationState) {
     return useMemo(()=>{
         return (
@@ -28,5 +33,17 @@ export function useForm(state: ValidationState) {
         state.passValue,
         state.passCheck,
         state.interest
+    ])
+}
+
+export function useLogin(state:ValidLoginState ) {
+    return useMemo(()=>{
+        return (
+            state.emailValid === true &&
+            state.passValid === true
+        )
+    },[
+        state.emailValid,
+        state.passValid
     ])
 }

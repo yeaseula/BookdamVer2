@@ -4,7 +4,7 @@ import styled from "styled-components";
 import InputFields from "../components/form/input";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import LoginButton from "./components/LoginButton";
 import createClient from "@/utils/supabase/client";
 import { useToastStore } from "../lib/useToastStore";
@@ -16,6 +16,10 @@ import { UserInfoInitial, UserReviewInitial, UserMemoInitial,
     UserBooksInitial, UserLogInitial, UserWishInitial, UserSetting
  } from "../lib/readingInfo";
 import SpinnerArea from "../components/spinner/SpinnerArea";
+import { ImageStyle } from "../components/common/ImageStyle";
+import SubmitButton from "../components/common/SubmitButton";
+import { useLogin } from "../hook/useForm";
+import { CheckEmail, CheckPassword } from "../signup/Valid";
 
 const LoginWrapper = styled.section`
     height: 100vh;
@@ -24,6 +28,7 @@ const LoginWrapper = styled.section`
     justify-content: center;
     align-items: center;
     padding: 0 15px;
+    background: var(--board_background);
 `
 const Letter = styled.p`
     letter-spacing: 2.4px;
@@ -47,25 +52,32 @@ const ToSignupBox = styled.div`
 `
 
 export default function Login() {
-    const [email,setEmail] = useState<string>('');
-    const [password,setPassword] = useState<string>('')
+
+    const emailRef = useRef<HTMLInputElement>(null)
+    const passRef = useRef<HTMLInputElement>(null)
+
+    const [emailValid,setEmailValid] = useState(false)
+    const [passValid,setPassValid] = useState(false)
+
     const [loading,setIsLoading] = useState<boolean>(false)
     const supabase = createClient()
-    const setToast = useToastStore((state)=>state.setToast)
     const router = useRouter()
 
-    const setSession = useAuthStore((state)=>state.setSession)
-    const setProfile = useAuthStore((state)=>state.setProfile)
-    const setData = useAuthStore((state)=>state.setData)
+    const setToast = useToastStore((state)=>state.setToast)
+    const { setSession,setProfile,setData } = useAuthStore()
     const initSettings = useSettingStore((state)=>state.initSettings)
 
-    const handleLogin = async(email:string, password:string) => {
+    console.log('rerender')
+
+    const LoginState = useLogin({emailValid, passValid})
+
+    const handleLogin = async() => {
         if(loading) return
         setIsLoading(true)
         try {
             const { data, error } = await supabase.auth.signInWithPassword({
-                email,
-                password,
+                email : emailRef.current.value,
+                password : passRef.current.value,
             })
 
             if (error || !data.user) {
@@ -141,6 +153,23 @@ export default function Login() {
         }
     }
 
+    const handleEmailCheck = useCallback(()=>{
+        const value = emailRef.current?.value || ''
+        if(!value || emailValid === true) return
+        if(value) {
+            const valid = CheckEmail(value)
+            setEmailValid(valid)
+        }
+    },[])
+
+    const passwordCheck = useCallback(()=>{
+        const value = passRef.current?.value || ''
+        if(!value || passValid === true) return
+        if(value) {
+            CheckPassword(value,setPassValid)
+        }
+    },[])
+
     return (
         <LoginWrapper>
             <h2 className="sr-only">로그인</h2>
@@ -149,33 +178,40 @@ export default function Login() {
             src={'/images/main-logo.svg'}
             alt="로고"
             width={100}
-            height={60} />
+            height={60}
+            style={ImageStyle}
+            priority
+            />
             <Letter>당신의 독서리뷰 다이어리</Letter>
 
             <div style={{ width: '100%', marginTop: '20px' }}>
                 <Label>
                     <span>이메일</span>
-                    <InputFields type={"email"}
+                    <InputFields
+                    type={"email"}
                     name={"login-emapl"}
                     placeholder={"이메일을 입력해주세요."}
-                    onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setEmail(e.currentTarget.value)}
+                    onChange={handleEmailCheck}
+                    ref={emailRef}
                     />
                 </Label>
                 <Label style={{ marginTop: '10px' }}>
                     <span>비밀번호</span>
-                    <InputFields type={"password"}
+                    <InputFields
+                    type={"password"}
                     name={"login-pass"}
                     placeholder={"비밀번호를 입력해주세요."}
-                    onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setPassword(e.currentTarget.value)}
+                    onChange={passwordCheck}
+                    ref={passRef}
                     />
                 </Label>
             </div>
-            <LoginButton
-            email={email}
-            password={password}
-            isWorking={loading}
-            onClick={()=>handleLogin(email,password)}
-            />
+            <SubmitButton
+            type="button"
+            active={LoginState}
+            loading={loading}
+            onClick={handleLogin}
+            >로그인</SubmitButton>
 
             <ToSignupBox>
                 <p>회원이 아닌가요?

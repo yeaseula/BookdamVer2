@@ -23,6 +23,7 @@
     "react-dom": "19.1.0",
     "react-error-boundary": "^6.0.0",
     "react-focus-lock": "^2.13.7",
+    "react-hook-form": "^7.68.0",
     "react-hot-toast": "^2.6.0",
     "react-loading-skeleton": "^3.5.0",
     "react-mobile-datepicker": "^4.0.2",

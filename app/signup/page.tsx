@@ -2,20 +2,20 @@
 import styled from "styled-components"
 import Image from "next/image"
 import Link from "next/link"
-import React, { useEffect, useState, useRef, useCallback } from "react"
+import React, { useState, useCallback } from "react"
 import createClient from "@/utils/supabase/client"
 import InputFields from "../components/form/input"
 import { useToastStore } from "../lib/useToastStore"
 import { useRouter } from "next/navigation"
 import { UserInfoInitial, UserReviewInitial, UserMemoInitial, UserBooksInitial, UserLogInitial, UserWishInitial } from "../lib/readingInfo"
 import { useAuthStore} from "../lib/userfetch"
-import InterestList from "../components/form/Interest/InterestList"
 import { CheckEmail, checkEmailExistence, CheckNickname, CheckPassword, handlePassCheck } from "./Valid"
-import { WarningMessage } from "./warningMsg"
 import SpinnerArea from "../components/spinner/SpinnerArea"
-import { useForm } from "../hook/useForm"
 import SubmitButton from "../components/common/SubmitButton"
-
+import { ImageStyle } from "../components/common/ImageStyle"
+import { useForm, SubmitHandler, Controller, FormProvider } from "react-hook-form"
+import InterestLists from "../components/form/interests/InterestList"
+import { P } from "framer-motion/dist/types.d-BJcRxCew"
 const SignUpWrapper = styled.section`
     display: flex;
     flex-direction: column;
@@ -44,28 +44,20 @@ const ToLoginBox = styled.div`
         text-decoration: underline;
     }
 `
-const ImageStyle = {
-    width: 'auto'
+interface IFormInput {
+    email: string
+    password: string
+    passwordCheck: string
+    nickname: string
+    interest: string[]
+    checkbox: boolean
+    interests: string[]
 }
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const PASS_REGEX = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
 export default function SignUp() {
-    const emailRef = useRef<HTMLInputElement>(null)
-    const [emailValid,setEmailValid] = useState({
-        valid: null,
-        exists: undefined
-    })
-    const nicknameRef = useRef<HTMLInputElement>(null)
-    const [nicknameValue,setNicknameValue] = useState<boolean | null>(null)
-
-    const newPassRef = useRef<HTMLInputElement>(null)
-    const newPass2Ref = useRef<HTMLInputElement>(null)
-    const [passValue,setPassValue] = useState<boolean | null>(null) //pass 유효성
-    const [passCheck, setPassCheck] = useState<boolean | null>(null) //pass 일치
-
-    const [interest,setInterest] = useState<string[]>([])
-
-    //const [button,setButton] = useState<boolean>(false) // button 활성화 상태
-    const [loading,setLoading] = useState<boolean>(false)
+    const [loading,setIsLoading] = useState(false)
     const setToast = useToastStore((state)=>state.setToast)
     const setSession = useAuthStore((state)=>state.setSession)
     const setProfile = useAuthStore((state)=>state.setProfile)
@@ -73,23 +65,28 @@ export default function SignUp() {
     const router = useRouter()
     const supabase = createClient()
 
-    const isFormValid = useForm({
-        emailValid,
-        nicknameValue,
-        passValue,
-        passCheck,
-        interest
+    const methods = useForm<IFormInput>({
+        mode: "onChange",
+        defaultValues: {
+            interests: [],
+        },
     })
 
+    const {
+        register,
+        formState: {errors, isValid, isSubmitting },
+        handleSubmit,
+        getValues, trigger
+    } = methods
 
-    const handleSignUp = useCallback(async()=>{
-        if(loading) return
-        setLoading(true)
+    const onSubmit: SubmitHandler<IFormInput> = (data) => handleSignUp(data)
 
+    const handleSignUp = async(submitdata:IFormInput)=>{
+        setIsLoading(true)
         try {
             const { data, error } = await supabase.auth.signUp({
-                email : emailRef.current.value,
-                password : newPassRef.current.value,
+                email : submitdata.email,
+                password : submitdata.password,
             })
 
             if (error) {
@@ -120,15 +117,14 @@ export default function SignUp() {
             //프로필 테이블 생성
             const {error: profileError} = await supabase.from('profiles').insert({
                 id: session.user?.id,
-                username: nicknameRef.current.value,
-                interests: interest,
-                email: emailRef.current.value,
+                username: submitdata.nickname,
+                interests: submitdata.interest,
+                email: submitdata.email,
             })
             if(profileError) {
                 setToast('프로필 생성에 실패했습니다.', 'error')
                 throw new Error('프로필 생성에 실패했습니다.')
             }
-
 
             const UserInfor = await UserInfoInitial(UserId)
 
@@ -182,51 +178,9 @@ export default function SignUp() {
                 ? err.message
                 : '회원가입 중 오류가 발생했습니다'
             setToast(errorMessage, "error")
-            setLoading(false)
+            setIsLoading(false)
         }
-    },[])
-
-    const handleEmailBlur = useCallback(async (e:React.ChangeEvent<HTMLInputElement>)=>{
-        const value = emailRef.current?.value || ''
-
-        let emailvalid:boolean | null = null;
-        if(!value) {
-            emailvalid = null
-        } else {
-            emailvalid = CheckEmail(e.currentTarget.value)
-        }
-
-        let existEmail = undefined;
-        if(emailvalid) {
-            existEmail = await checkEmailExistence(e.currentTarget.value)
-        }
-
-        setEmailValid({
-            valid: emailvalid,
-            exists: existEmail
-        })
-    },[])
-    const handleNicknameChange = useCallback((e:React.ChangeEvent<HTMLInputElement>)=>{
-        CheckNickname(e.currentTarget.value, setNicknameValue)
-    },[])
-    const passWordChange = useCallback((e:React.ChangeEvent<HTMLInputElement>)=>{
-            newPassRef.current.value = e.currentTarget.value;
-            const passCheck = newPass2Ref.current?.value?.trim() || ''
-            handlePassCheck(newPassRef.current.value, passCheck ,setPassCheck )
-    },[])
-    const passWordBlur = useCallback((e:React.ChangeEvent<HTMLInputElement>)=>{
-            CheckPassword(e.currentTarget.value, setPassValue);
-            const passCheck = newPass2Ref.current?.value?.trim() || ''
-            handlePassCheck(newPassRef.current.value, passCheck,setPassCheck)
-    },[])
-    const passCheckChange = useCallback((e:React.ChangeEvent<HTMLInputElement>)=>{
-            newPass2Ref.current.value = e.currentTarget.value
-            const passOrigin = newPassRef.current?.value?.trim() || ''
-            handlePassCheck(passOrigin, newPass2Ref.current.value ,setPassCheck)
-    },[])
-    const passCheckBlur = useCallback((e:React.ChangeEvent<HTMLInputElement>)=>{
-        handlePassCheck(newPassRef.current.value, newPass2Ref.current.value ,setPassCheck )
-    },[])
+    }
 
     return(
         <SignUpWrapper>
@@ -241,74 +195,92 @@ export default function SignUp() {
             priority
             />
             <Letter>당신의 독서리뷰 다이어리</Letter>
-
             <div style={{ width: '100%', marginTop: '20px' }}>
-                <Label>
-                    <span>이메일 <b className="text-red-800">*</b></span>
-                    <InputFields
-                    type={"email"}
-                    name={"login-emapl"}
-                    placeholder={"이메일을 입력해주세요"}
-                    onBlur={handleEmailBlur}
-                    ref={emailRef}
-                    />
-                    <WarningMessage state={emailValid.valid} text="이메일 형식을 확인해주세요. ex)book@naver.com" />
-                    <WarningMessage state={!emailValid.exists} text="이미 사용중인 이메일입니다." />
-                </Label>
-                <Label style={{ marginTop: '10px' }}>
-                    <span>닉네임 <b className="text-red-800">*</b></span>
-                    <InputFields
-                    type={"text"}
-                    name={"login-nickname"}
-                    placeholder={"닉네임을 입력해주세요 (2글자 이상)"}
-                    onBlur={handleNicknameChange}
-                    ref={nicknameRef}
-                    />
-                <WarningMessage state={nicknameValue} text="닉네임은 두 글자 이상 입력해주세요." />
-                </Label>
-                <Label style={{ marginTop: '10px' }}>
-                    <span>비밀번호 <b className="text-red-800">*</b></span>
-                    <InputFields
-                    type={"password"}
-                    name={"login-pass"}
-                    placeholder={"8자 이상, 숫자/영문 조합해주세요"}
-                    ref={newPassRef}
-                    onBlur={passWordBlur}
-                    onChange={passWordChange}/>
-                    <WarningMessage state={passValue} text="비밀번호는 문자+숫자 8자리 이상입니다." />
-                </Label>
-                <Label style={{ marginTop: '10px' }}>
-                    <span>비밀번호 확인 <b className="text-red-800">*</b></span>
-                    <InputFields
-                    type={"password"}
-                    name={"login-pass-check"}
-                    placeholder={"비밀번호를 한번 더 입력해주세요"}
-                    ref={newPass2Ref}
-                    onBlur={passCheckBlur}
-                    onChange={passCheckChange}/>
-                    <WarningMessage state={passCheck} text="비밀번호를 정확하게 입력해주세요." />
-                </Label>
-                <Label style={{ marginTop: '10px' }}>
-                    <span>관심 카테고리
-                        <b className="text-red-800"> *
-                            {interest.length == 0 &&
-                            <p className="inline-block text-[1.2rem] text-green-700 ml-4.5">관심 카테고리를 선택하고 책을 추천받으세요!</p>}</b>
-                    </span>
-                    <InterestList
-                    interest={interest}
-                    setInterest={setInterest}/>
-                </Label>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <Label>
+                        <span>이메일 <b className="text-red-800">*</b></span>
+                        <InputFields
+                        placeholder="이메일을 입력해주세요."
+                        {...register("email", {
+                            required: true,
+                            pattern: {
+                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                message: '이메일 형식을 확인해주세요. ex)book@naver.com'
+                            },
+                            validate: async(email) => {
+                                if(!EMAIL_REGEX.test(email)) return;
+                                const existEmail = await checkEmailExistence(email)
+                                return existEmail ? '이미 가입된 이메일입니다.' : true
+                            }
+                        })} />
+                        {errors.email &&
+                            <p className="text-red-600 mt-3 text-xl">{errors.email.message}</p>
+                        }
+                    </Label>
+                    <Label style={{ marginTop: '10px' }}>
+                        <span>닉네임 <b className="text-red-800">*</b></span>
+                        <InputFields
+                        placeholder="닉네임을 입력해주세요 (2글자 이상)"
+                        {...register("nickname",{
+                            required: true,
+                            minLength: {
+                                value: 2,
+                                message: '닉네임은 두 글자 이상 입력해주세요.'
+                            },
+                        })}
+                        />
+                        {errors.nickname &&
+                        <p className="text-red-600 mt-3 text-xl">{errors.nickname.message}</p>
+                        }
+                    </Label>
+                    <Label style={{ marginTop: '10px' }}>
+                        <span>비밀번호 <b className="text-red-800">*</b></span>
+                        <InputFields
+                        type="password"
+                        placeholder={"8자 이상, 숫자/영문 조합해주세요"}
+                        {...register("password",{
+                            required: true,
+                            pattern: {
+                                value: PASS_REGEX,
+                                message: '비밀번호는 문자+숫자 8자리 이상입니다.'
+                            },
+                            onChange:() => {
+                                trigger('passwordCheck')
+                            }
+                        })}
+                        />
+                        {errors.password &&
+                        <p className="text-red-600 mt-3 text-xl">{errors.password.message}</p>
+                        }
+                    </Label>
+                    <Label style={{ marginTop: '10px' }}>
+                        <span>비밀번호 확인 <b className="text-red-800">*</b></span>
+                        <InputFields
+                        type="password"
+                        placeholder={"비밀번호를 한번 더 입력해주세요"}
+                        {...register("passwordCheck",{
+                            required: true,
+                            validate: (value) => value === getValues('password') || '비밀번호가 일치하지 않습니다.'
+                        })}
+                        />
+                        {errors.passwordCheck &&
+                        <p className="text-red-600 mt-3 text-xl">{errors.passwordCheck.message}</p>
+                        }
+                    </Label>
+                    <Label style={{ marginTop: '10px' }}>
+                        <span>관심 카테고리 <b className="text-red-800">*</b></span>
+                        {errors.interests &&
+                        <p className="text-red-600 mt-3 text-xl">{errors.interests.message}</p>
+                        }
+                        <FormProvider {...methods}>
+                            <InterestLists />
+                        </FormProvider>
+                    </Label>
+                    <SubmitButton disabled={!isValid || isSubmitting} type="submit">회원가입</SubmitButton>
+                </form>
             </div>
-            <SubmitButton
-            type="button"
-            active={isFormValid}
-            loading={loading}
-            onClick={handleSignUp}
-            >회원가입</SubmitButton>
             <ToLoginBox>
-                <p>회원이신가요?
-                <Link href={'/login'}>로그인 하러가기</Link>
-                </p>
+                <p>회원이신가요? <Link href={'/login'}>로그인 하러가기</Link></p>
             </ToLoginBox>
         </SignUpWrapper>
     )

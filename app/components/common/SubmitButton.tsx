@@ -19,19 +19,21 @@ const Button = styled.button<{disabled:boolean}>`
 interface ButtonProps {
     type: 'submit' | 'button'
     children: React.ReactNode;
-    active: boolean;
-    loading: boolean;
-    onClick: () => void
+    disabled: boolean;
+    active?: boolean;
+    loading?: boolean;
+    onClick?: () => void
 }
 
 const SubmitButton = memo(({
     type,
     active, loading, onClick,
+    disabled,
     children
 }:ButtonProps)=>{
     const isActive = active && !loading
     return (
-        <Button type={type} disabled={!isActive} onClick={onClick}>{children}</Button>
+        <Button type={type} disabled={disabled} onClick={onClick}>{children}</Button>
     )
 })
 

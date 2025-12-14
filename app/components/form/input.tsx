@@ -26,7 +26,7 @@ const InputField = styled.input<{$width:string | number | undefined}>`
 `
 
 interface InputType extends Omit<InputHTMLAttributes<HTMLInputElement>, 'width'> {
-    type: string;
+    type?: string;
     placeholder?: string;
     name: string;
     width?: string | number;
