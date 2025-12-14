@@ -1,8 +1,7 @@
-import { useFormContext } from "react-hook-form"
-import styled from "styled-components"
-import { useWatch } from "react-hook-form"
 import React from "react"
-import { useRef } from "react"
+import styled from "styled-components"
+import { useFormContext, useWatch } from "react-hook-form"
+import { SignFormValid } from "@/app/lib/Valid"
 
 const Check = styled.input`
     appearance: none;
@@ -18,24 +17,8 @@ const Label = styled.label<{$ischecking:boolean}>`
     cursor: pointer;
 `
 
-interface IFormInput {
-    email: string
-    password: string
-    passwordCheck: string
-    nickname: string
-    interest: string[]
-    checkbox: boolean
-    interests: string[]
-}
-
-
-
 const InterestCheckbox = ({value, id}) => {
-
-
-
-
-    const { register, control } = useFormContext<IFormInput>()
+    const { register, control } = useFormContext<SignFormValid>()
     const interests = useWatch({
         control,
         name: 'interests',
@@ -47,7 +30,7 @@ const InterestCheckbox = ({value, id}) => {
             id={id}
             {...register("interests",{
                 required: true,
-                validate: (v) => v.length > 0 || '최소 하나 선택',
+                validate: (v) => v.length > 0 || '최소 하나 이상의 관심사를 선택해주세요.',
             })}
             />{value}
         </Label>

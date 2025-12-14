@@ -61,3 +61,15 @@ export const handlePassCheck = (
     if(value2 === '') { setState(null); return } //비밀번호 재확인값 없을 시 비교하지 않음
     setState(value === value2);
 }
+
+export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+export const PASS_REGEX = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+
+export interface SignFormValid {
+    email: string
+    password: string
+    passwordCheck: string
+    nickname: string
+    checkbox: boolean
+    interests: string[]
+}

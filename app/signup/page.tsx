@@ -1,21 +1,21 @@
 "use client"
+import React, { useState } from "react"
 import styled from "styled-components"
 import Image from "next/image"
 import Link from "next/link"
-import React, { useState, useCallback } from "react"
-import createClient from "@/utils/supabase/client"
-import InputFields from "../components/form/input"
-import { useToastStore } from "../lib/useToastStore"
 import { useRouter } from "next/navigation"
-import { UserInfoInitial, UserReviewInitial, UserMemoInitial, UserBooksInitial, UserLogInitial, UserWishInitial } from "../lib/readingInfo"
+import createClient from "@/utils/supabase/client"
+import { useToastStore } from "../lib/useToastStore"
 import { useAuthStore} from "../lib/userfetch"
-import { CheckEmail, checkEmailExistence, CheckNickname, CheckPassword, handlePassCheck } from "./Valid"
+import { useForm, SubmitHandler, FormProvider } from "react-hook-form"
+import { UserInfoInitial, UserReviewInitial, UserMemoInitial, UserBooksInitial, UserLogInitial, UserWishInitial } from "../lib/readingInfo"
+import InputFields from "../components/form/input"
 import SpinnerArea from "../components/spinner/SpinnerArea"
 import SubmitButton from "../components/common/SubmitButton"
 import { ImageStyle } from "../components/common/ImageStyle"
-import { useForm, SubmitHandler, Controller, FormProvider } from "react-hook-form"
 import InterestLists from "../components/form/interests/InterestList"
-import { P } from "framer-motion/dist/types.d-BJcRxCew"
+import { EMAIL_REGEX, PASS_REGEX, SignFormValid, checkEmailExistence } from "../lib/Valid"
+
 const SignUpWrapper = styled.section`
     display: flex;
     flex-direction: column;
@@ -44,17 +44,6 @@ const ToLoginBox = styled.div`
         text-decoration: underline;
     }
 `
-interface IFormInput {
-    email: string
-    password: string
-    passwordCheck: string
-    nickname: string
-    interest: string[]
-    checkbox: boolean
-    interests: string[]
-}
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const PASS_REGEX = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
 export default function SignUp() {
     const [loading,setIsLoading] = useState(false)
@@ -65,7 +54,7 @@ export default function SignUp() {
     const router = useRouter()
     const supabase = createClient()
 
-    const methods = useForm<IFormInput>({
+    const methods = useForm<SignFormValid>({
         mode: "onChange",
         defaultValues: {
             interests: [],
@@ -79,9 +68,10 @@ export default function SignUp() {
         getValues, trigger
     } = methods
 
-    const onSubmit: SubmitHandler<IFormInput> = (data) => handleSignUp(data)
+    const onSubmit: SubmitHandler<SignFormValid> = (data) => handleSignUp(data)
 
-    const handleSignUp = async(submitdata:IFormInput)=>{
+    const handleSignUp = async(submitdata:SignFormValid)=>{
+
         setIsLoading(true)
         try {
             const { data, error } = await supabase.auth.signUp({
@@ -118,7 +108,7 @@ export default function SignUp() {
             const {error: profileError} = await supabase.from('profiles').insert({
                 id: session.user?.id,
                 username: submitdata.nickname,
-                interests: submitdata.interest,
+                interests: submitdata.interests,
                 email: submitdata.email,
             })
             if(profileError) {

@@ -19,7 +19,7 @@ import SpinnerArea from "../components/spinner/SpinnerArea";
 import { ImageStyle } from "../components/common/ImageStyle";
 import SubmitButton from "../components/common/SubmitButton";
 import { useLogin } from "../hook/useForm";
-import { CheckEmail, CheckPassword } from "../signup/Valid";
+import { CheckEmail, CheckPassword } from "../lib/Valid";
 
 const LoginWrapper = styled.section`
     height: 100vh;

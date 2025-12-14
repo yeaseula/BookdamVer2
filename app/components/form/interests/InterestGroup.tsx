@@ -1,7 +1,7 @@
+import { useState } from "react"
 import styled, {keyframes} from "styled-components"
 import { MemoInterestsCheckbox } from "./InterestCheckbox"
 import { RiArrowDownSLine } from "@remixicon/react"
-import { useState } from "react"
 
 const ToggleHead = styled.button`
     display: flex;
