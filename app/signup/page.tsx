@@ -81,7 +81,8 @@ export default function SignUp() {
         interest
     })
 
-    const handleSignUp = async () => {
+
+    const handleSignUp = useCallback(async()=>{
         if(loading) return
         setLoading(true)
 
@@ -183,7 +184,7 @@ export default function SignUp() {
             setToast(errorMessage, "error")
             setLoading(false)
         }
-    }
+    },[])
 
     const handleEmailBlur = useCallback(async (e:React.ChangeEvent<HTMLInputElement>)=>{
         const value = emailRef.current?.value || ''

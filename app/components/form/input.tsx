@@ -24,18 +24,6 @@ const InputField = styled.input<{$width:string | number | undefined}>`
         border: 2px solid var(--point-color);
     }
 `
-interface FiledType {
-    type: string;
-    placeholder?: string;
-    name: string;
-    value?: string | number;
-    width?:  string | number | undefined;
-    pattern?: string;
-    inputMode?: string;
-    ref?: RefObject<HTMLInputElement>;
-    onBlur?:(e:React.ChangeEvent<HTMLInputElement>)=>void;
-    onChange?:(e:React.ChangeEvent<HTMLInputElement>)=>void;
-}
 
 interface InputType extends Omit<InputHTMLAttributes<HTMLInputElement>, 'width'> {
     type: string;
