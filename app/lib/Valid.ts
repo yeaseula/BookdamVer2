@@ -73,3 +73,8 @@ export interface SignFormValid {
     checkbox: boolean
     interests: string[]
 }
+
+export interface LoginFormValid {
+    email: string
+    password: string
+}

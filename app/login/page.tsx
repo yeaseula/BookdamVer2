@@ -1,25 +1,24 @@
 "use client"
-
 import styled from "styled-components";
-import InputFields from "../components/form/input";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useRef, useCallback } from "react";
-import LoginButton from "./components/LoginButton";
+import { useState } from "react";
 import createClient from "@/utils/supabase/client";
 import { useToastStore } from "../lib/useToastStore";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "../lib/userfetch";
 import { useSettingStore } from "../lib/userfetch";
+import { useForm, SubmitHandler } from "react-hook-form"
 //util function
 import { UserInfoInitial, UserReviewInitial, UserMemoInitial,
     UserBooksInitial, UserLogInitial, UserWishInitial, UserSetting
- } from "../lib/readingInfo";
+} from "../lib/readingInfo";
+import { LoginFormValid } from "../lib/Valid";
+import InputFields from "../components/form/input";
 import SpinnerArea from "../components/spinner/SpinnerArea";
 import { ImageStyle } from "../components/common/ImageStyle";
 import SubmitButton from "../components/common/SubmitButton";
-import { useLogin } from "../hook/useForm";
-import { CheckEmail, CheckPassword } from "../lib/Valid";
+import { EMAIL_REGEX, PASS_REGEX } from "../lib/Valid";
 
 const LoginWrapper = styled.section`
     height: 100vh;
@@ -53,12 +52,6 @@ const ToSignupBox = styled.div`
 
 export default function Login() {
 
-    const emailRef = useRef<HTMLInputElement>(null)
-    const passRef = useRef<HTMLInputElement>(null)
-
-    const [emailValid,setEmailValid] = useState(false)
-    const [passValid,setPassValid] = useState(false)
-
     const [loading,setIsLoading] = useState<boolean>(false)
     const supabase = createClient()
     const router = useRouter()
@@ -67,17 +60,23 @@ export default function Login() {
     const { setSession,setProfile,setData } = useAuthStore()
     const initSettings = useSettingStore((state)=>state.initSettings)
 
-    console.log('rerender')
+    const {
+        register,
+        formState: {errors, isValid, isSubmitting },
+        handleSubmit,
+    } = useForm<LoginFormValid>({
+        mode: "onChange",
+    })
 
-    const LoginState = useLogin({emailValid, passValid})
+    const onSubmit: SubmitHandler<LoginFormValid> = (data) => handleLogin(data)
 
-    const handleLogin = async() => {
+    const handleLogin = async(logindata:LoginFormValid) => {
         if(loading) return
         setIsLoading(true)
         try {
             const { data, error } = await supabase.auth.signInWithPassword({
-                email : emailRef.current.value,
-                password : passRef.current.value,
+                email : logindata.email,
+                password : logindata.password,
             })
 
             if (error || !data.user) {
@@ -152,28 +151,11 @@ export default function Login() {
             setIsLoading(false)
         }
     }
-
-    const handleEmailCheck = useCallback(()=>{
-        const value = emailRef.current?.value || ''
-        if(!value || emailValid === true) return
-        if(value) {
-            const valid = CheckEmail(value)
-            setEmailValid(valid)
-        }
-    },[])
-
-    const passwordCheck = useCallback(()=>{
-        const value = passRef.current?.value || ''
-        if(!value || passValid === true) return
-        if(value) {
-            CheckPassword(value,setPassValid)
-        }
-    },[])
-
     return (
         <LoginWrapper>
             <h2 className="sr-only">로그인</h2>
             {loading && <SpinnerArea text="로그인 진행중.."></SpinnerArea>}
+            <div className="w-[120px]">
             <Image
             src={'/images/main-logo.svg'}
             alt="로고"
@@ -182,36 +164,52 @@ export default function Login() {
             style={ImageStyle}
             priority
             />
+            </div>
             <Letter>당신의 독서리뷰 다이어리</Letter>
 
             <div style={{ width: '100%', marginTop: '20px' }}>
-                <Label>
-                    <span>이메일</span>
-                    <InputFields
-                    type={"email"}
-                    name={"login-emapl"}
-                    placeholder={"이메일을 입력해주세요."}
-                    onChange={handleEmailCheck}
-                    ref={emailRef}
-                    />
-                </Label>
-                <Label style={{ marginTop: '10px' }}>
-                    <span>비밀번호</span>
-                    <InputFields
-                    type={"password"}
-                    name={"login-pass"}
-                    placeholder={"비밀번호를 입력해주세요."}
-                    onChange={passwordCheck}
-                    ref={passRef}
-                    />
-                </Label>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <Label>
+                        <span>이메일</span>
+                            <InputFields
+                            placeholder="이메일을 입력해주세요."
+                            {...register("email", {
+                                required: true,
+                                pattern: {
+                                    value: EMAIL_REGEX,
+                                    message: '이메일 형식을 확인해주세요. ex)book@naver.com'
+                                }
+                            })} />
+                            {errors.email &&
+                                <p className="text-red-600 mt-3 text-xl">{errors.email.message}</p>
+                            }
+                    </Label>
+                    <Label style={{ marginTop: '10px' }}>
+                        <span>비밀번호</span>
+                            <InputFields
+                            type="password"
+                            placeholder={"8자 이상, 숫자/영문 조합해주세요"}
+                            {...register("password",{
+                                required: true,
+                                pattern: {
+                                    value: PASS_REGEX,
+                                    message: '비밀번호는 문자+숫자 8자리 이상입니다.'
+                                },
+                            })}
+                            />
+                            {errors.password &&
+                            <p className="text-red-600 mt-3 text-xl">{errors.password.message}</p>
+                        }
+                    </Label>
+                    <SubmitButton disabled={!isValid || isSubmitting} type="submit">로그인</SubmitButton>
+                </form>
             </div>
-            <SubmitButton
+            {/* <SubmitButton
             type="button"
             active={LoginState}
             loading={loading}
             onClick={handleLogin}
-            >로그인</SubmitButton>
+            >로그인</SubmitButton> */}
 
             <ToSignupBox>
                 <p>회원이 아닌가요?
