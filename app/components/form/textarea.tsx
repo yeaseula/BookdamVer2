@@ -1,6 +1,7 @@
 "use client"
 import styled from "styled-components"
-import { memo,forwardRef,TextareaHTMLAttributes } from "react";
+import { UseFormRegister, RegisterOptions } from "react-hook-form";
+import { TextareaHTMLAttributes } from "react";
 
 const TextareaStyle = styled.textarea<{$height: number}>`
     width: 100%;
@@ -24,29 +25,40 @@ const TextareaStyle = styled.textarea<{$height: number}>`
         border: 2px solid var(--point-color);
     }
 `
+const Label = styled.label`
+    font-size: 12px; color: #616161
+`
+
 interface textareaProps extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>,'height'> {
-    name?:string;
-    placeholder: string;
     height: number;
-    value?: string;
-    onChange:(e:React.ChangeEvent<HTMLTextAreaElement>)=>void;
+    name: string;
+    label: string;
+    error?: string;
+    required?: boolean;
+    register: UseFormRegister<any>;
+    rules?: RegisterOptions;
+    width?: string | number;
 }
 
-const Textarea = memo(
-    forwardRef<HTMLTextAreaElement,textareaProps>((
-        {name,placeholder,height,value,onChange,...rest},ref
-    )=>{
-        return (
+const Textarea = ({
+    height,name,label,error,required,register,rules,placeholder,...rest
+}:textareaProps
+)=>{
+    const id = name
+    return (
+        <div>
+            <Label htmlFor={id}>{label} {required && <b className="font-bold text-red-700"> *</b>}</Label>
             <TextareaStyle
-            ref={ref}
-            name={name}
+            id={id}
+            aria-required={required}
+            aria-invalid={!!error}
             placeholder={placeholder}
-            value={value}
             $height={height}
-            onChange={onChange}
+            aria-describedby={error ? `${name}-error` : undefined}
+            {...register(name, rules)}
             {...rest} />
-        )
-    })
-)
+        </div>
+    )
+}
 
 export default Textarea

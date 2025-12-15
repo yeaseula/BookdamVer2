@@ -1,5 +1,6 @@
 "use client"
-import React, { memo, forwardRef, InputHTMLAttributes } from "react";
+import React, { InputHTMLAttributes } from "react";
+import { RegisterOptions, UseFormRegister } from "react-hook-form";
 import styled from "styled-components"
 
 const InputField = styled.input<{$width:string | number | undefined}>`
@@ -24,32 +25,41 @@ const InputField = styled.input<{$width:string | number | undefined}>`
         border: 2px solid var(--point-color);
     }
 `
+const Label = styled.label`
+    font-size: 12px; color: #616161
+`
 
-interface InputType extends Omit<InputHTMLAttributes<HTMLInputElement>, 'width'> {
-    type?: string;
-    placeholder?: string;
+interface InputType extends Omit<InputHTMLAttributes<HTMLInputElement>, 'width'|'name'> {
     name: string;
+    label: string;
+    error?: string;
+    required?: boolean;
+    register: UseFormRegister<any>;
+    rules?: RegisterOptions;
     width?: string | number;
 }
 
-const InputFields = memo(
-    forwardRef<HTMLInputElement, InputType>(
-        ({ type, placeholder, name, value, width, onBlur, onChange, ...rest },ref)=>{
-            return (
-                <InputField
-                ref={ref}
-                type={type}
-                placeholder={placeholder}
-                name={name}
-                value={value}
-                onBlur={onBlur}
-                onChange={onChange}
-                $width={width}
-                {...rest}
-                />
-            )
-        }
+const InputFields = ({
+    label, error ,register, rules, name, width, required, ...rest
+}:InputType)=>{
+
+    const id = name
+
+    return (
+        <div style={{ flex: 1 }}>
+            <Label htmlFor={id}>{label} {required && <b className="font-bold text-red-700"> *</b>}</Label>
+            <InputField
+            id={id}
+            aria-required={required}
+            aria-invalid={!!error}
+            $width={width}
+            aria-describedby={error ? `${name}-error` : undefined}
+            {...register(name, rules)}
+            {...rest}
+            />
+        </div>
     )
-)
+}
+
 
 export default InputFields

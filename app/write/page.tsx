@@ -3,13 +3,13 @@ import styled from "styled-components"
 import InputFields from "../components/form/input"
 import TextArea from "../components/form/textarea"
 import Image from "next/image"
-import SelectField from "../components/form/select"
 import React, { useEffect, useState } from "react"
 import createClient from "@/utils/supabase/client"
 import { DataState, Reviews, useAuthStore } from "../lib/userfetch"
 import { useSearchParams } from "next/navigation"
 import { useToastStore } from "../lib/useToastStore"
 import { useRouter } from "next/navigation"
+import SelectField from "../components/form/select"
 import SpinnerArea from "../components/spinner/SpinnerArea"
 import { SubWrap } from "../components/common/container.styled"
 import { throwSupabaseError } from "../error/errorLibrary"
@@ -24,7 +24,7 @@ const FieldList = styled.div`
 const LastField = styled(FieldList)`
     margin-bottom: 0;
 `
-const FieldName = styled.span`
+const FieldName = styled.label`
     display: inline-block;
     margin-bottom: 7px;
     font-size: 1.6rem;
@@ -187,46 +187,68 @@ export default function Write() {
     return (
         <SubWrap>
             {loading && <SpinnerArea text="글 등록중.."/>}
-
             <form onSubmit={handleSubmit(onSubmit)}>
                 <FieldList>
-                    <FieldName>카테고리 <b className="font-bold text-red-700"> *</b></FieldName>
                     <SelectField
-                    {...register("category", {
+                    label="카테고리"
+                    name="category"
+                    required
+                    error={errors.category?.message}
+                    register={register}
+                    rules={{
                         required: true
-                    })}
+                    }}
                     options={['국내소설','에세이','시','자연/과학','건강','인문','역사','만화/웹툰']}
                     />
                 </FieldList>
                 <FieldList>
-                    <FieldName>제목 <b className="font-bold text-red-700"> *</b></FieldName>
                     <InputFields
+                    label="제목"
+                    name="title"
+                    required
+                    error={errors.title?.message}
                     placeholder="책 제목을 입력해 주세요."
-                    {...register("title", {
-                        required: true,
-                    })} />
+                    register={register}
+                    rules={{
+                        required: true
+                    }}
+                    />
                 </FieldList>
                 <FieldList>
-                    <FieldName>작가명 <b className="font-bold text-red-700"> *</b></FieldName>
                     <InputFields
+                    label="작가명"
+                    name="author"
+                    required
+                    error={errors.author?.message}
                     placeholder="작가명을 입력해 주세요."
-                    {...register("author", {
-                        required: true,
-                    })} />
+                    register={register}
+                    rules={{
+                        required: true
+                    }}
+                    />
                 </FieldList>
                 <FieldList>
-                    <FieldName>독서 기간 <b className="font-bold text-red-700"> *</b></FieldName>
                     <div style={{ display:'flex', gap: '1rem', alignItems:'center' }}>
                         <InputFields
                         type="date"
+                        label="독서 시작일"
+                        name="startDate"
+                        required
+                        error={errors.startDate?.message}
+                        register={register}
                         max={DATE}
-                        {...register("startDate", {
-                            required: true,
-                        })} />
+                        rules={{
+                            required: true
+                        }}/>
                         <InputFields
                         type="date"
+                        label="독서 종료일"
+                        name="endDate"
+                        required
+                        error={errors.endDate?.message}
+                        register={register}
                         max={DATE}
-                        {...register("endDate", {
+                        rules={{
                             required: true,
                             validate: (value) => {
                                 const startday = getValues("startDate")
@@ -234,28 +256,36 @@ export default function Write() {
                                 if (value < startday) return '종료 날짜는 시작 날짜보다 빠를 수 없습니다.'
                                 return true
                             }
-                        })} />
+                        }}/>
                     </div>
                     {errors.endDate &&
                     <p className="text-red-600 mt-3 text-xl">{errors.endDate.message}</p>
                     }
                 </FieldList>
                 <FieldList>
-                    <FieldName>한줄평 <b className="font-bold text-red-700"> *</b></FieldName>
                     <InputFields
+                    label="한줄평"
+                    name="oneLine"
+                    required
+                    error={errors.oneLine?.message}
                     placeholder="이 책을 한 줄로 평가해 주세요."
-                    {...register("oneLine", {
-                        required: true,
-                    })} />
+                    register={register}
+                    rules={{
+                        required: true
+                    }} />
                 </FieldList>
                 <FieldList>
-                    <FieldName>독서 기록 내용 <b className="font-bold text-red-700"> *</b></FieldName>
                     <TextArea
+                        label="독서 기록 내용"
+                        name="review"
+                        required
+                        error={errors.review?.message}
+                        register={register}
                         height={168}
                         placeholder="독서 리뷰를 자유롭게 작성해 주세요."
-                        {...register("review", {
-                            required: true,
-                        })}
+                        rules={{
+                            required: true
+                        }}
                     />
                 </FieldList>
                 <LastField>

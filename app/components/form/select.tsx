@@ -1,6 +1,6 @@
-import React from "react";
+import React, { SelectHTMLAttributes } from "react";
 import styled from "styled-components";
-import { RiArrowDownSLine } from "@remixicon/react";
+import { UseFormRegister, RegisterOptions } from "react-hook-form";
 
 const Select = styled.select<{$width:number | undefined}>`
     width: ${(props)=>props.$width || '100%'};
@@ -19,27 +19,45 @@ const Select = styled.select<{$width:number | undefined}>`
         border: 2px solid var(--point-color);
     }
 `
+const Label = styled.label`
+    font-size: 12px; color: #616161
+`
 
-interface SelectProps {
+interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>,'width'>{
     width?: number | undefined;
     options: string[];
+    name: string;
+    label: string;
+    error?: string;
+    required?: boolean;
+    register: UseFormRegister<any>;
+    rules?: RegisterOptions;
 }
 
-const SelectFields = React.forwardRef<HTMLSelectElement,SelectProps>(({
-    width,options,...rest
-},ref)=>{
-    return(
-        <Select
-        ref={ref}
-        $width={width}
-        {...rest}
-        >
-        <option value="">카테고리 선택</option>
-            {options.map((option,index)=>(
-                <option key={`${index}-${option}`} value={option}>{option}</option>
-            ))}
-        </Select>
+const SelectFields = ({
+    width, options, name, label, error, required, register, rules, ...rest
+}: SelectProps)=>{
+    const id = name
+
+    return (
+        <div>
+            <Label htmlFor={id}>{label} {required && <b className="font-bold text-red-700"> *</b>}</Label>
+            <Select
+                id={id}
+                aria-required={required}
+                aria-invalid={!!error}
+                $width={width}
+                aria-describedby={error ? `${name}-error` : undefined}
+                {...register(name, rules)}
+                {...rest}
+            >
+            <option value="">카테고리 선택</option>
+                {options.map((option,index)=>(
+                    <option key={`${index}-${option}`} value={option}>{option}</option>
+                ))}
+            </Select>
+        </div>
     )
-})
+}
 
 export default SelectFields
