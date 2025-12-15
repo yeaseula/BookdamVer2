@@ -6,7 +6,6 @@ export interface BannerBook {
     error?: any;
 }
 
-
 //main AI 추천
 export interface BookAiType {
     isbn: string;
@@ -17,6 +16,17 @@ export interface BookAiType {
     price: number;
     sale_price: number;
     error?: unknown;
+}
+
+//글쓰기
+export interface WriteType {
+    category: string;
+    title: string;
+    author: string;
+    startDate: string;
+    endDate: string;
+    oneLine: string;
+    review: string;
 }
 
 //memo

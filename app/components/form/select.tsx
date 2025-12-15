@@ -1,5 +1,6 @@
-import { SelectHTMLAttributes } from "react";
+import React from "react";
 import styled from "styled-components";
+import { RiArrowDownSLine } from "@remixicon/react";
 
 const Select = styled.select<{$width:number | undefined}>`
     width: ${(props)=>props.$width || '100%'};
@@ -11,27 +12,34 @@ const Select = styled.select<{$width:number | undefined}>`
     padding: 0 9px;
     font-size: 1.4rem;
     outline: 0;
-
+    appearance: none;
+    background: 97% url('/images/arrow-down.svg') no-repeat;
+    background-size: 20px;
     &:focus {
         border: 2px solid var(--point-color);
     }
 `
 
 interface SelectProps {
-    name: string;
     width?: number | undefined;
     options: string[];
-    value?: string;
-    onChange?:(e:React.ChangeEvent<HTMLSelectElement>)=>void;
 }
 
-export default function SelectField({name,width,value,onChange,options}:SelectProps) {
-    return (
-        <Select $width={width} name={name} value={value} onChange={onChange}>
-            <option value="">카테고리 선택</option>
+const SelectFields = React.forwardRef<HTMLSelectElement,SelectProps>(({
+    width,options,...rest
+},ref)=>{
+    return(
+        <Select
+        ref={ref}
+        $width={width}
+        {...rest}
+        >
+        <option value="">카테고리 선택</option>
             {options.map((option,index)=>(
                 <option key={`${index}-${option}`} value={option}>{option}</option>
             ))}
         </Select>
     )
-}
+})
+
+export default SelectFields

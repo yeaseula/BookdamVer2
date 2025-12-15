@@ -64,6 +64,7 @@ export const handlePassCheck = (
 
 export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 export const PASS_REGEX = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+export const DATE = new Date().toISOString().split('T')[0]
 
 export interface SignFormValid {
     email: string
@@ -78,3 +79,4 @@ export interface LoginFormValid {
     email: string
     password: string
 }
+

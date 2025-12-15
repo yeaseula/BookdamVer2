@@ -91,17 +91,6 @@ export default function MainSwiper() {
             } catch(err) {
                 if(!isCancelled) throwError(err)
             }
-            // try {
-            //     const Thumbnail = await fetchBookCover(title,author)
-            //     if(isCancelled) return
-            //     if(Thumbnail) {
-            //         setReviewThumb((prev)=>[...prev,Thumbnail])
-            //     }
-            // } catch(err) {
-            //     throwError(err)
-            // } finally {
-            //     setTimeout(()=>setIsReady(true), 700)
-            // }
         }
 
         MyReviewThumb()
