@@ -1,15 +1,17 @@
 "use client"
 import styled from "styled-components"
 import { DataState, Books } from "@/app/lib/userfetch"
-import { Dispatch, SetStateAction, useState } from "react"
+import { Dispatch, SetStateAction } from "react"
 import InputFields from "@/app/components/form/input"
-import EditModalButton from "./EditButton"
 import EditCloseButton from "./EditCloseButton"
 import createClient from "@/utils/supabase/client"
 import { useAuthStore } from "@/app/lib/userfetch"
 import { useToastStore } from "@/app/lib/useToastStore"
 import { motion } from "framer-motion"
 import ReactFocusLock from "react-focus-lock"
+import { useForm, SubmitHandler } from "react-hook-form"
+import { ReadingFormType } from "@/app/lib/dataTypes"
+import SubmitButton from "@/app/components/common/SubmitButton"
 
 const Modal = styled.section`
     max-width: 400px;
@@ -36,47 +38,37 @@ interface ModalProps {
 }
 
 export default function EditModal({setModal,setEditPopup,editObj,onClick}:ModalProps) {
-    const [modalTitle,setModalTitle] = useState<string>(editObj.title)
-    const [modalPage,setModalPage] = useState<number | null>(editObj.total_pages)
-    const [modalCurrentPage,setModalCurrentPage] = useState<number | null>(editObj.current_page)
     const editingId = editObj.id
     const supabase = createClient()
     const setToast = useToastStore((state)=>state.setToast)
-    const [loading,setIsLoading] = useState<boolean>(false)
-    let debounce:boolean = false;
-
-    const handlePageNumeric = () => {
-        if(!modalPage || !modalCurrentPage) return
-
-        if(modalPage < modalCurrentPage) {
-            return false
+    const {
+        register,
+        formState: { errors, isValid, isSubmitting },
+        getValues,trigger,
+        handleSubmit
+    } = useForm<ReadingFormType>({
+        mode: "onChange",
+        defaultValues: {
+            booktitle: editObj.title,
+            totalpage: editObj.total_pages,
+            readedpage: editObj.current_page
         }
-        return true
-    }
+    })
 
-    const handleModalEdit = async () => {
+    const onSubmit: SubmitHandler<ReadingFormType> = (data) => handleModalEdit(data)
 
-        if(!handlePageNumeric()) {
-            setToast('총 페이지보다 읽은 페이지수가 많아요!','info')
-            return
-        }
-
-        if(debounce || loading) return
-        debounce = true;
-        setIsLoading(true)
-
+    const handleModalEdit = async (readdata:ReadingFormType) => {
         try {
-
-            if(!modalTitle) throw new Error("제목을 입력해주세요.")
-            else if(!modalPage) throw new Error("총 페이지를 입력해주세요.")
-            else if(!modalCurrentPage) throw new Error("읽은 페이지를 입력해주세요.")
+            if(!readdata.booktitle) throw new Error("제목을 입력해주세요.")
+            else if(!readdata.totalpage) throw new Error("총 페이지를 입력해주세요.")
+            else if(!readdata.readedpage) throw new Error("읽은 페이지를 입력해주세요.")
 
             const { data, error } = await supabase
                 .from("books")
                 .update({
-                    title: modalTitle,
-                    total_pages: modalPage,
-                    current_page: modalCurrentPage,
+                    title: readdata.booktitle,
+                    total_pages: readdata.totalpage,
+                    current_page: readdata.readedpage,
                     updated_at: new Date().toISOString()
                 })
                 .eq("id", editingId)
@@ -103,9 +95,6 @@ export default function EditModal({setModal,setEditPopup,editObj,onClick}:ModalP
                 ? err.message
                 : '수정 중 오류가 발생했습니다'
             setToast(errorMessage, "error")
-        } finally {
-            debounce = false;
-            setIsLoading(false)
         }
     };
 
@@ -130,53 +119,45 @@ export default function EditModal({setModal,setEditPopup,editObj,onClick}:ModalP
             <div className="relative">
                 <h2 className="mb-8 text-center font-bold text-3xl" style={{ color: 'var(--color_black)' }}>읽고있는 책 수정하기</h2>
                 <EditCloseButton onClick={onClick} />
-                <div className="flex flex-wrap gap-[7px]">
-                    <InputFields
-                        type="text"
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className="flex flex-wrap gap-[7px]">
+                        <InputFields
                         placeholder="책 제목"
-                        name="modaltitle"
-                        value={modalTitle}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            setModalTitle(e.target.value)
-                        }
-                    />
-                    <InputFields
-                        type="text"
+                        {...register("booktitle",{
+                            required: true,
+                        })}
+                        />
+                        <InputFields
+                        type="number"
                         inputMode="numeric"
-                        pattern="[0-9]*"
+                        width="calc((100% - 7px) / 2)"
                         placeholder="총 페이지(숫자만 입력)"
-                        name="modalpage"
-                        width="calc((100% - 7px) / 2)"
-                        value={modalPage ?? ''}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            const value = e.target.value.replace(/\D/g, '');
-                            setModalPage(value ? Number(value) : null);
-                        }}
-                    />
-                    <InputFields
-                        type="text"
+                        {...register("totalpage",{
+                            required: true,
+                            onChange:() => {
+                                trigger('readedpage')
+                            }
+                        })}
+                        />
+                        <InputFields
+                        type="number"
                         inputMode="numeric"
-                        pattern="[0-9]*"
-                        placeholder="읽은 페이지(숫자만 입력)"
-                        name="bookpage-read"
                         width="calc((100% - 7px) / 2)"
-                        value={modalCurrentPage ?? ''}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            const value = e.target.value.replace(/\D/g, '');
-                            setModalCurrentPage(value ? Number(value) : null);
-                        }}
-                    />
-                </div>
-
-                <div className="mt-8">
-                    <EditModalButton
-                    modalTitle={modalTitle}
-                    modalPage={modalPage}
-                    modalContent={modalCurrentPage}
-                    loading={loading}
-                    onClick={handleModalEdit}
-                    />
-                </div>
+                        placeholder="읽은 페이지(숫자만 입력)"
+                        {...register("readedpage",{
+                            required: true,
+                            validate: (value) => {
+                                return value < getValues('totalpage') ? true : '총 페이지보다 읽은 페이지 수가 많아요!'
+                            }
+                        })}
+                        />
+                    </div>
+                    {errors.readedpage && <p className="text-xl mt-3.5 text-cyan-600">{errors.readedpage.message}</p>}
+                    {!isValid && <p className="text-xl mt-3.5 text-cyan-600">모든 내용을 입력해주세요!</p>}
+                    <div className="mt-8 h-[40px]">
+                        <SubmitButton disabled={!isValid || isSubmitting} type="submit">수정하기</SubmitButton>
+                    </div>
+                </form>
             </div>
         </Modal>
         </ReactFocusLock>

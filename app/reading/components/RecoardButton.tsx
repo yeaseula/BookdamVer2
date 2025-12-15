@@ -7,7 +7,7 @@ const Stop = styled.button`
     border-radius: 50%;
     background-color:var(--sub_color);
     position: absolute;
-    top: 5px;
+    top: 0;
     right: 0;
     z-index: 9;
     width: 30px;

@@ -32,3 +32,10 @@ export interface WishFormType {
     author: string;
     price: number;
 }
+
+//reading
+export interface ReadingFormType {
+    booktitle: string;
+    totalpage: number;
+    readedpage: number;
+}

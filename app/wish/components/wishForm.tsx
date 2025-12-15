@@ -101,6 +101,7 @@ export default function WishForm({session}) {
                     <SubmitButton disabled={!isValid || isSubmitting} type="submit">+</SubmitButton>
                 </div>
             </FormWrap>
+            {!isValid && <p className="text-xl mt-3.5 text-cyan-600">모든 내용을 입력해주세요!</p>}
         </form>
     )
 }
