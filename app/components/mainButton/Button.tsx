@@ -7,7 +7,6 @@ interface Props{
     href?: string;
     title: string;
     buttonText: string;
-    onClick?:()=>void;
 }
 const GoReview = styled(Link)`
     position: relative;
@@ -41,7 +40,7 @@ const Icon = styled(RiAddLargeLine)<{$isActive:boolean}>`
     color: ${(p)=>p.$isActive ? '#fff' :'#757575'};
 `
 
-export default function Button({href,title,buttonText,onClick}:Props) {
+export default function Button({href,title,buttonText}:Props) {
 
     const [isActive,setIsActive] = useState(false)
 

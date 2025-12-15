@@ -1,5 +1,11 @@
 "use client";
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import styled, {keyframes} from 'styled-components';
+import { useAuthStore } from '../../../lib/userfetch';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css'
+import { AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, A11y, Keyboard, Autoplay} from 'swiper/modules';
 import 'swiper/css';
@@ -9,15 +15,10 @@ import 'swiper/css/pagination';
 import 'swiper/css/autoplay';
 import 'swiper/css/a11y';
 import 'swiper/css/keyboard';
-import styled, {keyframes} from 'styled-components';
-import { useAuthStore } from '../../../lib/userfetch';
 import { fetchBookCover } from '@/app/lib/fetchBookCover';
 import { useErrorUtil } from '@/app/error/useErrorUtil';
 import { RiExpandHorizontalLine } from '@remixicon/react';
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css'
-import { AnimatePresence } from 'framer-motion';
-import { motion } from 'framer-motion';
+import { BannerBook } from '@/app/lib/dataTypes';
 
 const StyleSwiper = styled(Swiper)`
     position: relative;
@@ -51,12 +52,6 @@ const Infor = styled.button`
     animation: ${wiggle} 1.1s ease-in-out infinite;
 `
 
-interface BannerBook {
-    bookThumb: string;
-    booktitle: string;
-    error?: any;
-}
-
 export default function MainSwiper() {
 
     const SwiperRef = useRef(null)
@@ -72,44 +67,64 @@ export default function MainSwiper() {
 
         let isCancelled = false
 
-        const MyReviewThumb = async(title:string,author:string) => {
+        const MyReviewThumb = async() => {
             try {
-                const Thumbnail = await fetchBookCover(title,author)
+                const thumbnailPromise = reviews.data.map(async(ele)=>{
+                    try {
+                        const thumbnail = await fetchBookCover(ele.title, ele.author)
+                        return thumbnail
+                    } catch (err) {
+                        return null
+                    }
+                })
+
+                const thumbnails = await Promise.all(thumbnailPromise)
+
                 if(isCancelled) return
-                if(Thumbnail) {
-                    setReviewThumb((prev)=>[...prev,Thumbnail])
-                }
+
+                const validTumbnails = thumbnails.filter(Boolean)
+                setReviewThumb(validTumbnails)
+
+                setTimeout(()=>{
+                    if(!isCancelled) { setIsReady(true) }
+                }, 700)
             } catch(err) {
-                throwError(err)
-            } finally {
-                setTimeout(()=>setIsReady(true), 700)
+                if(!isCancelled) throwError(err)
             }
+            // try {
+            //     const Thumbnail = await fetchBookCover(title,author)
+            //     if(isCancelled) return
+            //     if(Thumbnail) {
+            //         setReviewThumb((prev)=>[...prev,Thumbnail])
+            //     }
+            // } catch(err) {
+            //     throwError(err)
+            // } finally {
+            //     setTimeout(()=>setIsReady(true), 700)
+            // }
         }
 
-        if(!reviews.data) return
-
-        reviews.data.map((ele)=>(
-            MyReviewThumb(ele.title,ele.author)
-        ))
+        MyReviewThumb()
 
         return () => {
             isCancelled = true
         }
-    },[isReviewLoaded])
+    },[isReviewLoaded, reviews.data])
 
     useEffect(()=>{
-        if(isReady) {
-            if(isInfo) return
-            setTimeout(()=>{
-                setIsInfo(true)
-            },6000)
-        }
+        if(!isReady || isInfo) return
+
+        const timer = setTimeout(()=>{
+            setIsInfo(true)
+        }, 5000)
+
+        return () => clearTimeout(timer)
     },[isReady])
 
-    const handleHint = () => {
+    const handleHint = useCallback(()=>{
         if(!isInfo) return
         setIsInfo(false)
-    }
+    },[])
 
     return (
         <>
