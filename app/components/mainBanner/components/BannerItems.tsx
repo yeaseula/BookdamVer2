@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAuthStore } from "@/app/lib/userfetch";
 import MainSwiper from "./MainSwiper"
 import BannerButton from "../../mainButton/bannerButton";
@@ -10,15 +10,12 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { throwSupabaseError } from "@/app/error/errorLibrary";
 
 export default function BannerItems() {
-
     const { reviews, isReviewLoaded } = useAuthStore()
-    const [isContent,setIsContent] = useState<boolean | null>(null)
 
-    useEffect(()=>{
-        if(isReviewLoaded) {
-            reviews.data?.length > 0 ? setIsContent(true) : setIsContent(false)
-        }
-    },[isReviewLoaded])
+    const hasContent = useMemo(
+        ()=> isReviewLoaded && (reviews.data?.length ?? 0) > 0,
+        [isReviewLoaded, reviews.data?.length]
+    )
 
     if(!isReviewLoaded) {
         return (
@@ -32,7 +29,7 @@ export default function BannerItems() {
         throwSupabaseError(reviews.error)
     }
 
-    if(isContent === null) {
+    if(!hasContent) {
         return (
             <div className="w-[100%] rounded-3xl overflow-hidden">
                 <Skeleton height={174} className="w-[100%]" style={{ lineHeight: '1.6' }}/>
@@ -40,7 +37,7 @@ export default function BannerItems() {
         )
     }
 
-    if(isContent) {
+    if(hasContent) {
         return (
         <>
             <div className="w-[125px] h-[100%]">
