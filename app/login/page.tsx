@@ -170,35 +170,41 @@ export default function Login() {
             <div style={{ width: '100%', marginTop: '20px' }}>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Label>
-                        <span>이메일</span>
-                            <InputFields
-                            placeholder="이메일을 입력해주세요."
-                            {...register("email", {
-                                required: true,
-                                pattern: {
-                                    value: EMAIL_REGEX,
-                                    message: '이메일 형식을 확인해주세요. ex)book@naver.com'
-                                }
-                            })} />
-                            {errors.email &&
-                                <p className="text-red-600 mt-3 text-xl">{errors.email.message}</p>
+                        <InputFields
+                        label="이메일"
+                        name="email"
+                        error={errors.email?.message}
+                        register={register}
+                        placeholder="이메일을 입력해주세요."
+                        rules={{
+                            required: true,
+                            pattern: {
+                                value: EMAIL_REGEX,
+                                message: '이메일 형식을 확인해주세요. ex)book@naver.com'
                             }
+                        }}/>
+                        {errors.email &&
+                            <p className="text-red-600 mt-3 text-xl">{errors.email.message}</p>
+                        }
                     </Label>
                     <Label style={{ marginTop: '10px' }}>
-                        <span>비밀번호</span>
-                            <InputFields
-                            type="password"
-                            placeholder={"8자 이상, 숫자/영문 조합해주세요"}
-                            {...register("password",{
-                                required: true,
-                                pattern: {
-                                    value: PASS_REGEX,
-                                    message: '비밀번호는 문자+숫자 8자리 이상입니다.'
-                                },
-                            })}
-                            />
-                            {errors.password &&
-                            <p className="text-red-600 mt-3 text-xl">{errors.password.message}</p>
+                        <InputFields
+                        type="password"
+                        label="비밀번호"
+                        name="password"
+                        register={register}
+                        error={errors.password?.message}
+                        placeholder={"8자 이상, 숫자/영문 조합해주세요"}
+                        rules={{
+                            required: true,
+                            pattern: {
+                                value: PASS_REGEX,
+                                message: '비밀번호는 문자+숫자 8자리 이상입니다.'
+                            },
+                        }}
+                        />
+                        {errors.password &&
+                        <p className="text-red-600 mt-3 text-xl">{errors.password.message}</p>
                         }
                     </Label>
                     <div className="h-[40px] mt-[35px]">
