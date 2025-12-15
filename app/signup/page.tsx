@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import Image from "next/image"
 import Link from "next/link"
@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 import createClient from "@/utils/supabase/client"
 import { useToastStore } from "../lib/useToastStore"
 import { useAuthStore} from "../lib/userfetch"
-import { useForm, SubmitHandler, FormProvider } from "react-hook-form"
+import { useForm, SubmitHandler, FormProvider, useWatch } from "react-hook-form"
 import { UserInfoInitial, UserReviewInitial, UserMemoInitial, UserBooksInitial, UserLogInitial, UserWishInitial } from "../lib/readingInfo"
 import InputFields from "../components/form/input"
 import SpinnerArea from "../components/spinner/SpinnerArea"
@@ -62,11 +62,15 @@ export default function SignUp() {
     })
 
     const {
-        register,
+        register, control,
         formState: {errors, isValid, isSubmitting },
         handleSubmit,
         getValues, trigger
     } = methods
+
+    const interests = useWatch({ control, name: "interests"})
+    let interestsValid = interests?.length > 0
+
 
     const onSubmit: SubmitHandler<SignFormValid> = (data) => handleSignUp(data)
 
@@ -188,10 +192,14 @@ export default function SignUp() {
             <div style={{ width: '100%', marginTop: '20px' }}>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Label>
-                        <span>이메일 <b className="text-red-800">*</b></span>
                         <InputFields
                         placeholder="이메일을 입력해주세요."
-                        {...register("email", {
+                        label="이메일"
+                        name="email"
+                        required
+                        error={errors.email?.message}
+                        register={register}
+                        rules={{
                             required: true,
                             pattern: {
                                 value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
@@ -202,33 +210,41 @@ export default function SignUp() {
                                 const existEmail = await checkEmailExistence(email)
                                 return existEmail ? '이미 가입된 이메일입니다.' : true
                             }
-                        })} />
+                        }}/>
                         {errors.email &&
                             <p className="text-red-600 mt-3 text-xl">{errors.email.message}</p>
                         }
                     </Label>
                     <Label style={{ marginTop: '10px' }}>
-                        <span>닉네임 <b className="text-red-800">*</b></span>
                         <InputFields
                         placeholder="닉네임을 입력해주세요 (2글자 이상)"
-                        {...register("nickname",{
+                        label="닉네임"
+                        name="nickname"
+                        required
+                        error={errors.nickname?.message}
+                        register={register}
+                        rules={{
                             required: true,
                             minLength: {
                                 value: 2,
                                 message: '닉네임은 두 글자 이상 입력해주세요.'
                             },
-                        })}
+                        }}
                         />
                         {errors.nickname &&
                         <p className="text-red-600 mt-3 text-xl">{errors.nickname.message}</p>
                         }
                     </Label>
                     <Label style={{ marginTop: '10px' }}>
-                        <span>비밀번호 <b className="text-red-800">*</b></span>
                         <InputFields
                         type="password"
-                        placeholder={"8자 이상, 숫자/영문 조합해주세요"}
-                        {...register("password",{
+                        placeholder="닉네임을 입력해주세요 (2글자 이상)"
+                        label="비밀번호"
+                        name="password"
+                        required
+                        error={errors.password?.message}
+                        register={register}
+                        rules={{
                             required: true,
                             pattern: {
                                 value: PASS_REGEX,
@@ -237,37 +253,36 @@ export default function SignUp() {
                             onChange:() => {
                                 trigger('passwordCheck')
                             }
-                        })}
-                        />
+                        }}/>
                         {errors.password &&
                         <p className="text-red-600 mt-3 text-xl">{errors.password.message}</p>
                         }
                     </Label>
                     <Label style={{ marginTop: '10px' }}>
-                        <span>비밀번호 확인 <b className="text-red-800">*</b></span>
                         <InputFields
                         type="password"
                         placeholder={"비밀번호를 한번 더 입력해주세요"}
-                        {...register("passwordCheck",{
+                        label="비밀번호 확인"
+                        name="passwordCheck"
+                        required
+                        error={errors.passwordCheck?.message}
+                        register={register}
+                        rules={{
                             required: true,
                             validate: (value) => value === getValues('password') || '비밀번호가 일치하지 않습니다.'
-                        })}
+                        }}
                         />
                         {errors.passwordCheck &&
                         <p className="text-red-600 mt-3 text-xl">{errors.passwordCheck.message}</p>
                         }
                     </Label>
                     <Label style={{ marginTop: '10px' }}>
-                        <span>관심 카테고리 <b className="text-red-800">*</b></span>
-                        {errors.interests &&
-                        <p className="text-red-600 mt-3 text-xl">{errors.interests.message}</p>
-                        }
                         <FormProvider {...methods}>
                             <InterestLists />
                         </FormProvider>
                     </Label>
                     <div className="h-[40px] mt-[35px]">
-                    <SubmitButton disabled={!isValid || isSubmitting} type="submit">회원가입</SubmitButton>
+                    <SubmitButton disabled={!isValid || !interestsValid || isSubmitting} type="submit">회원가입</SubmitButton>
                     </div>
                 </form>
             </div>

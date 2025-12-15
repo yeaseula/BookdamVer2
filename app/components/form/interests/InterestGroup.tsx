@@ -34,7 +34,7 @@ export default function InterestGroup ({topic}) {
     const [open,setOpen] = useState(false)
 
     return (
-        <div className="mb-6 rounded-xl overflow-hidden border border-gray-200">
+        <div className="mt-6 mb-6 rounded-xl overflow-hidden border border-gray-200">
         <ToggleHead type="button" onClick={()=>setOpen(!open)}>
             <Legend>{topic.label}</Legend>
             <RiArrowDownSLine size={18} />

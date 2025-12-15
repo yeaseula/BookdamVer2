@@ -28,10 +28,7 @@ const InterestCheckbox = ({value, id}) => {
             <Check type="checkbox"
             value={value}
             id={id}
-            {...register("interests",{
-                required: true,
-                validate: (v) => v.length > 0 || '최소 하나 이상의 관심사를 선택해주세요.',
-            })}
+            {...register("interests")}
             />{value}
         </Label>
     )
