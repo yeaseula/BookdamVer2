@@ -25,3 +25,10 @@ export interface MeMoFormType {
     page: number;
     content: string;
 }
+
+//wish
+export interface WishFormType {
+    booktitle: string;
+    author: string;
+    price: number;
+}

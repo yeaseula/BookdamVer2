@@ -1,15 +1,17 @@
 "use client"
 import styled from "styled-components"
 import { Wish, DataState } from "@/app/lib/userfetch"
-import { Dispatch, SetStateAction, useState } from "react"
+import { Dispatch, SetStateAction } from "react"
 import InputFields from "@/app/components/form/input"
-import EditModalButton from "./EditButton"
 import EditCloseButton from "./EditCloseButton"
 import createClient from "@/utils/supabase/client"
 import { useAuthStore } from "@/app/lib/userfetch"
 import { useToastStore } from "@/app/lib/useToastStore"
 import { motion } from "framer-motion"
 import ReactFocusLock from "react-focus-lock"
+import { useForm, SubmitHandler } from "react-hook-form"
+import { WishFormType } from "@/app/lib/dataTypes"
+import SubmitButton from "@/app/components/common/SubmitButton"
 
 const Modal = styled.section`
     max-width: 400px;
@@ -35,28 +37,37 @@ interface ModalProps {
 }
 
 export default function EditModal({setModal,setEditPopup,editObj,onClick}:ModalProps) {
-    const [modalTitle,setModalTitle] = useState<string>(editObj.title)
-    const [modalAuthor,setModalAuthor] = useState<string>(editObj.author)
-    const [modalPrice,setModalPrice] = useState<number | null>(editObj.price)
-    const [isLoading,setIsLoading] = useState<boolean>(false)
     const editingId = editObj.id
     const supabase = createClient()
     const setToast = useToastStore((state)=>state.setToast)
-    let debounce:boolean = false;
 
-    const handleModalEdit = async () => {
+    const {
+        register,
+        formState: { isValid, isSubmitting },
+        handleSubmit
+    } = useForm<WishFormType>({
+        mode: "onChange",
+        defaultValues: {
+            booktitle: editObj.title,
+            price: editObj.price,
+            author: editObj.author
+        }
+    })
 
-        if(debounce || isLoading) return
-        debounce = true
-        setIsLoading(true)
+    const onSubmit: SubmitHandler<WishFormType> = (data) => handleModalEdit(data)
 
+    const handleModalEdit = async (wishdata:WishFormType) => {
         try {
+            if(!wishdata.booktitle) throw new Error("제목을 입력해주세요.")
+            else if(!wishdata.price) throw new Error("가격을 입력해주세요.")
+            else if(!wishdata.author) throw new Error("작가명을 입력해주세요.")
+
             const { data, error } = await supabase
                 .from("wish")
                 .update({
-                title: modalTitle,
-                author: modalAuthor,
-                price: modalPrice,
+                title: wishdata.booktitle,
+                author: wishdata.author,
+                price: wishdata.price,
                 updated_at: new Date().toISOString()
                 })
                 .eq("id", editingId)
@@ -81,9 +92,6 @@ export default function EditModal({setModal,setEditPopup,editObj,onClick}:ModalP
                 ? err.message
                 : '위시리스트 수정 중 오류가 발생했습니다'
             setToast(errorMessage, "error")
-        } finally {
-            debounce = false;
-            setIsLoading(false)
         }
     };
 
@@ -108,50 +116,36 @@ export default function EditModal({setModal,setEditPopup,editObj,onClick}:ModalP
             <div className="relative">
                 <h2 className="mb-8 text-center font-bold text-3xl" style={{ color: 'var(--color_black)' }}>읽고싶은 책 수정하기</h2>
                 <EditCloseButton onClick={onClick} />
+                <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-wrap gap-[7px]">
                     <InputFields
-                        type="text"
-                        placeholder="책 제목"
-                        name="modaltitle"
-                        value={modalTitle}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            setModalTitle(e.target.value)
-                        }
+                    placeholder="책 제목"
+                    {...register("booktitle",{
+                        required: true,
+                    })}
                     />
                     <InputFields
-                        type="text"
-                        placeholder="작가명"
-                        name="modalauthor"
-                        width="calc((100% - 7px) / 2)"
-                        value={modalAuthor}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            setModalAuthor(e.target.value)
-                        }
+                    width="calc((100% - 7px) / 2)"
+                    placeholder="작가명"
+                    {...register("author",{
+                        required: true,
+                    })}
                     />
                     <InputFields
-                        type="text"
-                        inputMode="numeric"
-                        pattern="[0-9]*"
-                        placeholder="가격(숫자만 입력)"
-                        name="price"
-                        width="calc((100% - 7px) / 2)"
-                        value={modalPrice ?? ""}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            const value = e.target.value.replace(/\D/g, '');
-                            setModalPrice(value ? Number(value) : null);
-                        }}
+                    type="number"
+                    inputMode="numeric"
+                    width="calc((100% - 7px) / 2)"
+                    placeholder="가격(숫자만 입력)"
+                    {...register("price",{
+                        required: true,
+                    })}
                     />
                 </div>
-
-                <div className="mt-8">
-                    <EditModalButton
-                    modalTitle={modalTitle}
-                    modalPage={modalAuthor}
-                    modalContent={modalPrice}
-                    isLoading={isLoading}
-                    onClick={handleModalEdit}
-                    />
-                </div>
+                    {!isValid && <p className="text-xl mt-3.5 text-cyan-600">모든 내용을 입력해주세요!</p>}
+                    <div className="mt-8 h-[40px]">
+                        <SubmitButton disabled={!isValid || isSubmitting} type="submit">수정하기</SubmitButton>
+                    </div>
+                </form>
             </div>
         </Modal>
         </ReactFocusLock>

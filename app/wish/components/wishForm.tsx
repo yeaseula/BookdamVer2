@@ -1,11 +1,12 @@
 "use client"
 import styled from "styled-components"
-import AddButton from "./Add"
 import InputFields from "../../components/form/input"
-import { useState } from "react"
 import createClient from "@/utils/supabase/client"
 import { DataState, Wish, useAuthStore } from "@/app/lib/userfetch"
 import { useToastStore } from "@/app/lib/useToastStore"
+import { useForm, SubmitHandler } from "react-hook-form"
+import { WishFormType } from "@/app/lib/dataTypes"
+import SubmitButton from "@/app/components/common/SubmitButton"
 
 const FormWrap = styled.div`
     display: flex;
@@ -16,29 +17,34 @@ const FormWrap = styled.div`
 export default function WishForm({session}) {
     const supabase = createClient()
     const setToast = useToastStore((state)=>state.setToast)
-    const [title, setTitle] = useState<string>("")
-    const [author, setAuthor] = useState<string>("")
-    const [price, setPrice] = useState<number | null>(null)
-    const [isWorking,setIsWorking] = useState<boolean>(false)
+
+    const {
+        register,
+        formState: { isValid, isSubmitting },
+        reset,
+        handleSubmit
+    } = useForm<WishFormType>({
+        mode: "onChange",
+    })
+
+    const onSubmit: SubmitHandler<WishFormType> = (data) => handleWishSubmit(data)
 
     const userId = session.user.id
 
-    const handleSubmit = async () => {
-
-        if(isWorking) return
-        setIsWorking(true)
-
-        if (!title || !author|| price == null) {
-            alert("모든 필드를 채워주세요.")
-            return
-        }
+    const handleWishSubmit = async (wishdate:WishFormType) => {
         try {
+
+            if(!userId) throw new Error("세션이 없습니다.")
+            else if(!wishdate.booktitle) throw new Error("제목을 입력해주세요.")
+            else if(!wishdate.price) throw new Error("가격을 입력해주세요.")
+            else if(!wishdate.author) throw new Error("작가명을 입력해주세요.")
+
             const { data, error } = await supabase.from("wish").insert([
                 {
                     user_id: userId,
-                    title,
-                    author,
-                    price,
+                    title: wishdate.booktitle,
+                    author: wishdate.author,
+                    price: wishdate.price,
                 },
             ]).select();
 
@@ -56,63 +62,45 @@ export default function WishForm({session}) {
             } else {
                 useAuthStore.getState().addData('wish',newWish)
                 setToast("읽고싶은 책 업로드 성공!","success")
-                //필드 초기화
-                setTitle("")
-                setAuthor("")
-                setPrice(null)
+                reset()
             }
         } catch (error) {
             const errorMessage = error instanceof Error
                 ? error.message
                 : '업로드 중 오류가 발생했습니다'
             setToast(errorMessage, "error")
-        } finally {
-            setIsWorking(false)
         }
     }
 
     return (
-        <FormWrap>
-            <InputFields
-                type="text"
+        <form onSubmit={handleSubmit(onSubmit)}>
+            <FormWrap>
+                <InputFields
                 placeholder="책 제목"
-                name="booktitle"
-                value={title}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setTitle(e.target.value)
-                }
-            />
-            <InputFields
-                type="text"
+                {...register("booktitle",{
+                    required: true,
+                })}
+                />
+                <InputFields
+                width="calc((100% - 47px) / 2)"
                 placeholder="작가명"
-                name="author"
-                width="calc((100% - 47px) / 2)"
-                value={author}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setAuthor(e.target.value)
-                }
-            />
-            <InputFields
-                type="text"
+                {...register("author",{
+                    required: true,
+                })}
+                />
+                <InputFields
+                type="number"
                 inputMode="numeric"
-                pattern="[0-9]*"
-                placeholder="가격(숫자만 입력)"
-                name="price"
                 width="calc((100% - 47px) / 2)"
-                value={price ?? ""}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const value = e.target.value.replace(/\D/g, '');
-                    setPrice(value ? Number(value) : null);
-                }}
-            />
-            <AddButton
-                arialabel="읽고싶은 책 추가 버튼"
-                type="button"
-                title={title}
-                author={author}
-                price={price}
-                onClick={handleSubmit}
-            />
-        </FormWrap>
+                placeholder="가격(숫자만 입력)"
+                {...register("price",{
+                    required: true,
+                })}
+                />
+                <div className="w-[37px] h-[37px]">
+                    <SubmitButton disabled={!isValid || isSubmitting} type="submit">+</SubmitButton>
+                </div>
+            </FormWrap>
+        </form>
     )
 }

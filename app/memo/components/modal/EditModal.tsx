@@ -41,9 +41,7 @@ interface ModalProps {
 export default function EditModal({setModal,setEditPopup,editObj,onClick}:ModalProps) {
     const editingId = editObj.id
     const supabase = createClient()
-    const [isLoading,setIsLoading] = useState<boolean>(false)
     const setToast = useToastStore((state)=>state.setToast)
-    let debounce:boolean = false;
 
     const {
         register,
@@ -62,10 +60,6 @@ export default function EditModal({setModal,setEditPopup,editObj,onClick}:ModalP
 
 
     const handleModalEdit = async (memodata:MeMoFormType)=>{
-        if(debounce || isLoading) return
-        debounce = true
-        setIsLoading(true)
-
         try {
             if(!memodata.booktitle) throw new Error("제목을 입력해주세요.")
             else if(!memodata.page) throw new Error("페이지를 입력해주세요.")
@@ -102,9 +96,6 @@ export default function EditModal({setModal,setEditPopup,editObj,onClick}:ModalP
                 ? err.message
                 : '메모 수정 중 오류가 발생했습니다'
             setToast(errorMessage, "error")
-        } finally {
-            debounce = false;
-            setIsLoading(false)
         }
     }
 
