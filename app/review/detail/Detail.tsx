@@ -109,7 +109,7 @@ export default function ReviewDetail({postNumber}) {
         return(
             <SubWrap style={{ color: 'var(--color_black)' }}>
                 <ReivewHead>
-                    <h2 className="sr-only">책 정보</h2>
+                    <h2 className="sr-only">{reviewArr.data?.[0].title} 독서리뷰 내용</h2>
                     <BookThumbnail>
                         <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
                         <Thumbnail title={reviewArr.data?.[0].title} author={reviewArr?.data[0].author}/>

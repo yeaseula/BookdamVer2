@@ -1,12 +1,13 @@
 "use client"
 import styled from "styled-components"
-import AddButton from "./Add"
 import InputFields from "../../components/form/input"
 import TextArea from "../../components/form/textarea"
-import { useState } from "react"
 import createClient from "@/utils/supabase/client"
 import { DataState ,Memo, useAuthStore } from "@/app/lib/userfetch"
 import { useToastStore } from "@/app/lib/useToastStore"
+import { useForm, SubmitHandler } from "react-hook-form"
+import { MeMoFormType } from "@/app/lib/dataTypes"
+import SubmitButton from "@/app/components/common/SubmitButton"
 
 const FormWrap = styled.div`
     display: flex;
@@ -17,32 +18,32 @@ const FormWrap = styled.div`
 export default function MemoForm({session}) {
     const supabase = createClient()
     const setToast = useToastStore((state)=>state.setToast)
-    const [title, setTitle] = useState<string>("")
-    const [page, setPage] = useState<number | null>(null)
-    const [content, setContent] = useState<string>("")
-    const [loading, setIsLoading] = useState<boolean>(false)
-    let debounce:boolean = false;
     const userId = session.user.id
 
-    const handleSubmit = async () => {
-        if(loading) return //버튼 로딩
-        setIsLoading(true)
+    const {
+        register,
+        formState: {errors, isValid, isSubmitting },
+        reset,
+        handleSubmit
+    } = useForm<MeMoFormType>({
+        mode: "onChange",
+    })
 
-        if(debounce) return
-        debounce = true
+    const onSubmit: SubmitHandler<MeMoFormType> = (data) => handleMemoSubmit(data)
 
+    const handleMemoSubmit = async (memodata:MeMoFormType) => {
         try {
             if(!userId) throw new Error("세션이 없습니다.")
-            else if(!title) throw new Error("제목을 입력해주세요.")
-            else if(!page) throw new Error("페이지를 입력해주세요.")
-            else if(!content) throw new Error("내용을 입력해주세요.")
+            else if(!memodata.booktitle) throw new Error("제목을 입력해주세요.")
+            else if(!memodata.page) throw new Error("페이지를 입력해주세요.")
+            else if(!memodata.content) throw new Error("내용을 입력해주세요.")
 
             const { data, error } = await supabase.from("memo").insert([
                 {
                     user_id: userId,
-                    title,
-                    page,
-                    content,
+                    title: memodata.booktitle,
+                    page: memodata.page,
+                    content: memodata.content,
                 },
             ]).select();
 
@@ -60,11 +61,7 @@ export default function MemoForm({session}) {
             } else {
                 useAuthStore.getState().addData('memo',newMemo)
                 setToast("나만의 구절 업로드 성공!","success")
-
-                //필드 초기화
-                setTitle("")
-                setPage(null)
-                setContent("")
+                reset()
             }
 
         } catch (error) {
@@ -72,56 +69,40 @@ export default function MemoForm({session}) {
                 ? error.message
                 : '업로드 중 오류가 발생했습니다'
             setToast(errorMessage, "error")
-        } finally {
-            debounce = false
-            setIsLoading(false)
         }
     }
 
     return (
+        <form onSubmit={handleSubmit(onSubmit)}>
         <FormWrap>
             <InputFields
-                type="text"
-                placeholder="책 제목"
-                name="booktitle"
-                width="calc((100% - 47px) / 2)"
-                value={title}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setTitle(e.target.value)
-                }
+            width="calc((100% - 47px) / 2)"
+            placeholder="책 제목"
+            {...register("booktitle",{
+                required: true,
+            })}
             />
             <InputFields
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                placeholder="페이지(숫자만 입력)"
-                name="bookpage"
-                width="calc((100% - 47px) / 2)"
-                value={page ?? ""}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const value = e.target.value.replace(/\D/g, '');
-                    setPage(value ? Number(value) : null);
-                }}
+            type="number"
+            inputMode="numeric"
+            width="calc((100% - 47px) / 2)"
+            placeholder="페이지(숫자만 입력)"
+            {...register("page",{
+                required: true,
+            })}
             />
-            <AddButton
-                arialabel="기억에 남는 구절 추가 버튼"
-                type="button"
-                title={title}
-                page={page}
-                debounce={debounce}
-                loading={loading}
-                content={content}
-                onClick={handleSubmit}
-            />
+            <div className="w-[37px] h-[37px]">
+                <SubmitButton disabled={!isValid || isSubmitting} type="submit">+</SubmitButton>
+            </div>
             <TextArea
                 name="memo-content"
-                placeholder="100자 이내로 입력하세요."
+                placeholder="내용을 입력하세요."
                 height={90}
-                value={content}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                    setContent(e.target.value)
-                }
+                {...register("content",{
+                    required: true,
+                })}
             />
         </FormWrap>
+        </form>
     )
 }

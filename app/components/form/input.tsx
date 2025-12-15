@@ -1,5 +1,5 @@
 "use client"
-import React, { memo, forwardRef, InputHTMLAttributes, RefObject } from "react";
+import React, { memo, forwardRef, InputHTMLAttributes } from "react";
 import styled from "styled-components"
 
 const InputField = styled.input<{$width:string | number | undefined}>`
@@ -53,16 +53,3 @@ const InputFields = memo(
 )
 
 export default InputFields
-
-// export default function InputFields({type, placeholder, name, value, width, onBlur, onChange }:FiledType) {
-//     return(
-//         <InputField
-//         type={type}
-//         placeholder={placeholder}
-//         name={name}
-//         value={value}
-//         onBlur={onBlur}
-//         onChange={onChange}
-//         $width={width} />
-//     )
-// }

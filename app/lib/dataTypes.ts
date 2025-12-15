@@ -18,3 +18,11 @@ export interface BookAiType {
     sale_price: number;
     error?: unknown;
 }
+
+//memo
+
+export interface MeMoFormType {
+    booktitle: string;
+    page: number;
+    content: string;
+}

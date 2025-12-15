@@ -201,15 +201,11 @@ export default function Login() {
                             <p className="text-red-600 mt-3 text-xl">{errors.password.message}</p>
                         }
                     </Label>
+                    <div className="h-[40px] mt-[35px]">
                     <SubmitButton disabled={!isValid || isSubmitting} type="submit">로그인</SubmitButton>
+                    </div>
                 </form>
             </div>
-            {/* <SubmitButton
-            type="button"
-            active={LoginState}
-            loading={loading}
-            onClick={handleLogin}
-            >로그인</SubmitButton> */}
 
             <ToSignupBox>
                 <p>회원이 아닌가요?

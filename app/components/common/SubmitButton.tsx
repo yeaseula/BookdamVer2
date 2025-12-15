@@ -4,8 +4,7 @@ import styled from "styled-components"
 
 const Button = styled.button<{disabled:boolean}>`
     width: 100%;
-    height: 40px;
-    margin-top: 35px;
+    height: 100%;
     color: #fff;
     border-radius: 5px;
     background-color: var(--sub_color);
@@ -38,10 +37,3 @@ const SubmitButton = memo(({
 })
 
 export default SubmitButton
-
-// export default function SubmitButton({active, loading, onClick, text}) {
-//     const isActive = active && !loading
-//     return (
-//         <Button disabled={!isActive} onClick={onClick}>{text}</Button>
-//     )
-// }

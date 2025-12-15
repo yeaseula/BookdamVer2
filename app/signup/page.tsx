@@ -266,7 +266,9 @@ export default function SignUp() {
                             <InterestLists />
                         </FormProvider>
                     </Label>
+                    <div className="h-[40px] mt-[35px]">
                     <SubmitButton disabled={!isValid || isSubmitting} type="submit">회원가입</SubmitButton>
+                    </div>
                 </form>
             </div>
             <ToLoginBox>

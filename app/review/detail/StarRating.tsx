@@ -16,13 +16,13 @@ interface ScoreProps {
 }
 
 function Score({score}:ScoreProps) {
-    const [isfill,setIsfill] = useState(score)
+    const isfill = score
 
     return(
         <div className="icons-detail" data-score={score}>
             {isfill === 'false' && (
                 <Image src={'/images/star-gray.svg'}
-                alt="별점"
+                alt=""
                 aria-hidden={'true'}
                 width={20}
                 height={20}
@@ -31,7 +31,7 @@ function Score({score}:ScoreProps) {
             )}
             {isfill === 'true' && (
                 <Image src={'/images/star-fill.svg'}
-                alt="별점"
+                alt=""
                 aria-hidden={true}
                 width={20}
                 height={20}

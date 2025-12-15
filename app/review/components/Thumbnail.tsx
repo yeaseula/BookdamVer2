@@ -5,7 +5,6 @@ import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'
 import { fetchBookCover } from "@/app/lib/fetchBookCover";
 import { useErrorUtil } from "@/app/error/useErrorUtil";
-import { LocalError } from "@/app/error/errorLibrary";
 
 const ThumbContainer = styled.div`
     width: 100%;
@@ -26,7 +25,6 @@ export default function Thumbnail({title, author}:ThumbProps) {
     const [thumbnail,setThumbnail] = useState<Promise<void> | string | null>(null)
 
     useEffect(()=>{
-
         const image = async (title:string,author:string) => {
             try {
                 const Thumbnails = await fetchBookCover(title,author)
@@ -38,11 +36,9 @@ export default function Thumbnail({title, author}:ThumbProps) {
             } catch(err) {
                 throwError(err)
             }
-
         }
         image(title,author)
     },[])
-
 
     return(
         <>

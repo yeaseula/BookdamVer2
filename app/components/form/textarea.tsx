@@ -1,5 +1,6 @@
 "use client"
 import styled from "styled-components"
+import { memo,forwardRef,TextareaHTMLAttributes } from "react";
 
 const TextareaStyle = styled.textarea<{$height: number}>`
     width: 100%;
@@ -23,16 +24,29 @@ const TextareaStyle = styled.textarea<{$height: number}>`
         border: 2px solid var(--point-color);
     }
 `
-interface textareaProps {
-    name:string;
+interface textareaProps extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>,'height'> {
+    name?:string;
     placeholder: string;
     height: number;
     value?: string;
     onChange:(e:React.ChangeEvent<HTMLTextAreaElement>)=>void;
 }
 
-export default function TextArea({name, placeholder,value, height, onChange}:textareaProps) {
-    return(
-        <TextareaStyle name={name} placeholder={placeholder} value={value} $height={height} onChange={onChange} />
-    )
-}
+const Textarea = memo(
+    forwardRef<HTMLTextAreaElement,textareaProps>((
+        {name,placeholder,height,value,onChange,...rest},ref
+    )=>{
+        return (
+            <TextareaStyle
+            ref={ref}
+            name={name}
+            placeholder={placeholder}
+            value={value}
+            $height={height}
+            onChange={onChange}
+            {...rest} />
+        )
+    })
+)
+
+export default Textarea
