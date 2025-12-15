@@ -22,7 +22,7 @@ export default function MemoForm({session}) {
 
     const {
         register,
-        formState: {errors, isValid, isSubmitting },
+        formState: { isValid, isSubmitting },
         reset,
         handleSubmit
     } = useForm<MeMoFormType>({
@@ -103,6 +103,7 @@ export default function MemoForm({session}) {
                 })}
             />
         </FormWrap>
+        {!isValid && <p className="text-xl mt-3.5 text-cyan-600">모든 내용을 입력해주세요!</p>}
         </form>
     )
 }

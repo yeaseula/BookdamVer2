@@ -20,7 +20,6 @@ export interface BookAiType {
 }
 
 //memo
-
 export interface MeMoFormType {
     booktitle: string;
     page: number;
