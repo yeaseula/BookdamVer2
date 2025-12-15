@@ -18,6 +18,7 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
 import BookCover from './components/BookCover';
 import BookDesc from './components/BookDes';
+import { BookAiType } from '@/app/lib/dataTypes';
 
 const SliderWrap = styled.div`
     position: relative;
@@ -40,17 +41,6 @@ const SwiperDepth = styled.div`
     border-radius: 15px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 `
-
-interface BookAiType {
-    isbn: string;
-    authors: string[]
-    thumbnail: string;
-    title: string;
-    contents: string;
-    price: number;
-    sale_price: number;
-    error?: unknown;
-}
 
 export default function RecomandSwiper(){
     const SwiperRef = useRef(null);
