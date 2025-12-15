@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import styled from "styled-components";
@@ -106,24 +106,11 @@ const FullCalBox = styled.div`
     }
 `
 export default function Calendar() {
-
     const { isReviewLoaded, reviews } = useAuthStore()
     const { userSetting } = useSettingStore()
-    const [stampDate,setStampDate] = useState<string[]>([])
 
-    useEffect(()=>{
-        if(!isReviewLoaded) return
-        let isCancelled = false
-
-        if(!isCancelled && reviews.data) {
-            reviews.data.map(ele=>{
-                setStampDate((prev)=>[...prev,ele.end_date])
-            })
-
-        }
-        return () => {
-            isCancelled = true
-        }
+    const stampDates = useMemo(():string[]=>{
+        return reviews.data?.map(ele=>ele.end_date) ?? []
     },[reviews.data])
 
     if(!reviews.ok) {
@@ -140,13 +127,13 @@ export default function Calendar() {
             {isReviewLoaded && (
             <FullCalBox>
                 <FullCalendar
-                    key={stampDate.join()}
+                    key={stampDates.join()}
                     plugins={[dayGridPlugin]}
                     initialView="dayGridMonth"
                     firstDay={userSetting.data.calendar_start === 'sun' ? 0 : 1}
                     dayCellDidMount={(info) => {
                         const dateStr = info.date.toLocaleDateString("en-CA");
-                        const exist = stampDate.find(e => e === dateStr);
+                        const exist = stampDates?.find(e => e === dateStr);
                         if (!exist) return;
                         info.el.style.backgroundImage = `
                         ${userSetting.data.calendar_stamp === 'star' ?

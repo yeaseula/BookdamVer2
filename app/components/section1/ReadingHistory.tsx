@@ -2,7 +2,7 @@
 import styled from "styled-components"
 import { useAuthStore } from "@/app/lib/userfetch"
 import Skeleton from "react-loading-skeleton"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { throwSupabaseError } from "@/app/error/errorLibrary"
 
 const HisBox = styled.div`
@@ -18,11 +18,12 @@ const HisBox = styled.div`
 export default function ReadingHistory() {
 
     const { reviews, isReviewLoaded } = useAuthStore()
-    const [reading,setReading] = useState<number | null>(null)
 
-    useEffect(()=>{
-        reviews.data ? setReading(reviews.data.length) : setReading(null)
-    },[reviews.data])
+    const reviewLength = useMemo(()=>{
+        if(!isReviewLoaded) return
+        const reading = reviews.data?.length
+        return reading
+    },[isReviewLoaded,reviews.data])
 
     if(!reviews.ok || reviews.error) {
         throwSupabaseError(reviews.error)
@@ -34,7 +35,7 @@ export default function ReadingHistory() {
                 <Skeleton width={120}></Skeleton>
             }
             {isReviewLoaded &&
-            <p>지금까지 <span className="reading-book font-bold">{reading}권</span>의 책을 읽었어요!</p>
+            <p>지금까지 <span className="reading-book font-bold">{reviewLength}권</span>의 책을 읽었어요!</p>
             }
         </HisBox>
     )
