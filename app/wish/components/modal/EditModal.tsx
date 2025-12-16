@@ -119,26 +119,40 @@ export default function EditModal({setModal,setEditPopup,editObj,onClick}:ModalP
                 <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-wrap gap-[7px]">
                     <InputFields
+                    label="제목"
+                    name="booktitle"
+                    required
+                    register={register}
+                    show={true}
                     placeholder="책 제목"
-                    {...register("booktitle",{
-                        required: true,
-                    })}
+                    rules={{
+                        required: true
+                    }}
                     />
                     <InputFields
+                    label="작가명"
+                    name="author"
                     width="calc((100% - 7px) / 2)"
+                    required
+                    show={true}
+                    register={register}
+                    rules={{
+                        required: true
+                    }}
                     placeholder="작가명"
-                    {...register("author",{
-                        required: true,
-                    })}
                     />
                     <InputFields
+                    label="가격"
+                    name="price"
                     type="number"
                     inputMode="numeric"
                     width="calc((100% - 7px) / 2)"
                     placeholder="가격(숫자만 입력)"
-                    {...register("price",{
-                        required: true,
-                    })}
+                    show={true}
+                    register={register}
+                    rules={{
+                        required: true
+                    }}
                     />
                 </div>
                     {!isValid && <p className="text-xl mt-3.5 text-cyan-600">모든 내용을 입력해주세요!</p>}

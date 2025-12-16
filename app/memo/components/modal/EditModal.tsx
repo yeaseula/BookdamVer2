@@ -124,28 +124,41 @@ export default function EditModal({setModal,setEditPopup,editObj,onClick}:ModalP
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="flex flex-wrap gap-[7px]">
                         <InputFields
-                        width="calc((100% - 7px) / 2)"
-                        placeholder="책 제목"
-                        {...register("booktitle",{
-                            required: true,
-                        })}
+                            label="책제목"
+                            name="booktitle"
+                            required
+                            width="calc((100% - 7px) / 2)"
+                            rules={{
+                                required: true,
+                            }}
+                            show={true}
+                            placeholder="책 제목"
+                            register={register}
                         />
                         <InputFields
-                        type="number"
-                        inputMode="numeric"
-                        width="calc((100% - 7px) / 2)"
-                        placeholder="페이지(숫자만 입력)"
-                        {...register("page",{
-                            required: true,
-                        })}
+                            type="number"
+                            label="페이지"
+                            name="page"
+                            required
+                            inputMode="numeric"
+                            show={true}
+                            width="calc((100% - 7px) / 2)"
+                            register={register}
+                            rules={{
+                                required: true
+                            }}
+                            placeholder="페이지(숫자만 입력)"
                         />
                         <TextArea
+                            label="내용"
                             name="memo-content"
                             placeholder="내용을 입력하세요."
                             height={90}
-                            {...register("content",{
-                                required: true,
-                            })}
+                            register={register}
+                            show={true}
+                            rules={{
+                                required:true
+                            }}
                         />
                     </div>
                     {!isValid && <p className="text-xl mt-3.5 text-cyan-600">모든 내용을 입력해주세요!</p>}

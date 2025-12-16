@@ -22,7 +22,7 @@ export default function MemoForm({session}) {
 
     const {
         register,
-        formState: { isValid, isSubmitting },
+        formState: { isValid, errors, isSubmitting },
         reset,
         handleSubmit
     } = useForm<MeMoFormType>({
@@ -76,31 +76,44 @@ export default function MemoForm({session}) {
         <form onSubmit={handleSubmit(onSubmit)}>
         <FormWrap>
             <InputFields
+            label="책제목"
+            name="booktitle"
+            required
             width="calc((100% - 47px) / 2)"
-            placeholder="책 제목"
-            {...register("booktitle",{
+            rules={{
                 required: true,
-            })}
+            }}
+            show={true}
+            placeholder="책 제목"
+            register={register}
             />
             <InputFields
             type="number"
+            label="페이지"
+            name="page"
+            required
             inputMode="numeric"
+            show={true}
             width="calc((100% - 47px) / 2)"
+            register={register}
+            rules={{
+                required: true
+            }}
             placeholder="페이지(숫자만 입력)"
-            {...register("page",{
-                required: true,
-            })}
             />
             <div className="w-[37px] h-[37px]">
                 <SubmitButton disabled={!isValid || isSubmitting} type="submit">+</SubmitButton>
             </div>
             <TextArea
-                name="memo-content"
+                label="내용"
+                name="content"
                 placeholder="내용을 입력하세요."
                 height={90}
-                {...register("content",{
-                    required: true,
-                })}
+                register={register}
+                show={true}
+                rules={{
+                    required: true
+                }}
             />
         </FormWrap>
         {!isValid && <p className="text-xl mt-3.5 text-cyan-600">모든 내용을 입력해주세요!</p>}

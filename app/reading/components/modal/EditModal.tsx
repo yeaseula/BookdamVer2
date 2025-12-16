@@ -1,7 +1,7 @@
 "use client"
 import styled from "styled-components"
 import { DataState, Books } from "@/app/lib/userfetch"
-import { Dispatch, SetStateAction } from "react"
+import { Dispatch, SetStateAction, useState } from "react"
 import InputFields from "@/app/components/form/input"
 import EditCloseButton from "./EditCloseButton"
 import createClient from "@/utils/supabase/client"
@@ -40,11 +40,12 @@ interface ModalProps {
 export default function EditModal({setModal,setEditPopup,editObj,onClick}:ModalProps) {
     const editingId = editObj.id
     const supabase = createClient()
+    const [pageValid,setPageValid] = useState<boolean|null>(null)
     const setToast = useToastStore((state)=>state.setToast)
+
     const {
         register,
         formState: { errors, isValid, isSubmitting },
-        getValues,trigger,
         handleSubmit
     } = useForm<ReadingFormType>({
         mode: "onChange",
@@ -58,6 +59,12 @@ export default function EditModal({setModal,setEditPopup,editObj,onClick}:ModalP
     const onSubmit: SubmitHandler<ReadingFormType> = (data) => handleModalEdit(data)
 
     const handleModalEdit = async (readdata:ReadingFormType) => {
+
+        if(Number(readdata.totalpage) < Number(readdata.readedpage)) {
+            setPageValid(false)
+            return
+        } else setPageValid(true)
+
         try {
             if(!readdata.booktitle) throw new Error("제목을 입력해주세요.")
             else if(!readdata.totalpage) throw new Error("총 페이지를 입력해주세요.")
@@ -122,37 +129,45 @@ export default function EditModal({setModal,setEditPopup,editObj,onClick}:ModalP
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="flex flex-wrap gap-[7px]">
                         <InputFields
+                        label="제목"
+                        name="booktitle"
+                        required
+                        register={register}
+                        rules={{
+                            required: true
+                        }}
                         placeholder="책 제목"
-                        {...register("booktitle",{
-                            required: true,
-                        })}
+                        show={true}
                         />
                         <InputFields
+                        label="총 페이지"
+                        name="totalpage"
                         type="number"
                         inputMode="numeric"
                         width="calc((100% - 7px) / 2)"
+                        required
+                        show={true}
+                        register={register}
                         placeholder="총 페이지(숫자만 입력)"
-                        {...register("totalpage",{
+                        rules={{
                             required: true,
-                            onChange:() => {
-                                trigger('readedpage')
-                            }
-                        })}
+                        }}
                         />
                         <InputFields
+                        label="읽은 페이지"
+                        name="readedpage"
                         type="number"
                         inputMode="numeric"
                         width="calc((100% - 7px) / 2)"
-                        placeholder="읽은 페이지(숫자만 입력)"
-                        {...register("readedpage",{
+                        show={true}
+                        register={register}
+                        rules={{
                             required: true,
-                            validate: (value) => {
-                                return value < getValues('totalpage') ? true : '총 페이지보다 읽은 페이지 수가 많아요!'
-                            }
-                        })}
+                        }}
+                        placeholder="읽은 페이지(숫자만 입력)"
                         />
                     </div>
-                    {errors.readedpage && <p className="text-xl mt-3.5 text-cyan-600">{errors.readedpage.message}</p>}
+                    {pageValid === false && <p className="text-xl mt-3.5 text-cyan-600">읽은 페이지수가 총 페이지수보다 많습니다.</p>}
                     {!isValid && <p className="text-xl mt-3.5 text-cyan-600">모든 내용을 입력해주세요!</p>}
                     <div className="mt-8 h-[40px]">
                         <SubmitButton disabled={!isValid || isSubmitting} type="submit">수정하기</SubmitButton>

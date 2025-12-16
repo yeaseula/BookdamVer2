@@ -1,41 +1,48 @@
 "use client"
 
-import styled from "styled-components"
 import InputFields from "@/app/components/form/input"
-import { useRef, useState } from "react"
-import EditButton from "../components/EditButton"
+import { useState } from "react"
 import createClient from "@/utils/supabase/client"
 import { useToastStore } from "@/app/lib/useToastStore"
 import { useRouter } from "next/navigation"
-import { CheckPassword, handlePassCheck } from "@/app/lib/Valid"
-import { WarningMessage } from "@/app/signup/warningMsg"
 import SpinnerArea from "@/app/components/spinner/SpinnerArea"
 import { SubWrap } from "@/app/components/common/container.styled"
 import { LabelStyle } from "@/app/components/form/Label"
+import { useForm, SubmitHandler } from "react-hook-form"
+import { PASS_REGEX } from "@/app/lib/Valid"
+import SubmitButton from "@/app/components/common/SubmitButton"
+import { useAuthStore } from "@/app/lib/userfetch"
+
+interface PassValid {
+    password: string;
+    passwordCheck: string;
+}
 
 export default function EditPass() {
-    const [passValue,setPassValue] = useState<boolean | null>(null) //pass 유효성
-    const [passCheck, setPassCheck] = useState<boolean | null>(null) //일치
-
-    const newPassRef = useRef('')
-    const newPass2Ref = useRef('')
 
     const [loading,setLoading] = useState<boolean>(false);
-
+    const { session } = useAuthStore()
     const supabase = createClient()
     const setToast = useToastStore((state)=>state.setToast)
     const router = useRouter()
-    let debounce:boolean = false
 
-    const handleSubmit = async() => {
-        if (debounce || loading) return;
+    const {
+        register, trigger, getValues,
+        formState: { errors, isValid, isSubmitting },
+        handleSubmit
+    } = useForm<PassValid>({
+        mode: "onChange",
+    })
 
-        debounce = true
+    const onSubmit: SubmitHandler<PassValid> = (data) => handlePassSubmit(data)
+
+    const handlePassSubmit = async(passdata:PassValid) => {
+        if(loading || !session) false
         setLoading(true)
 
         try {
             const { data, error } = await supabase.auth.updateUser({
-                password: newPassRef.current,
+                password: passdata.password,
             });
 
             if (error) {
@@ -63,7 +70,6 @@ export default function EditPass() {
                 ? err.message
                 : '비밀번호 수정 중 오류가 발생했습니다'
             setToast(errorMessage, "error")
-            debounce = false
             setLoading(false)
         }
     }
@@ -71,41 +77,53 @@ export default function EditPass() {
     return(
         <SubWrap>
             {loading && <SpinnerArea text="비밀번호 변경 처리중..." />}
+            <form onSubmit={handleSubmit(onSubmit)}>
             <LabelStyle>
-                <span>비밀번호</span>
-                <InputFields type={"password"}
+                <InputFields
+                label="비밀번호"
+                type={"password"}
                 name={"password"}
+                required
+                error={errors.password?.message}
                 placeholder={"비밀번호를 입력해주세요"}
-                onBlur={(e:React.ChangeEvent<HTMLInputElement>)=>{
-                    CheckPassword(e.currentTarget.value,setPassValue);
-                    handlePassCheck(newPassRef, newPass2Ref ,setPassCheck )
-                }}
-                onChange={(e:React.ChangeEvent<HTMLInputElement>)=>{
-                    newPassRef.current = e.currentTarget.value;
-                    handlePassCheck(newPassRef, newPass2Ref ,setPassCheck )
+                register={register}
+                rules={{
+                    required: true,
+                    pattern: {
+                        value: PASS_REGEX,
+                        message: '비밀번호는 문자+숫자 8자리 이상입니다.'
+                    },
+                    onChange:() => {
+                        trigger('passwordCheck')
+                    }
                 }}
                 />
+                {errors.password &&
+                <p className="text-red-600 mt-3 text-xl">{errors.password.message}</p>
+                }
             </LabelStyle>
             <LabelStyle style={{ marginTop: '10px' }}>
-                <span>비밀번호 확인</span>
-                <InputFields type={"password"}
-                name={"password-check"}
-                placeholder={"비밀번호를 재입력 해주세요"}
-                onBlur={()=>handlePassCheck(newPassRef, newPass2Ref ,setPassCheck )}
-                onChange={(e:React.ChangeEvent<HTMLInputElement>)=>{
-                    newPass2Ref.current = e.currentTarget.value
-                    handlePassCheck(newPassRef, newPass2Ref ,setPassCheck )
-                }}
+                <InputFields
+                    type="password"
+                    placeholder={"비밀번호를 한번 더 입력해주세요"}
+                    label="비밀번호 확인"
+                    name="passwordCheck"
+                    required
+                    error={errors.passwordCheck?.message}
+                    register={register}
+                    rules={{
+                        required: true,
+                        validate: (value) => value === getValues('password') || '비밀번호가 일치하지 않습니다.'
+                    }}
                 />
-                <WarningMessage state={passCheck} text="비밀번호를 정확하게 입력해주세요." />
+                {errors.passwordCheck &&
+                <p className="text-red-600 mt-3 text-xl">{errors.passwordCheck.message}</p>
+                }
             </LabelStyle>
-            <EditButton
-            type="pass"
-            vlaue={newPassRef.current}
-            vlaueCheck={newPass2Ref.current}
-            passCheck={passCheck}
-            loading={loading}
-            onClick={handleSubmit} />
+            <div className="h-[40px] mt-[35px]">
+            <SubmitButton disabled={!isValid || isSubmitting} type="submit">비밀번호 변경</SubmitButton>
+            </div>
+            </form>
         </SubWrap>
     )
 }

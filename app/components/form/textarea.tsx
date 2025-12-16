@@ -3,6 +3,10 @@ import styled from "styled-components"
 import { UseFormRegister, RegisterOptions } from "react-hook-form";
 import { TextareaHTMLAttributes } from "react";
 
+const Wrap = styled.div<{$width:string | number | undefined}>`
+    flex: 1;
+    width: ${(props)=>props.$width || '100%'};
+`
 const TextareaStyle = styled.textarea<{$height: number}>`
     width: 100%;
     max-width: 100%;
@@ -38,16 +42,17 @@ interface textareaProps extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>
     register: UseFormRegister<any>;
     rules?: RegisterOptions;
     width?: string | number;
+    show?: boolean;
 }
 
 const Textarea = ({
-    height,name,label,error,required,register,rules,placeholder,...rest
+    width,height,name,label,error,required,register,rules,placeholder,show,...rest
 }:textareaProps
 )=>{
     const id = name
     return (
-        <div>
-            <Label htmlFor={id}>{label} {required && <b className="font-bold text-red-700"> *</b>}</Label>
+        <Wrap $width={width}>
+            <Label htmlFor={id} className={`${show && 'sr-only'}`}>{label} {required && <b className="font-bold text-red-700"> *</b>}</Label>
             <TextareaStyle
             id={id}
             aria-required={required}
@@ -57,7 +62,7 @@ const Textarea = ({
             aria-describedby={error ? `${name}-error` : undefined}
             {...register(name, rules)}
             {...rest} />
-        </div>
+        </Wrap>
     )
 }
 

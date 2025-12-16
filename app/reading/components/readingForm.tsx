@@ -8,6 +8,7 @@ import { useAuthStore } from "@/app/lib/userfetch"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { ReadingFormType } from "@/app/lib/dataTypes"
 import SubmitButton from "@/app/components/common/SubmitButton"
+import { useState } from "react"
 
 const FormWrap = styled.div`
     display: flex;
@@ -18,13 +19,12 @@ const FormWrap = styled.div`
 export default function ReadingForm({ session }) {
     const supabase = createClient()
     const setToast = useToastStore((state)=>state.setToast)
+    const [pageValid,setPageValid] = useState<boolean|null>(null)
 
     const {
         register,
         formState: { errors, isValid, isSubmitting },
-        reset,
-        getValues,trigger,
-        handleSubmit
+        reset,handleSubmit
     } = useForm<ReadingFormType>({
         mode: "onChange",
     })
@@ -34,6 +34,11 @@ export default function ReadingForm({ session }) {
     const userId = session.user.id
 
     const handleReadSubmit = async(readdata:ReadingFormType) => {
+
+        if(Number(readdata.totalpage) < Number(readdata.readedpage)) {
+            setPageValid(false)
+            return
+        } else setPageValid(true)
 
         try {
             if(!userId) throw new Error("세션이 없습니다.")
@@ -80,40 +85,48 @@ export default function ReadingForm({ session }) {
         <form onSubmit={handleSubmit(onSubmit)}>
             <FormWrap>
                 <InputFields
+                label="제목"
+                name="booktitle"
+                required
+                register={register}
+                rules={{
+                    required: true
+                }}
                 placeholder="책 제목"
-                {...register("booktitle",{
-                    required: true,
-                })}
+                show={true}
                 />
                 <InputFields
+                label="총 페이지"
+                name="totalpage"
                 type="number"
                 inputMode="numeric"
                 width="calc((100% - 47px) / 2)"
+                required
+                show={true}
+                register={register}
                 placeholder="총 페이지(숫자만 입력)"
-                {...register("totalpage",{
+                rules={{
                     required: true,
-                    onChange:() => {
-                        trigger('readedpage')
-                    }
-                })}
+                }}
                 />
                 <InputFields
+                label="읽은 페이지"
+                name="readedpage"
                 type="number"
                 inputMode="numeric"
                 width="calc((100% - 47px) / 2)"
-                placeholder="읽은 페이지(숫자만 입력)"
-                {...register("readedpage",{
+                show={true}
+                register={register}
+                rules={{
                     required: true,
-                    validate: (value) => {
-                        return value < getValues('totalpage') ? true : '총 페이지보다 읽은 페이지 수가 많아요!'
-                    }
-                })}
+                }}
+                placeholder="읽은 페이지(숫자만 입력)"
                 />
                 <div className="w-[37px] h-[37px]">
                     <SubmitButton disabled={!isValid || isSubmitting} type="submit">+</SubmitButton>
                 </div>
             </FormWrap>
-            {errors.readedpage && <p className="text-xl mt-3.5 text-cyan-600">{errors.readedpage.message}</p>}
+            {pageValid === false && <p className="text-xl mt-3.5 text-cyan-600">읽은 페이지수가 총 페이지수보다 많습니다.</p>}
             {!isValid && <p className="text-xl mt-3.5 text-cyan-600">모든 내용을 입력해주세요!</p>}
         </form>
     )

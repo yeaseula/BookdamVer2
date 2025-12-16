@@ -3,8 +3,11 @@ import React, { InputHTMLAttributes } from "react";
 import { RegisterOptions, UseFormRegister } from "react-hook-form";
 import styled from "styled-components"
 
-const InputField = styled.input<{$width:string | number | undefined}>`
+const Wrap = styled.div<{$width:string | number | undefined}>`
     width: ${(props)=>props.$width || '100%'};
+`
+const InputField = styled.input`
+    width: 100%;
     border-radius: 5px;
     box-shadow: none;
     background-color: #fff !important;
@@ -37,27 +40,27 @@ interface InputType extends Omit<InputHTMLAttributes<HTMLInputElement>, 'width'|
     register: UseFormRegister<any>;
     rules?: RegisterOptions;
     width?: string | number;
+    show?: boolean
 }
 
 const InputFields = ({
-    label, error ,register, rules, name, width, required, ...rest
+    label, error ,register, rules, name, width, required, show, ...rest
 }:InputType)=>{
 
     const id = name
 
     return (
-        <div style={{ flex: 1 }}>
-            <Label htmlFor={id}>{label} {required && <b className="font-bold text-red-700"> *</b>}</Label>
+        <Wrap $width={width}>
+            <Label htmlFor={id} className={`${show && 'sr-only'}`}>{label} {required && <b className="font-bold text-red-700"> *</b>}</Label>
             <InputField
             id={id}
             aria-required={required}
             aria-invalid={!!error}
-            $width={width}
             aria-describedby={error ? `${name}-error` : undefined}
             {...register(name, rules)}
             {...rest}
             />
-        </div>
+        </Wrap>
     )
 }
 
