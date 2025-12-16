@@ -3,7 +3,6 @@
 import styled from "styled-components"
 import InterestList from "@/app/components/form/Interest/InterestList"
 import { useState, useRef } from "react"
-import { EditButtonInterest } from "../components/EditButton"
 import createClient from "@/utils/supabase/client"
 import { useToastStore } from "@/app/lib/useToastStore"
 import { useRouter } from "next/navigation"
@@ -136,10 +135,10 @@ export default function EditInterest() {
             setInterest={setNewInterest}
             />
 
-            <EditButtonInterest
+             {/* <EditButtonInterest
             value={newInterest}
             loading={loading}
-            onClick={handleSubmit} />
+            onClick={handleSubmit} /> */}
             </>
             }
         </SubWrap>
