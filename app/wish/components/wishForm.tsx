@@ -13,7 +13,6 @@ const FormWrap = styled.div`
     flex-wrap: wrap;
     gap: 5px;
 `
-
 export default function WishForm({session}) {
     const supabase = createClient()
     const setToast = useToastStore((state)=>state.setToast)

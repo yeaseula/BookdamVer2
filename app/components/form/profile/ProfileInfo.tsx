@@ -11,9 +11,10 @@ const Label = styled.div`
 export default function ProfileInfo({setEmail,setPassword,setNickname,interest,setInterest}) {
     return(
         <>
-        <Label>
+        {/* <Label>
             <span>이메일</span>
-            <InputFields type={"email"}
+            <InputFields
+            type={"email"}
             name={"login-emapl"}
             placeholder={"이메일을 입력해주세요"}
             onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setEmail(e.currentTarget.value)}
@@ -34,7 +35,7 @@ export default function ProfileInfo({setEmail,setPassword,setNickname,interest,s
             placeholder={"8자 이상, 숫자/영문 조합해주세요"}
             onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setPassword(e.currentTarget.value)}
             />
-        </Label>
+        </Label> */}
         <Label style={{ marginTop: '10px' }}>
             <span>관심 카테고리</span>
                 <InterestList

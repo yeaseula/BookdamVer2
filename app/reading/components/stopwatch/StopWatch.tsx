@@ -10,18 +10,31 @@ import InputFields from "@/app/components/form/input"
 import { Container, Card, Close, Title, Timer, BtnWrap, Btn, Circle } from "../Modal.styled"
 import { motion, AnimatePresence } from "framer-motion";
 import ReactFocusLock from "react-focus-lock"
+import { useForm, SubmitHandler } from "react-hook-form"
+import SubmitButton from "@/app/components/common/SubmitButton"
+
+interface WatchValid {
+    readedpage: number
+}
 
 export default function StopWatch() {
     const { timer, timeObj, isMinimalize} = useAuthStore()
     const [time,setTime] = useState<number>(timer) //초기값:zustand
     const [running,setRunning] = useState<boolean>(false)
     const interval = useRef<NodeJS.Timeout | null>(null)
-    const [isValid,setIsValid] = useState(false)
+    const [isvalid,setIsValid] = useState(false)
     const [isValidLoading,setIsValidLoading] = useState(false)
     const [minimalize,setMinimalize] = useState(isMinimalize) //초기값:zustand
     const [isReaded,setIsReaded] = useState(false)
-    const [radingPage,setReadingPage] = useState<number | null>(null)
     const [isPulse,setIsPulse] = useState<boolean>(true)
+
+    const {
+        register,
+        formState: { isValid, isSubmitting },
+        handleSubmit
+    } = useForm<WatchValid>({
+        mode: "onChange",
+    })
 
     const setTimerObj = useAuthStore((state)=>state.setTimerObj)
 
@@ -55,19 +68,22 @@ export default function StopWatch() {
 
     useEffect(()=> {setTimerObj("isMinimalize",minimalize)},[minimalize])
 
+    const onSubmit: SubmitHandler<WatchValid> = (data) => handleWatchSubmit(data)
+
+
     const handleClose = () => {
         setTimerObj("isTimer",false) //timer 종료
         setTimerObj("timeObj",null) //timer 대상 객체 클린
         setTimerObj("timer",0) //timer 시간 제거
     }
 
-    const handleBooksTable = async() => {
+    const handleBooksTable = async(watchdata:WatchValid) => {
         const { data, error } = await supabase
             .from("books")
             .update({
             title: timeObj.title,
             total_pages: timeObj.total_pages,
-            current_page: radingPage,
+            current_page: watchdata.readedpage,
             updated_at: new Date().toISOString()
             })
             .eq("id", timeObj.id)
@@ -86,14 +102,14 @@ export default function StopWatch() {
         }
     }
 
-    const handleLogTable = async() => {
+    const handleLogTable = async(watchdata:WatchValid) => {
         const { data, error } = await supabase
         .from("reading_logs")
         .insert([
             {
                 book_id: timeObj.id,
                 user_id: timeObj.user_id,
-                current_page:radingPage,
+                current_page: watchdata.readedpage,
                 duration_minutes: time
             },
         ]).select();
@@ -110,17 +126,17 @@ export default function StopWatch() {
         }
     }
 
-    const handleSubmit= async()=>{
+    const handleWatchSubmit= async(watchdata:WatchValid)=>{
         if(isValidLoading) return
         if(time === 0) {
             setToast('기록을 측정해주세요','info')
             return
         }
-        if(!radingPage) {
+        if(!watchdata.readedpage) {
             setToast('페이지를 입력해주세요','info');
             return
         }
-        if(timeObj.total_pages < radingPage) {
+        if(timeObj.total_pages < watchdata.readedpage) {
             setToast('총 페이지보다 읽은 페이지수가 많아요!', 'info')
             return
         }
@@ -128,8 +144,8 @@ export default function StopWatch() {
         setIsValidLoading(true)
 
         try {
-            await handleBooksTable();
-            await handleLogTable();
+            await handleBooksTable(watchdata);
+            await handleLogTable(watchdata);
 
             setToast("기록이 저장됐습니다","success")
             handleClose()
@@ -177,10 +193,10 @@ export default function StopWatch() {
                 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
-                {isMinimalize ?
-                <Circle onClick={()=>setMinimalize(!isMinimalize)} $minimal={isMinimalize}>
-                    <RiAlarmFill size={28} color="#fff" />
-                </Circle>
+            {isMinimalize ?
+            <Circle onClick={()=>setMinimalize(!isMinimalize)} $minimal={isMinimalize}>
+                <RiAlarmFill size={28} color="#fff" />
+            </Circle>
             :
             <ReactFocusLock>
                 <Container>
@@ -189,11 +205,10 @@ export default function StopWatch() {
                         <Title>{timeObj.title}</Title>
                         <Timer>{format(time)}</Timer>
                         <BtnWrap>
-
-                            <Btn color="#6ac8d8" disabled={isValid} onClick={start} $pulse={isPulse}>
+                            <Btn color="#6ac8d8" disabled={isvalid} onClick={start} $pulse={isPulse}>
                                 ▶ Start
                             </Btn>
-                            <Btn color="#108377" disabled={isValid} onClick={pause}>⏸ Pause</Btn>
+                            <Btn color="#108377" disabled={isvalid} onClick={pause}>⏸ Pause</Btn>
                             <Btn color="#f48c6a"
                             disabled={isValidLoading}
                             onClick={()=>{
@@ -202,7 +217,7 @@ export default function StopWatch() {
                                     return
                                 }
                                 setIsReaded(!isReaded)
-                                setIsValid(!isValid)
+                                setIsValid(!isvalid)
                                 setRunning(false)
 
                                 if(isReaded === true) { // 아직 독서중이면 pulse 작동
@@ -214,32 +229,26 @@ export default function StopWatch() {
                             >{isReaded? '▶ RePlay' : '■ Stop'}</Btn>
                         </BtnWrap>
                         <BtnWrap>
-                            <Btn color="#424242" disabled={isValid} onClick={stop}>초기화</Btn>
+                            <Btn color="#424242" disabled={isvalid} onClick={stop}>초기화</Btn>
                             <Btn color="#757575"
                             onClick={()=>{setMinimalize(!minimalize)}}
                             >작게보기</Btn>
                         </BtnWrap>
                         {isReaded &&
                         <>
+                        <form onSubmit={handleSubmit(onSubmit)}>
                             <InputFields
+                                label="읽은 페이지"
+                                name="readedpage"
                                 type="text"
                                 placeholder="읽은 페이지"
-                                name="bookpage-read"
-                                value={radingPage ?? ""}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
-                                    const value = e.target.value;
-                                    if (value === '') {
-                                        setReadingPage(null);
-                                        return;
-                                    }
-                                    if (/^\d+$/.test(value)) {
-                                        setReadingPage(Number(value));
-                                    } else {
-                                        setToast("숫자만 입력 가능합니다!","info")
-                                    }
-                                }}
+                                register={register}
+                                show={true}
                             />
-                            <Btn color="#6ac8d8" disabled={isValidLoading} onClick={handleSubmit}>기록하기</Btn>
+                            <div className="h-[40px] mt-[25px]">
+                                <SubmitButton disabled={!isValid || isSubmitting} background="var(--point-color)" type="submit">기록하기</SubmitButton>
+                            </div>
+                        </form>
                         </>
                         }
                     </Card>

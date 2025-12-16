@@ -2,12 +2,12 @@
 import React, { memo } from "react"
 import styled from "styled-components"
 
-const Button = styled.button<{disabled:boolean}>`
+const Button = styled.button<{disabled:boolean, $background:string}>`
     width: 100%;
     height: 100%;
     color: #fff;
     border-radius: 5px;
-    background-color: var(--sub_color);
+    background-color: ${(p)=>p.$background || 'var(--sub_color)'};
     cursor: ${(props)=>props.disabled ? 'initial' : 'pointer'};
     &:disabled {
         background-color: #bdbdbd;
@@ -21,19 +21,22 @@ interface ButtonProps {
     disabled: boolean;
     active?: boolean;
     loading?: boolean;
+    background?: string;
     onClick?: () => void
 }
 
 const SubmitButton = memo(({
     type,
     active, loading, onClick,
-    disabled,
+    disabled, background,
     children
 }:ButtonProps)=>{
     const isActive = active && !loading
     return (
-        <Button type={type} disabled={disabled} onClick={onClick}>{children}</Button>
+        <Button type={type} disabled={disabled} $background={background} onClick={onClick}>{children}</Button>
     )
 })
+
+SubmitButton.displayName = 'SubmitButton'
 
 export default SubmitButton
