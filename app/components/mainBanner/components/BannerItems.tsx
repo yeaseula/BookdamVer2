@@ -31,9 +31,7 @@ export default function BannerItems() {
 
     if(!hasContent) {
         return (
-            <div className="w-[100%] rounded-3xl overflow-hidden">
-                <Skeleton height={174} className="w-[100%]" style={{ lineHeight: '1.6' }}/>
-            </div>
+            <BannerButton />
         )
     }
 
