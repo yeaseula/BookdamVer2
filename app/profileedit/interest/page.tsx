@@ -1,8 +1,9 @@
 "use client"
 
 import styled from "styled-components"
-import InterestList from "@/app/components/form/Interest/InterestList"
-import { useState, useRef } from "react"
+import InterestLists from "@/app/components/form/interests/InterestList"
+import { useForm, SubmitHandler, FormProvider, useWatch } from "react-hook-form"
+import { useState } from "react"
 import createClient from "@/utils/supabase/client"
 import { useToastStore } from "@/app/lib/useToastStore"
 import { useRouter } from "next/navigation"
@@ -10,26 +11,24 @@ import { useAuthStore, DataState, Profiles } from "@/app/lib/userfetch"
 import Skeleton from "react-loading-skeleton"
 import 'react-loading-skeleton/dist/skeleton.css'
 import { SubWrap } from "@/app/components/common/container.styled"
+import SubmitButton from "@/app/components/common/SubmitButton"
 
-const Button = styled.button<{$isOriginFetch:boolean}>`
-    background: ${(p)=>p.$isOriginFetch ? 'var(--point-color)' :'var(--sub_color)' };
-    color: #fff;
-    font-size: 1.2rem;
+const Tags = styled.span`
     display: inline-block;
-    padding: 2px 12px 1px;
-    margin-bottom: 10px;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: background 0.3s;
+    margin-left: 5px;
+    border-radius: 50px;
+    border: 1px solid var(--color_medium_gray);
+    font-size: 1.2rem;
+    padding: 2px 12px 0;
+    margin-bottom: 1px;
 `
+
+interface InterestsValid {
+    interests: []
+}
 
 export default function EditInterest() {
     const { session, profile } = useAuthStore()
-    const [isOriginFetch, setIsOriginFecth] = useState<boolean>(false)
-
-    const originListRef = useRef<string[]>([])
-
-    const [newInterest,setNewInterest] = useState<string[]>([])
     const [loading,setLoading] = useState<boolean>(false);
     const supabase = createClient()
     const setToast = useToastStore((state)=>state.setToast)
@@ -37,7 +36,25 @@ export default function EditInterest() {
     const router = useRouter()
     let debounce:boolean = false
 
-    const handleSubmit = async() => {
+    const methods = useForm<InterestsValid>({
+        mode: "onChange",
+        defaultValues: {
+            interests: [],
+        },
+    })
+
+    const {
+        control,
+        formState: { isValid, isSubmitting },
+        handleSubmit,
+    } = methods
+
+    const interests = useWatch({ control, name: "interests"})
+    let interestsValid = interests?.length > 0
+
+    const onSubmit: SubmitHandler<InterestsValid> = (data) => handleInterestSubmit(data)
+
+    const handleInterestSubmit = async(interestdata:InterestsValid) => {
         if(debounce || loading || !session) return
 
         debounce = true
@@ -46,19 +63,18 @@ export default function EditInterest() {
         try {
             const { error } = await supabase
                 .from("profiles")
-                .update({ interests: newInterest })
+                .update({ interests: interestdata.interests })
                 .eq("id", session.user.id);
 
             if (error) throw new Error('관심사 변경에 실패했습니다.')
             const newProfile:DataState<Profiles> = {
                 data: {
                     ...profile.data,
-                    interests: newInterest
+                    interests: interestdata.interests
                 },
                 error: error,
                 ok: !error
             }
-
 
             router.push('/profileedit')
 
@@ -74,20 +90,6 @@ export default function EditInterest() {
             setToast(errorMessage, "error")
             debounce = false
             setLoading(false)
-        }
-    }
-    const handleOriginFetch = () => {
-        if(isOriginFetch) {
-            const filterInterests = newInterest.filter((ele)=> !originListRef.current.includes(ele))
-            setNewInterest(filterInterests)
-            setIsOriginFecth(false)
-            originListRef.current = []
-        } else {
-            originListRef.current = profile.data.interests
-            setNewInterest(prev => [
-                ...new Set([...prev, ...originListRef.current])
-            ])
-            setIsOriginFecth(true)
         }
     }
 
@@ -124,21 +126,19 @@ export default function EditInterest() {
             }
             {profile &&
             <>
-            <Button type="button" $isOriginFetch={isOriginFetch} onClick={handleOriginFetch}>
-                {isOriginFetch ? '현재 관심사를 불러왔어요!' : '현재 관심사를 불러올까요?'}
-            </Button>
-            <InterestList
-            interest={newInterest}
-            originList={originListRef}
-            originFetch={isOriginFetch}
-            setIsOriginFecth={setIsOriginFecth}
-            setInterest={setNewInterest}
-            />
-
-             {/* <EditButtonInterest
-            value={newInterest}
-            loading={loading}
-            onClick={handleSubmit} /> */}
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <p className="text-2xl font-medium">현재 관심사는
+                    {profile.data?.interests.map((inter)=>(
+                    <Tags key={inter}>{inter}</Tags>
+                    ))}
+                </p>
+                <FormProvider {...methods}>
+                    <InterestLists />
+                </FormProvider>
+                <div className="h-[40px] mt-[35px]">
+                <SubmitButton disabled={!isValid || !interestsValid || isSubmitting} type="submit">관심사 수정</SubmitButton>
+                </div>
+            </form>
             </>
             }
         </SubWrap>

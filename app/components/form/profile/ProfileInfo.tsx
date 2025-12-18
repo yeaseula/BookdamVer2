@@ -1,7 +1,6 @@
 "use client"
 import styled from "styled-components"
 import InputFields from "../input"
-import InterestList from "../Interest/InterestList"
 const Label = styled.div`
     width: 100%;
     display: block;
@@ -36,12 +35,12 @@ export default function ProfileInfo({setEmail,setPassword,setNickname,interest,s
             onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setPassword(e.currentTarget.value)}
             />
         </Label> */}
-        <Label style={{ marginTop: '10px' }}>
+        {/* <Label style={{ marginTop: '10px' }}>
             <span>관심 카테고리</span>
                 <InterestList
                 interest={interest}
                 setInterest={setInterest}/>
-        </Label>
+        </Label> */}
         </>
     )
 }

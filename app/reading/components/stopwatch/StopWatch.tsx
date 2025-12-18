@@ -162,7 +162,6 @@ export default function StopWatch() {
         }
     }
 
-
     return(
         <>
         <AnimatePresence>

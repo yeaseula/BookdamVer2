@@ -71,7 +71,6 @@ export default function SignUp() {
     const interests = useWatch({ control, name: "interests"})
     let interestsValid = interests?.length > 0
 
-
     const onSubmit: SubmitHandler<SignFormValid> = (data) => handleSignUp(data)
 
     const handleSignUp = async(submitdata:SignFormValid)=>{
