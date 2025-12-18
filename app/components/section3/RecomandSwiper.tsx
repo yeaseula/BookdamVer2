@@ -48,7 +48,7 @@ export default function RecomandSwiper(){
     const { session,profile } = useAuthStore()
     const setToast = useToastStore((state)=>state.setToast)
     const [isWorking,setIsWorking] = useState(false)
-    const [AithumbArr,setAiThumbArr] = useState([])
+    const [AithumbArr,setAiThumbArr] = useState<BookAiType[]>([])
     const interest = profile.data?.interests
     const throwError = useErrorUtil()
     let debounse:boolean = false

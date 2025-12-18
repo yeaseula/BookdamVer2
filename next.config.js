@@ -7,6 +7,7 @@ module.exports = {
       {
         hostname: 'search1.kakaocdn.net'
       }
-    ]
+    ],
+    domains: ['image.aladin.co.kr']
   }
 }

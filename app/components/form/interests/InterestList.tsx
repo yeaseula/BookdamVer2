@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import interest from '../Interest/category.json'
+import interest from '../../../data/category.json'
 import InterestGroup from './InterestGroup'
 import { useFormContext, useWatch } from "react-hook-form"
 import { SignFormValid } from '@/app/lib/Valid'

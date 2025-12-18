@@ -2,6 +2,10 @@
 
 import Error from "../error";
 import { NetworkError, throwHttpError } from "../error/errorLibrary";
+import { BookAiType } from "./dataTypes";
+import { randomInt, shuffle } from "./aiRecomand";
+import { ALADIN_INTEREST_MAP } from "../data/categoryMap";
+
 export const fetchBookCover = async (title:string,author:string) => {
 
     try {
@@ -39,52 +43,53 @@ export const fetchBookCover = async (title:string,author:string) => {
     }
 }
 
-interface BookAiType {
-    isbn: string;
-    authors: string[]
-    thumbnail: string;
-    title: string;
-    contents: string;
-    price: number;
-    sale_price: number;
-    error?: unknown;
-}
+const fetchAladin = async (categoryId: number) => {
+    const res = await fetch(`/api/aladin?categoryId=${categoryId}`);
+    if(!res.ok) throwHttpError(res)
+    return res.json();
+};
 
 export const fetchBookAI = async(interest:string[]) => {
 
-    const keywords = interest;
-    if(!keywords) return;
+    if(!interest.length) { //관심배열이 없을 경우 랜덤으로 선택
+        const allKeys = Object.keys(ALADIN_INTEREST_MAP);
+        const shuffledKeys = shuffle(allKeys)
+        interest = shuffledKeys.slice(0,4)
+    }
+
+    const randomIndex = randomInt(0,interest.length - 1)
+    const selectInterest = interest[randomIndex]
+
+    const categoryId = ALADIN_INTEREST_MAP[selectInterest] ?? []
+    if(!categoryId.length) return []
 
     try {
-        const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
-        const res = await fetch(`https://dapi.kakao.com/v3/search/book?query=${randomKeyword}&size=15`, {
-            headers: {
-                Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_KEY}`
-            }
-        });
+        const requests = categoryId.map(id => fetchAladin(id))
+        const results = await Promise.allSettled(requests);
 
-        if(!res.ok) {
-            throwHttpError(res)
+        const books: BookAiType[] = [];
+
+        for (const result of results) {
+            if (result.status === 'fulfilled') {
+                const items = result.value?.item ?? [];
+                for(const book of items) {
+                    if (!book.isbn || !book.title) continue;
+                    books.push({
+                        isbn: book.isbn,
+                        authors: book.author ?? 'unknown',
+                        thumbnail: book.cover ?? '',
+                        title: book.title,
+                        contents: book.description ?? '',
+                        price: Number(book.priceStandard ?? 0),
+                        sale_price: Number(book.priceSales ?? 0),
+                    })
+                }
+            } else {
+                console.warn('Aladin fetch failed for one category:', result.reason);
+            }
         }
 
-        const data = await res.json();
-
-        const BookAiResult:BookAiType[] = []
-
-        data?.documents.forEach((ele)=>{
-            const test:BookAiType = {
-                isbn : ele.isbn,
-                authors: ele.authors,
-                thumbnail: ele.thumbnail,
-                title: ele.title,
-                contents: ele.contents,
-                price: ele.price,
-                sale_price: ele.sale_price,
-            }
-            BookAiResult.push(test)
-        })
-
-        return BookAiResult
+        return books
 
     } catch(error) {
         console.log(error)
