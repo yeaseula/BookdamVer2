@@ -181,7 +181,7 @@ export default function SignUp() {
             {loading && <SpinnerArea text="회원가입 처리중..." />}
             <Image
             src={'/images/main-logo.svg'}
-            alt="로고"
+            alt=""
             width={100}
             height={60}
             style={ImageStyle}
