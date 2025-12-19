@@ -7,7 +7,7 @@ import Link from "next/link"
 const BookThumb = styled.div`
     position: relative;
     width: 100px;
-    aspect-ratio: 3/4;
+    aspect-ratio: 0.68;
     background-color: #bdbdbd;
     > img {
         position: absolute;
