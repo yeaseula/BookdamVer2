@@ -10,24 +10,21 @@ import { ErrorBoundary } from "react-error-boundary"
 import { CompoErrorFallBack } from "../error/CompoErrorFallBack"
 
 export default function MainPage() {
-    const { session, profile, isReviewLoaded } = useAuthStore()
-    return(
-        <>
-        <MainBanner />
-        {/* {(!session || !profile || !isReviewLoaded) && <SpinnerArea text="로딩중 .."/>}
-        {(session || profile || isReviewLoaded) && (
-            <>
-                <MainBanner />
-                <SectionPageOne />
-                <div className="mt-5 px-[15px] pt-[15px] pb-[10x]">
-                <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
-                    <Calendar/>
-                </ErrorBoundary>
-                </div>
-                <SectionPageThree />
-            </>
-        )} */}
+    const { session, profile, isReviewLoaded } = useAuthStore();
 
-        </>
+    const isLoading = !session || !profile || !isReviewLoaded
+
+    return(
+        <div className={`wrapper ${isLoading ?'loaded' : ''}`}>
+            <SpinnerArea text="로딩중 .." announce={isLoading}/>
+            <MainBanner />
+            <SectionPageOne />
+            <div className="mt-5 px-[15px] pt-[15px] pb-[10x]">
+            <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
+                <Calendar/>
+            </ErrorBoundary>
+            </div>
+            <SectionPageThree />
+        </div>
     )
 }

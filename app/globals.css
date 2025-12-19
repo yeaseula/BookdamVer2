@@ -72,6 +72,15 @@ button:focus-visible, a:focus-visible {
 outline: 2px solid var(--point-color)
 }
 
+.wrapper .spinArea {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.loaded .spinArea {
+  opacity: 1;
+}
+
 .dark {
   --background: #424242;
   --main-color-dark: #7f8a99;

@@ -20,7 +20,6 @@ const Container = styled.div<{$isBlur:boolean}>`
         left: 0;
     }
     `
-
 const Inner = styled.div`
     display: flex;
     flex-direction: column;
@@ -28,14 +27,26 @@ const Inner = styled.div`
     justify-content: center;
     text-align: center;
 `
+interface SpinnerProps {
+    text: string
+    isBlur?: boolean
+    announce?: boolean
+}
 
-
-export default function SpinnerArea({ text, isBlur } : {text:string, isBlur?:boolean}) {
+export default function SpinnerArea({ text, isBlur, announce = false }:SpinnerProps) {
     return(
-        <Container $isBlur={isBlur}>
+        <Container $isBlur={isBlur} className="spinArea">
             <Inner>
+                <div aria-hidden="true">
                 <FireworkSpinner />
-                <p className="mt-2 text-xl text-gray-600">{text}</p>
+                </div>
+                {announce ? (
+                    <p role="status" aria-live="polite" className="mt-2 text-xl text-gray-600">
+                        {text}
+                    </p>
+                ) : (
+                    <p aria-hidden="true" className="mt-2 text-xl text-gray-600">{text}</p>
+                )}
             </Inner>
         </Container>
     )
