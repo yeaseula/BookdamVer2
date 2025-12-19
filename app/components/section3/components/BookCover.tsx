@@ -2,11 +2,9 @@ import styled from "styled-components"
 import Image from "next/image"
 import { useAuthStore } from "@/app/lib/userfetch"
 import { useMemo, useState } from "react"
-import Link from "next/link"
-
 const BookThumb = styled.div`
     position: relative;
-    width: 100px;
+    width: 85px;
     aspect-ratio: 0.68;
     background-color: #bdbdbd;
     > img {

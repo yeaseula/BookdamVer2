@@ -8,7 +8,7 @@ export async function GET(req: Request) {
         return NextResponse.json({ error: "categoryId required" }, { status: 400 });
     }
 
-    const url = `https://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=${process.env.ALADIN_KEY}&QueryType=ItemNewSpecial&CategoryId=${categoryId}&SearchTarget=Book&Cover=MidBig&MaxResults=10&start=1&Output=JS&Version=20131101`;
+    const url = `https://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=${process.env.ALADIN_KEY}&QueryType=ItemNewSpecial&CategoryId=${categoryId}&SearchTarget=Book&Cover=Mid&MaxResults=10&start=1&Output=JS&Version=20131101`;
 
     const res = await fetch(url);
     const data = await res.json();
