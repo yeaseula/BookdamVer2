@@ -83,14 +83,14 @@ const queriesStart = Date.now();
     .single(),
   ])
 
-   console.log('📊 6개 테이블 병렬 쿼리:', Date.now() - queriesStart, 'ms');
+  console.log('📊 6개 테이블 병렬 쿼리:', Date.now() - queriesStart, 'ms');
 console.log('⏱️ createClient 전체:', Date.now() - totalStart, 'ms');
 
   return {
     supabase,
     session,
     profile : {
-      data: profile,
+      data: profile.data,
       ok: !profile.error,
       error: profile.error
     },
