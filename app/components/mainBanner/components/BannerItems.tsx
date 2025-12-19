@@ -29,26 +29,26 @@ export default function BannerItems() {
         throwSupabaseError(reviews.error)
     }
 
-    if(!hasContent) {
-        return (
-            <BannerButton />
-        )
-    }
+    // if(!hasContent) {
+    //     return (
+    //         <BannerButton />
+    //     )
+    // }
 
-    if(hasContent) {
-        return (
-        <>
-            <div className="w-[125px] h-[100%]">
-                <ErrorBoundary
-                FallbackComponent={CompoErrorFallBack}
-                >
-                    <MainSwiper />
-                </ErrorBoundary>
-            </div>
-            <BannerButton/>
-        </>
-        )
-    }
+    // if(hasContent) {
+    //     return (
+    //     <>
+    //         <div className="w-[125px] h-[100%]">
+    //             <ErrorBoundary
+    //             FallbackComponent={CompoErrorFallBack}
+    //             >
+    //                 <MainSwiper />
+    //             </ErrorBoundary>
+    //         </div>
+    //         <BannerButton/>
+    //     </>
+    //     )
+    // }
 
     return(
         <>

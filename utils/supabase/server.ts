@@ -25,24 +25,9 @@ export default async function createClient() {
     }
   )
 
-const totalStart = Date.now();
-
   const { data: {session} } = await supabase.auth.getSession();
   if (!session) return { supabase, session: null, profile: null };
 
-    console.log('🔐 세션 확인 완료:', Date.now() - totalStart, 'ms');
-
-
-  // const { data: profile, error: profileError } = await supabase
-  // .from('profiles')
-  // .select('*')
-  // .eq('id', session.user.id)
-  // .single();
-
-  //if(profileError) throw new Error('프로필 데이터를 불러올 수 없습니다.')
-
-
-const queriesStart = Date.now();
 
   const [ profile , reviews, memo, books, log, wish, settings ] = await Promise.all([
     supabase
@@ -82,9 +67,6 @@ const queriesStart = Date.now();
     .order('updated_at', { ascending: false })
     .single(),
   ])
-
-  console.log('📊 6개 테이블 병렬 쿼리:', Date.now() - queriesStart, 'ms');
-console.log('⏱️ createClient 전체:', Date.now() - totalStart, 'ms');
 
   return {
     supabase,
