@@ -13,6 +13,7 @@ export default function MainPage() {
     const { session, profile, isReviewLoaded } = useAuthStore()
     return(
         <>
+        <MainBanner />
         {/* {(!session || !profile || !isReviewLoaded) && <SpinnerArea text="로딩중 .."/>}
         {(session || profile || isReviewLoaded) && (
             <>
@@ -26,14 +27,7 @@ export default function MainPage() {
                 <SectionPageThree />
             </>
         )} */}
-                <MainBanner />
-                <SectionPageOne />
-                <div className="mt-5 px-[15px] pt-[15px] pb-[10x]">
-                <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
-                    <Calendar/>
-                </ErrorBoundary>
-                </div>
-                <SectionPageThree />
+
         </>
     )
 }
