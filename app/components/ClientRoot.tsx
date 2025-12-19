@@ -12,10 +12,10 @@ interface Props {
   initialSession: Session | null
   initialProfile: DataState<Profiles>
   initialReview: DataState<Reviews[]>
-  initialMemo: DataState<Memo[]>
+  //initialMemo: DataState<Memo[]>
   initialBooks: DataState<Books[]>
-  initialLog: DataState<Log[]>
-  initialWish: DataState<Wish[]>
+  //initialLog: DataState<Log[]>
+  //initialWish: DataState<Wish[]>
   initialSettings: any
   children: React.ReactNode
 }
@@ -24,10 +24,10 @@ export default function ClientRoot({
   initialSession,
   initialProfile,
   initialReview,
-  initialMemo,
+  //initialMemo,
   initialBooks,
-  initialLog,
-  initialWish,
+  //initialLog,
+  //initialWish,
   initialSettings,
   children}:Props) {
 
@@ -60,10 +60,10 @@ export default function ClientRoot({
       setSession(initialSession)
       setProfile(initialProfile)
       setData('reviews',initialReview)
-      setData('memo',initialMemo)
+      //setData('memo',initialMemo)
       setData('books',initialBooks)
-      setData('log',initialLog)
-      setData('wish',initialWish)
+      //setData('log',initialLog)
+      //setData('wish',initialWish)
       initSettings(initialSettings)
       handleServerOffDetection() //server연결 탐지
 
