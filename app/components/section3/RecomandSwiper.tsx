@@ -27,7 +27,6 @@ const SliderWrap = styled.div`
 const StyleSwiper = styled(Swiper)`
     overflow:visible;
     width: 85%;
-    .swiper-slide { opacity: 0.7; };
     .swiper-slide-active { opacity: 1 !important; }
     .swiper-slide:focus-visible { outline: 2px solid var(--point-color) }
 `

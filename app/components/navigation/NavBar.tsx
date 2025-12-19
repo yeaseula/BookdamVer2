@@ -21,7 +21,7 @@ const NavWrap = styled.nav`
     bottom: 0;
     z-index: 10;
 `
-const NavCont = styled.ul`
+const NavCont = styled.div`
     width: 100%;
     box-shadow: 0 -2px 15px 0 rgba(0, 0, 0, 0.1);
     display: flex;
@@ -31,7 +31,7 @@ const NavCont = styled.ul`
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
 `
-const NavList = styled.li`
+const NavList = styled.div`
     flex: 1 1 20%;
     text-align: center;
     position: relative;

@@ -29,7 +29,7 @@ export default async function createClient() {
   if (!session) return { supabase, session: null, profile: null };
 
 
-  const [ profile , reviews, books, settings ] = await Promise.all([
+  const [ profile,reviews,memo,books,log,wish,settings ] = await Promise.all([
     supabase
     .from('profiles')
     .select('*')
@@ -40,26 +40,26 @@ export default async function createClient() {
     .select('*')
     .eq('user_id', session.user.id)
     .order('created_at', { ascending: false }),
-    // supabase
-    // .from('memo')
-    // .select('*')
-    // .eq('user_id',session.user.id)
-    // .order('created_at', { ascending: false }),
+    supabase
+    .from('memo')
+    .select('*')
+    .eq('user_id',session.user.id)
+    .order('created_at', { ascending: false }),
     supabase
     .from('books')
     .select('*')
     .eq('user_id', session.user.id)
     .order('updated_at', { ascending: false }),
-    // supabase
-    // .from('reading_logs')
-    // .select('*')
-    // .eq('user_id', session.user.id)
-    // .order('created_at', { ascending: false }),
-    // supabase
-    // .from('wish')
-    // .select('*')
-    // .eq('user_id', session.user.id)
-    // .order('updated_at', { ascending: false }),
+    supabase
+    .from('reading_logs')
+    .select('*')
+    .eq('user_id', session.user.id)
+    .order('created_at', { ascending: false }),
+    supabase
+    .from('wish')
+    .select('*')
+    .eq('user_id', session.user.id)
+    .order('updated_at', { ascending: false }),
     supabase
     .from('user_settings')
     .select('*')
@@ -81,26 +81,26 @@ export default async function createClient() {
       ok: !reviews.error,
       error: reviews.error
     },
-    // memo : {
-    //   data: memo.data,
-    //   ok: !memo.error,
-    //   error: memo.error
-    // },
+    memo : {
+      data: memo.data,
+      ok: !memo.error,
+      error: memo.error
+    },
     books : {
       data: books.data,
       ok: !books.error,
       error: books.error
     },
-    // log : {
-    //   data: log.data,
-    //   ok: !log.error,
-    //   error: log.error
-    // },
-    // wish : {
-    //   data: wish.data,
-    //   ok: !wish.error,
-    //   error: wish.error
-    // },
+    log : {
+      data: log.data,
+      ok: !log.error,
+      error: log.error
+    },
+    wish : {
+      data: wish.data,
+      ok: !wish.error,
+      error: wish.error
+    },
     settings : {
       data: settings.data,
       ok: !settings.error,
