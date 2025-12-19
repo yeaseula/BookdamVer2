@@ -12,6 +12,7 @@ export default function GuardLogin() {
             alt="이미 로그인 중"
             width={250}
             height={250}
+            priority
             />
 
             <p className="font-semibold text-3xl mb-5.5">이미 로그인 중입니다 :)</p>

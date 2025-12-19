@@ -11,6 +11,7 @@ export default function GuardNeedLogin() {
             alt="로그인 필요"
             width={250}
             height={250}
+            priority
             />
 
             <p className="font-semibold text-3xl mb-5.5">로그인 후 이용 가능합니다 :)</p>

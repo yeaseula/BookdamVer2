@@ -1,5 +1,6 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import styled, {keyframes} from 'styled-components';
 import { useAuthStore } from '../../../lib/userfetch';
 import Skeleton from 'react-loading-skeleton';
@@ -19,6 +20,7 @@ import { fetchBookCover } from '@/app/lib/fetchBookCover';
 import { useErrorUtil } from '@/app/error/useErrorUtil';
 import { RiExpandHorizontalLine } from '@remixicon/react';
 import { BannerBook } from '@/app/lib/dataTypes';
+import { SlideImageStyle } from '../../common/ImageStyle';
 
 const StyleSwiper = styled(Swiper)`
     position: relative;
@@ -110,10 +112,10 @@ export default function MainSwiper() {
         return () => clearTimeout(timer)
     },[isReady])
 
-    const handleHint = useCallback(()=>{
+    const handleHint =()=>{
         if(!isInfo) return
         setIsInfo(false)
-    },[])
+    }
 
     return (
         <>
@@ -157,20 +159,31 @@ export default function MainSwiper() {
                         <SwiperSlide
                         key={idx}
                         tabIndex={0}
-                        aria-label={`${ele.booktitle} 표지`}
-                        style={{ backgroundImage: 'url("/images/noThumb.svg")' }}
+                        aria-label={`${idx}번째 표지`}
                         >
-                            <p className='mt-5 text-center text-xl'>{ele.booktitle}</p>
-                            <p className='text-center text-xl'>썸네일이 없습니다</p>
+                            <Image
+                            src={"/images/noThumb.svg"}
+                            alt={`${ele.booktitle} 표지`}
+                            width={125}
+                            height={174}
+                            priority
+                            />
                         </SwiperSlide>
                     }
                     {ele.bookThumb &&
                         <SwiperSlide
                         key={idx}
                         tabIndex={0}
-                        aria-label={`${ele.booktitle} 표지`}
-                        style={{ backgroundImage : `url(${ele.bookThumb})` }}
-                        />
+                        aria-label={`${idx}번째 슬라이드`}
+                        >
+                            <Image
+                            src={ele.bookThumb}
+                            alt={`${ele.booktitle} 표지`}
+                            width={'125'}
+                            height={'174'}
+                            fetchPriority='high'
+                            />
+                        </SwiperSlide>
                     }
                     </>
                 ))}

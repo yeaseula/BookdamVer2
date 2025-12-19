@@ -127,11 +127,13 @@ export default function EditInterest() {
             {profile &&
             <>
             <form onSubmit={handleSubmit(onSubmit)}>
+                {profile.data?.interests.length !== 0 &&
                 <p className="text-2xl font-medium">현재 관심사는
                     {profile.data?.interests.map((inter)=>(
                     <Tags key={inter}>{inter}</Tags>
                     ))}
                 </p>
+                }
                 <FormProvider {...methods}>
                     <InterestLists />
                 </FormProvider>

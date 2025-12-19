@@ -38,7 +38,7 @@ const FooterToggle = styled.p`
     color: #424242;
     cursor: pointer;
 `
-const CopyRightDropDown = styled.ul`
+const CopyRightDropDown = styled.ul<{$togglestate:boolean}>`
     opacity: ${(props) => props.$togglestate ? '1' : '0'};
     height: ${(props) => props.$togglestate? '90px' : '0'};
     padding-top: ${(props) => props.$togglestate? '15px' : '0'};
@@ -71,7 +71,8 @@ export default function Footer() {
             <Image src={'/images/main-logo.svg'}
             alt={'logo'}
             width={86}
-            height={43}/>
+            height={43}
+            />
         </LogoBox>
         <FooterMenu>
             <FooterMenuCont><Link href="#"><span>이용약관</span></Link></FooterMenuCont>
