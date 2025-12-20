@@ -6,10 +6,10 @@ import styled from "styled-components"
 import { throwSupabaseError } from "@/app/error/errorLibrary"
 import SkeletonBox from "../common/SkeletonBox"
 
-const ReadBox = styled.div`
+const ReadBox = styled.section`
     position: relative;
+    margin-top: 20px;
     text-align: center;
-    padding: 0;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     background-color: var(--main-color);
@@ -30,6 +30,7 @@ export default function ReadingState() {
     }
 
     return (
+        <section className="pr-5 pl-5">
         <ReadBox>
             <SkeletonBox isLoading={isLoading} />
             <Image
@@ -51,5 +52,6 @@ export default function ReadingState() {
                 </ReadBoxP>
             )}
         </ReadBox>
+        </section>
     )
 }

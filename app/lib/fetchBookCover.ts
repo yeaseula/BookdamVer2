@@ -70,13 +70,15 @@ export const fetchReviewRecomand = async ( reviews: Reviews[] ) => {
 
         const mostCategory = pickMost(categories)
 
-        const resultRecomand = await fetchAladin(mostCategory, "Bestseller", "MidBig", 1)
+        const number = Math.floor(Math.random() * 15)
+        const index = number === 0 ? number : number - 1
+        const resultRecomand = await fetchAladin(mostCategory, "Bestseller", "MidBig", number)
 
         return [{
-            bookThumb: resultRecomand.item[0].cover || '',
-            booktitle: resultRecomand.item[0].title,
-            bookContents: resultRecomand.item[0].description,
-            bookauthor: resultRecomand.item[0].author
+            bookThumb: resultRecomand.item[index].cover || '',
+            booktitle: resultRecomand.item[index].title,
+            bookContents: resultRecomand.item[index].description,
+            bookauthor: resultRecomand.item[index].author
         }]
     } catch(err) {
         console.log(err)
@@ -92,12 +94,16 @@ export const fetchReviewRecomand = async ( reviews: Reviews[] ) => {
 
 export const fetchEditorRecomand = async () => {
     try {
-        const request = await RecomandAladin("MidBig",1)
+
+        const number = Math.floor(Math.random() * 15)
+        const index = number === 0 ? number : number - 1
+
+        const request = await RecomandAladin("MidBig",number)
         return [{
-            bookThumb: request.item[0].cover || '',
-            booktitle: request.item[0].title,
-            bookContents: request.item[0].description,
-            bookauthor: request.item[0].author
+            bookThumb: request.item[index].cover || '',
+            booktitle: request.item[index].title,
+            bookContents: request.item[index].description,
+            bookauthor: request.item[index].author
         }]
     } catch(err) {
         console.log(err)
