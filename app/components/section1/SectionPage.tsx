@@ -4,7 +4,7 @@ import ReadingHistory from "./ReadingHistory"
 import { ErrorBoundary } from "react-error-boundary"
 import { CompoErrorFallBack } from "@/app/error/CompoErrorFallBack"
 import { NetworkError } from "@/app/error/errorLibrary"
-import BannerItems from "../mainBanner/components/BannerItems"
+import BannerItems from "./BannerItems"
 
 export default function SectionPageOne() {
 

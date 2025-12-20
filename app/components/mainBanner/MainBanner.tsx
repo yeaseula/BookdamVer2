@@ -1,9 +1,6 @@
 import styled from "styled-components"
 import WaveBack from "./WaveBack"
-import BannerItems from "./components/BannerItems"
-import UserName from "./components/UserName"
-import { ErrorBoundary } from "react-error-boundary"
-import { CompoErrorFallBack } from "@/app/error/CompoErrorFallBack"
+import UserName from "./UserName"
 import BannerButton from "../mainButton/bannerButton"
 
 const Container = styled.section`

@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import { useAuthStore } from "@/app/lib/userfetch";
-import SkeletonBox from "../../common/SkeletonBox";
+import SkeletonBox from "../common/SkeletonBox";
 
 const Text = styled.div`
     position: relative;

@@ -1,19 +1,14 @@
 "use client"
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuthStore } from "@/app/lib/userfetch";
-import MainSwiper from "./MainSwiper"
-import BannerButton from "../../mainButton/bannerButton";
-import { ErrorBoundary } from "react-error-boundary";
-import { CompoErrorFallBack } from "@/app/error/CompoErrorFallBack";
-import Skeleton from "react-loading-skeleton";
-import 'react-loading-skeleton/dist/skeleton.css'
 import { throwSupabaseError } from "@/app/error/errorLibrary";
-import SkeletonBox from "../../common/SkeletonBox";
+import SkeletonBox from "../common/SkeletonBox";
 import { BannerBook } from "@/app/lib/dataTypes";
 import { useErrorUtil } from "@/app/error/useErrorUtil";
 import { fetchReviewRecomand } from "@/app/lib/fetchBookCover";
 import styled from "styled-components";
+import { ImageStyle } from "../common/ImageStyle";
 
 const WRap = styled.div`
     padding: 15px;
@@ -27,11 +22,24 @@ const Card = styled.div`
     overflow: hidden;
     color: var(--color_black);
 `
+const ImageBox = styled.div`
+    width: 150px;
+    > img {
+     width: 100%;
+     height: 100%;
+     }
+`
 const Description = styled.div`
-    width: calc(100% - 155px);
+    width: calc(100% - 175px);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+`
+const BookContents = styled.p`
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 7;
 `
 const Title = styled.p`
     font-size: 2rem;
@@ -87,13 +95,19 @@ export default function BannerItems() {
         <WRap>
             <Card>
                 <SkeletonBox isLoading={isLoading} />
-                <Image src={reviewThumb[0]?.bookThumb || '/images/noThumb.svg'} alt={`${reviewThumb[0]?.booktitle} 책 표지`} width={150} height={270} />
+                <ImageBox className="overflow-hidden rounded-2xl">
+                    <Image src={reviewThumb[0]?.bookThumb || '/images/noThumb.svg'}
+                    alt={`${reviewThumb[0]?.booktitle} 책 표지`}
+                    width={150} height={217}
+                    priority
+                    />
+                </ImageBox>
                 <Description>
                     <div>
                         <p className="text-3xl font-semibold">{reviewThumb[0]?.booktitle}</p>
                         <p className="text-2xl mt-1.5">{reviewThumb[0]?.bookauthor}</p>
                     </div>
-                    <p className="text-2xl">{reviewThumb[0]?.bookContents}</p>
+                    <BookContents className="text-2xl">{reviewThumb[0]?.bookContents}</BookContents>
                 </Description>
             </Card>
         </WRap>

@@ -1,5 +1,6 @@
 export const ImageStyle = {
-    width: 'auto'
+    width: 'auto',
+    height: 'initial'
 }
 
 export const SlideImageStyle = {

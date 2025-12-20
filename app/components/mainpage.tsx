@@ -1,5 +1,5 @@
 "use client"
-import MainSlide from "./mainBanner/components/BannerItems"
+import MainSlide from "./section1/BannerItems"
 import MainBanner from "./mainBanner/MainBanner"
 import SectionPageThree from "./section3/SectionPage"
 import { useAuthStore } from "../lib/userfetch"
