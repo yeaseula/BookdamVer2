@@ -6,11 +6,11 @@ import { throwSupabaseError } from "@/app/error/errorLibrary";
 import SkeletonBox from "../common/SkeletonBox";
 import { BannerBook } from "@/app/lib/dataTypes";
 import { useErrorUtil } from "@/app/error/useErrorUtil";
-import { fetchReviewRecomand } from "@/app/lib/fetchBookCover";
+import { fetchEditorRecomand, fetchReviewRecomand } from "@/app/lib/fetchBookCover";
 import styled from "styled-components";
+import Link from "next/link";
 
-
-const WRap = styled.div`
+const Wrapper = styled.div`
     position: relative;
     padding: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
@@ -23,26 +23,43 @@ const Card = styled.div`
     color: var(--color_black);
 `
 const ImageBox = styled.div`
+    position: relative;
     width: 150px;
     height: 215px;
     background-size: cover;
     background-position: center;
+    overflow: hidden;
+    border-radius: 13px;
 `
 const Description = styled.div`
     width: calc(100% - 165px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 `
 const BookContents = styled.p`
     display: -webkit-box;
     margin-top: 20px;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    -webkit-line-clamp: 5;
     height: 100px;
 `
 const Title = styled.p`
     font-size: 2rem;
     color: var(--color_black);
     margin-bottom: 15px;
+`
+const Button = styled(Link)`
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    height: 30px;
+    padding: 0 4px;
+    border-radius: 150px;
+    text-align: center;
+    font-size: 1.4rem;
+    border-radius: 500px;
+    background-color: var(--sub_color);
+    color: #fff
 `
 
 export default function BannerItems() {
@@ -59,7 +76,6 @@ export default function BannerItems() {
 
         const MyReviewThumb = async() => {
             try {
-
                 const recomandItems = await fetchReviewRecomand(reviews.data)
                 if(isCancelled) return
 
@@ -71,7 +87,23 @@ export default function BannerItems() {
             }
         }
 
-        MyReviewThumb()
+        const EditorRecomanded = async() => {
+            try {
+                const recomandItems = await fetchEditorRecomand()
+                if(isCancelled) return
+
+                setReviewThumb(recomandItems)
+                setIsReady(true)
+            } catch(err) {
+                if(!isCancelled) throwError(err)
+            }
+        }
+
+        if(reviews.data.length === 0) {
+            EditorRecomanded()
+        } else {
+            MyReviewThumb()
+        }
 
         return () => {
             isCancelled = true
@@ -90,25 +122,29 @@ export default function BannerItems() {
             이런 책은 어때요?<br />
             최근 읽은 책을 기반으로 추천해드려요!
         </Title>
-        <WRap>
+        <Wrapper>
             <SkeletonBox isLoading={isLoading} />
             <Card>
-                <ImageBox
-                className="overflow-hidden rounded-2xl"
-                role="img"
-                aria-label={`최신 리뷰데이터 기반으로 추천한 책 ${reviewThumb[0]?.booktitle || ''} 표지`}
-                style={{ backgroundImage: `url(${reviewThumb[0]?.bookThumb || '/images/noThumb.svg'})` }}
-                >
+                <ImageBox>
+                    <Image src={reviewThumb[0]?.bookThumb || '/images/noThumb.svg'}
+                    fill
+                    alt={`최신 리뷰데이터 기반으로 추천한 책 ${reviewThumb[0]?.booktitle || ''} 표지`}
+                    priority
+                    fetchPriority="high"
+                    />
                 </ImageBox>
                 <Description>
                     <div>
                         <p className="text-3xl font-semibold">{reviewThumb[0]?.booktitle || 'Title'}</p>
                         <p className="text-2xl mt-1.5">{reviewThumb[0]?.bookauthor || 'author'}</p>
+                        <BookContents className="text-2xl">{reviewThumb[0]?.bookContents.slice(0,60) + '...' || 'content'}</BookContents>
                     </div>
-                    <BookContents className="text-2xl">{reviewThumb[0]?.bookContents || 'content'}</BookContents>
+                    <Button
+                    aria-label='예스24 판매페이지로 이동'
+                    href={`https://www.yes24.com/product/search?domain=ALL&query=${encodeURIComponent(reviewThumb[0]?.booktitle)}`} target='_blank'>More View</Button>
                 </Description>
             </Card>
-        </WRap>
+        </Wrapper>
         </>
     )
 }

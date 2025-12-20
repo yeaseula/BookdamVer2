@@ -9,13 +9,9 @@ import 'swiper/css/autoplay';
 import 'swiper/css/a11y';
 import 'swiper/css/keyboard';
 import styled from 'styled-components';
-import createClient from '@/utils/supabase/client';
-import { useToastStore } from '@/app/lib/useToastStore';
-import { useAuthStore, DataState, Wish } from '@/app/lib/userfetch';
+import { useAuthStore } from '@/app/lib/userfetch';
 import { fetchBookAI } from '@/app/lib/fetchBookCover';
 import { useErrorUtil } from '@/app/error/useErrorUtil';
-import BookCover from './components/BookCover';
-import BookDesc from './components/BookDes';
 import { BookAiType } from '@/app/lib/dataTypes';
 import SkeletonBox from '../common/SkeletonBox';
 import RealSlide from './components/RealSlide';
@@ -61,8 +57,6 @@ export default function RecomandSwiper(){
     const slides = AithumbArr.length === 0 ?
     Array.from({ length: SLIDE_COUNT },()=>null) : AithumbArr
 
-    //const slides = Array.from({ length: SLIDE_COUNT },()=>null)
-
     return (
         <SliderWrap>
             <SkeletonBox isLoading={isLoading} />
@@ -93,21 +87,6 @@ export default function RecomandSwiper(){
                     )}
                 </SwiperSlide>
                 ))}
-            {/* {AithumbArr.map((book:BookAiType,index)=>(
-                <SwiperSlide
-                key={book.isbn}
-                tabIndex={0}
-                aria-label={`${index}번째 슬라이드`}
-                >
-                    <SwiperDepth>
-                        <BookCover book={book} />
-                        <BookDesc book={book}
-                        onClick={()=>{
-                            handleWishAdd(book.title,book.authors[0],book.price)
-                        }}/>
-                    </SwiperDepth>
-                </SwiperSlide>
-            ))} */}
             </StyleSwiper>
         </SliderWrap>
     )

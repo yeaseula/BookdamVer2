@@ -39,10 +39,15 @@ const fetchAladin = async (categoryId: number, searchType: string, size: string,
     if(!res.ok) throwHttpError(res)
     return res.json();
 };
+const RecomandAladin = async(size: string, maxCount: number) => {
+    const res = await fetch(`/api/editorRecomand?&size=${size}&maxCount=${maxCount}`);
+    if(!res.ok) throwHttpError(res)
+    return res.json();
+}
 
 export const fetchReviewRecomand = async ( reviews: Reviews[] ) => {
-    try {
 
+    try {
         const requests = reviews.map(val => {
             const query = `${val.title} ${val.author}`;
             return fetchAladinReview(query,"Small")
@@ -72,6 +77,27 @@ export const fetchReviewRecomand = async ( reviews: Reviews[] ) => {
             booktitle: resultRecomand.item[0].title,
             bookContents: resultRecomand.item[0].description,
             bookauthor: resultRecomand.item[0].author
+        }]
+    } catch(err) {
+        console.log(err)
+        if (err instanceof TypeError && err.message.includes('fetch')) {
+            throw new NetworkError()
+        }
+        if(err instanceof Error) {
+            throw err
+        }
+        throw err
+    }
+}
+
+export const fetchEditorRecomand = async () => {
+    try {
+        const request = await RecomandAladin("MidBig",1)
+        return [{
+            bookThumb: request.item[0].cover || '',
+            booktitle: request.item[0].title,
+            bookContents: request.item[0].description,
+            bookauthor: request.item[0].author
         }]
     } catch(err) {
         console.log(err)

@@ -48,7 +48,7 @@ const TextBox = styled.div`
     height: 40px;
 `
 
-export default function RangeInput({ value, children, set, min = 12, max = 24 }: InputProps) {
+export default function RangeInput({ value, children, set, min = 13, max = 20 }: InputProps) {
     return (
         <label>
             <Flex>
