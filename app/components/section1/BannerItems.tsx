@@ -9,6 +9,7 @@ import { useErrorUtil } from "@/app/error/useErrorUtil";
 import { fetchReviewRecomand } from "@/app/lib/fetchBookCover";
 import styled from "styled-components";
 
+
 const WRap = styled.div`
     position: relative;
     padding: 15px;
@@ -23,10 +24,9 @@ const Card = styled.div`
 `
 const ImageBox = styled.div`
     width: 150px;
-    > img {
-        width: 100%;
-        height: 100%;
-    }
+    height: 215px;
+    background-size: cover;
+    background-position: center;
 `
 const Description = styled.div`
     width: calc(100% - 165px);
@@ -37,6 +37,7 @@ const BookContents = styled.p`
     -webkit-box-orient: vertical;
     overflow: hidden;
     -webkit-line-clamp: 5;
+    height: 100px;
 `
 const Title = styled.p`
     font-size: 2rem;
@@ -92,20 +93,19 @@ export default function BannerItems() {
         <WRap>
             <SkeletonBox isLoading={isLoading} />
             <Card>
-                <ImageBox className="overflow-hidden rounded-2xl">
-                    <Image src={reviewThumb[0]?.bookThumb || '/images/noThumb.svg'}
-                    alt={`${reviewThumb[0]?.booktitle} 책 표지`}
-                    width={150} height={217}
-                    priority
-                    fetchPriority="high"
-                    />
+                <ImageBox
+                className="overflow-hidden rounded-2xl"
+                role="img"
+                aria-label={`최신 리뷰데이터 기반으로 추천한 책 ${reviewThumb[0]?.booktitle || ''} 표지`}
+                style={{ backgroundImage: `url(${reviewThumb[0]?.bookThumb || '/images/noThumb.svg'})` }}
+                >
                 </ImageBox>
                 <Description>
                     <div>
-                        <p className="text-3xl font-semibold">{reviewThumb[0]?.booktitle}</p>
-                        <p className="text-2xl mt-1.5">{reviewThumb[0]?.bookauthor}</p>
+                        <p className="text-3xl font-semibold">{reviewThumb[0]?.booktitle || 'Title'}</p>
+                        <p className="text-2xl mt-1.5">{reviewThumb[0]?.bookauthor || 'author'}</p>
                     </div>
-                    <BookContents className="text-2xl">{reviewThumb[0]?.bookContents}</BookContents>
+                    <BookContents className="text-2xl">{reviewThumb[0]?.bookContents || 'content'}</BookContents>
                 </Description>
             </Card>
         </WRap>
