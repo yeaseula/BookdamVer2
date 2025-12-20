@@ -9,7 +9,6 @@ const Container = styled.div<{$isBlur:boolean}>`
     position: fixed;
     top: 0;
     left: calc((100% - 450px) / 2);
-    z-index: 101;
     display: flex;
     align-items: center;
     justify-content: center;

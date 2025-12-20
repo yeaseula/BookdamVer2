@@ -4,6 +4,7 @@ import BannerItems from "./components/BannerItems"
 import UserName from "./components/UserName"
 import { ErrorBoundary } from "react-error-boundary"
 import { CompoErrorFallBack } from "@/app/error/CompoErrorFallBack"
+import BannerButton from "../mainButton/bannerButton"
 
 const Container = styled.section`
     position: relative;
@@ -17,14 +18,11 @@ const Container = styled.section`
 export default function MainBanner() {
     return (
         <Container>
-            <h2 className="sr-only bg">내가 기록한 독서리뷰 목록</h2>
             <WaveBack />
             <div className="relative z-5">
                 <UserName />
-                <div className='mt-[20px] relative flex gap-[10px] justify-between items-center h-[174px]'>
-                    <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
-                        <BannerItems />
-                    </ErrorBoundary>
+                <div className='mt-[20px] h-[174px]'>
+                    <BannerButton />
                 </div>
             </div>
         </Container>

@@ -21,6 +21,7 @@ import { useErrorUtil } from '@/app/error/useErrorUtil';
 import { RiExpandHorizontalLine } from '@remixicon/react';
 import { BannerBook } from '@/app/lib/dataTypes';
 import { SlideImageStyle } from '../../common/ImageStyle';
+import SkeletonBox from '../../common/SkeletonBox';
 
 const StyleSwiper = styled(Swiper)`
     position: relative;
@@ -62,6 +63,7 @@ export default function MainSwiper() {
     const [isInfo,setIsInfo] = useState(false)
     const [reviewThumb,setReviewThumb] = useState<BannerBook[]>([])
     const throwError = useErrorUtil()
+    const isLoading = !isReady
 
     useEffect(()=>{
         if(!isReviewLoaded) return
@@ -119,77 +121,8 @@ export default function MainSwiper() {
 
     return (
         <>
-            {!isReady &&
-                <Skeleton height={174} style={{ lineHeight: '1.6', borderRadius: '10px' }} />
-            }
-            {isReady &&
-            <>
-            <StyleSwiper
-                modules={[Navigation, A11y, Keyboard, Autoplay]}
-                onSwiper={(swiper)=>SwiperRef.current = swiper}
-                navigation={{
-                    nextEl: '.next-slide-main',
-                    prevEl: '.prev-slide-main',
-                }}
-                loop={true}
-                slidesPerView={'auto'}
-                keyboard={{ enabled: true }}
-                a11y={{ enabled: true }}
-                onSlideChange={handleHint}
-            >
-                <AnimatePresence>
-                {isInfo &&
-                    <motion.div
-                    initial={{opacity:0 }}
-                    animate={{opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ ease: "easeOut", duration: 0.3 }}
-                    className='absolute top-0 left-0 w-[100%] h-[100%] z-10'
-                    >
-                        <Infor onPointerEnter={handleHint} aria-label='내가 쓴 리뷰 슬라이드입니다'>
-                            <RiExpandHorizontalLine size={24} className='text-gray-500'/>
-                            <p className='mt-2 text-xl text-gray-600'>좌 우로<br /> 움직여보세요</p>
-                        </Infor>
-                    </motion.div>
-                }
-                </AnimatePresence>
-                {reviewThumb.map((ele:BannerBook,idx:string | number)=>(
-                    <>
-                    {!ele.bookThumb &&
-                        <SwiperSlide
-                        key={idx}
-                        tabIndex={0}
-                        aria-label={`${idx}번째 표지`}
-                        >
-                            <Image
-                            src={"/images/noThumb.svg"}
-                            alt={`${ele.booktitle} 표지`}
-                            width={125}
-                            height={174}
-                            priority
-                            />
-                        </SwiperSlide>
-                    }
-                    {ele.bookThumb &&
-                        <SwiperSlide
-                        key={idx}
-                        tabIndex={0}
-                        aria-label={`${idx}번째 슬라이드`}
-                        >
-                            <Image
-                            src={ele.bookThumb}
-                            alt={`${ele.booktitle} 표지`}
-                            width={'125'}
-                            height={'174'}
-                            fetchPriority='high'
-                            />
-                        </SwiperSlide>
-                    }
-                    </>
-                ))}
-            </StyleSwiper>
-            </>
-            }
+        <SkeletonBox isLoading={isLoading} />
+
         </>
     )
 }

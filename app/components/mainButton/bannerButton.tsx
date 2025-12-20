@@ -4,7 +4,7 @@ import Button from "./Button"
 const WriteButton = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
     flex: 1;
     height: 100%;
 `

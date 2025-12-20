@@ -4,20 +4,29 @@ import ReadingHistory from "./ReadingHistory"
 import { ErrorBoundary } from "react-error-boundary"
 import { CompoErrorFallBack } from "@/app/error/CompoErrorFallBack"
 import { NetworkError } from "@/app/error/errorLibrary"
+import BannerItems from "../mainBanner/components/BannerItems"
 
 export default function SectionPageOne() {
 
     return (
-        <section className="pt-16 pr-5 pl-5">
-            <h2 className="sr-only">현재 읽고있는 책 정보</h2>
+        <section className="pt-14 pr-5 pl-5">
+            <h2 className="sr-only">리뷰를 토대로 지금까지 읽은 책을 분석합니다.</h2>
+            <div className="relative">
             <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
-                <ReadingState/>
+                <BannerItems />
             </ErrorBoundary>
-            <div className="mt-[20px]">
+            </div>
+            {/* <div className="mt-[20px]">
                 <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
                     <ReadingHistory />
                 </ErrorBoundary>
+            </div> */}
+            <div className="mt-[20px]">
+            <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
+                <ReadingState/>
+            </ErrorBoundary>
             </div>
+
         </section>
     )
 }

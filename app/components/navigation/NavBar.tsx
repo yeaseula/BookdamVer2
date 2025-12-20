@@ -19,7 +19,7 @@ const NavWrap = styled.nav`
     width: 100%;
     position: fixed;
     bottom: 0;
-    z-index: 10;
+    z-index: 70;
 `
 const NavCont = styled.div`
     width: 100%;
@@ -35,7 +35,7 @@ const NavList = styled.div`
     flex: 1 1 20%;
     text-align: center;
     position: relative;
-    z-index: 10
+    z-index: 75;
 `
 const NavLink = styled(Link)`
     display: flex;
@@ -53,7 +53,7 @@ const BallBox = styled.div<{$trans}>`
     position:absolute;
     top: 0;
     left: 0;
-    z-index: 1;
+    z-index: 70;
     display: flex;
     justify-content: center;
     align-items: center;

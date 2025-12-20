@@ -74,11 +74,14 @@ outline: 2px solid var(--point-color)
 
 .wrapper .spinArea {
   opacity: 0;
+  z-index: -99;
   transition: opacity 0.3s ease;
+  transition-delay: 0.5s;
 }
 
 .loaded .spinArea {
   opacity: 1;
+  z-index: 101;
 }
 
 .dark {

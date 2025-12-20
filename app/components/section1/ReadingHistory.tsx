@@ -31,12 +31,7 @@ export default function ReadingHistory() {
 
     return (
         <HisBox>
-            {!isReviewLoaded &&
-                <Skeleton width={120}></Skeleton>
-            }
-            {isReviewLoaded &&
             <p>지금까지 <span className="reading-book font-bold">{reviewLength}권</span>의 책을 읽었어요!</p>
-            }
         </HisBox>
     )
 }

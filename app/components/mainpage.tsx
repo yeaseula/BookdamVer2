@@ -12,7 +12,7 @@ import { CompoErrorFallBack } from "../error/CompoErrorFallBack"
 export default function MainPage() {
     const { session, profile, isReviewLoaded } = useAuthStore();
 
-    const isLoading = !session || !profile || !isReviewLoaded
+    const isLoading = !session || !profile.data || !isReviewLoaded
 
     return(
         <div className={`wrapper ${isLoading ?'loaded' : ''}`}>

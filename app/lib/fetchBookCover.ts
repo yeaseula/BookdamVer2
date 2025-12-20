@@ -5,32 +5,74 @@ import { NetworkError, throwHttpError } from "../error/errorLibrary";
 import { BookAiType } from "./dataTypes";
 import { randomInt, shuffle } from "./aiRecomand";
 import { ALADIN_INTEREST_MAP } from "../data/categoryMap";
+import { Reviews } from "./userfetch";
 
-export const fetchBookCover = async (title:string,author:string) => {
+function pickMost(arr: (number)[]) {
+    const count = new Map<any, number>();
 
+    for (const v of arr) {
+        count.set(v, (count.get(v) ?? 0) + 1);
+    }
+
+    let maxCount = 0;
+    let result = arr[0];
+
+    for (const v of arr) {
+        const c = count.get(v)!;
+        if (c > maxCount) {
+        maxCount = c;
+        result = v;
+        }
+    }
+
+    return result;
+}
+const fetchAladinReview = async (query: string, size: string) => {
+    const res = await fetch(
+        `/api/aladinThumb?query=${encodeURIComponent(query)}&size=${size}`
+    );
+    if(!res.ok) throwHttpError(res)
+    return res.json();
+};
+const fetchAladin = async (categoryId: number, searchType: string, size: string, maxCount: number) => {
+    const res = await fetch(`/api/aladin?categoryId=${categoryId}&searchType=${searchType}&size=${size}&maxCount=${maxCount}`);
+    if(!res.ok) throwHttpError(res)
+    return res.json();
+};
+
+export const fetchReviewRecomand = async ( reviews: Reviews[] ) => {
     try {
-        const query = `${title} ${author}`;
-        const apiUrl = `https://dapi.kakao.com/v3/search/book?target=all&query=${encodeURIComponent(query)}`;
 
-        const res = await fetch(apiUrl, {
-            headers: {
-                Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_KEY}`
+        const requests = reviews.map(val => {
+            const query = `${val.title} ${val.author}`;
+            return fetchAladinReview(query,"Small")
+        })
+
+        const results = await Promise.allSettled(requests);
+
+        const categories = []
+
+        for (const result of results) {
+            if(result.status === 'fulfilled') { // result = 0번째, 1번째 ...
+                const items = result.value?.item ?? []; //실제 검색 결과
+                for(const cate of items) {
+                    categories.push(cate.categoryId)
+                }
+            } else {
+                console.warn('Aladin fetch failed for one category:', result.reason);
             }
-        });
-
-        if(!res.ok) {
-            throwHttpError(res)
         }
-        const data = await res.json();
 
-        const filtered = data.documents.find((book:any) =>
-            book.title.includes(title) && book.authors.join(',').includes(author)
-        );
+        const mostCategory = pickMost(categories)
 
-        return {
-            bookThumb: (filtered || data.documents[0])?.thumbnail || '',
-            booktitle: title
-        }
+        const resultRecomand = await fetchAladin(mostCategory, "Bestseller", "MidBig", 1)
+
+        return [{
+            bookThumb: resultRecomand.item[0].cover || '',
+            booktitle: resultRecomand.item[0].title,
+            bookContents: resultRecomand.item[0].description,
+            bookauthor: resultRecomand.item[0].author
+        }]
     } catch(err) {
         console.log(err)
         if (err instanceof TypeError && err.message.includes('fetch')) {
@@ -43,11 +85,28 @@ export const fetchBookCover = async (title:string,author:string) => {
     }
 }
 
-const fetchAladin = async (categoryId: number) => {
-    const res = await fetch(`/api/aladin?categoryId=${categoryId}`);
-    if(!res.ok) throwHttpError(res)
-    return res.json();
-};
+
+export const fetchBookCover = async (title:string,author:string) => {
+
+    try {
+        const query = `${title} ${author}`;
+        const res = await fetchAladinReview(query,"MidBig")
+
+        return {
+            bookThumb: res.item[0].cover || '',
+            booktitle: res.item[0].title,
+        }
+    } catch(err) {
+        console.log(err)
+        if (err instanceof TypeError && err.message.includes('fetch')) {
+            throw new NetworkError()
+        }
+        if(err instanceof Error) {
+            throw err
+        }
+        throw err
+    }
+}
 
 export const fetchBookAI = async(interest:string[]) => {
 
@@ -64,7 +123,7 @@ export const fetchBookAI = async(interest:string[]) => {
     if(!categoryId.length) return []
 
     try {
-        const requests = categoryId.map(id => fetchAladin(id))
+        const requests = categoryId.map(id => fetchAladin(id,"ItemNewSpecial","Mid",10))
         const results = await Promise.allSettled(requests);
 
         const books: BookAiType[] = [];

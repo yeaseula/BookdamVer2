@@ -3,6 +3,8 @@
 export interface BannerBook {
     bookThumb: string;
     booktitle: string;
+    bookContents?: string;
+    bookauthor?: string;
     error?: any;
 }
 
