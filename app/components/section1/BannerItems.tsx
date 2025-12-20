@@ -24,21 +24,19 @@ const Card = styled.div`
 const ImageBox = styled.div`
     width: 150px;
     > img {
-     width: 100%;
-     height: 100%;
-     }
+        width: 100%;
+        height: 100%;
+    }
 `
 const Description = styled.div`
-    width: calc(100% - 175px);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    width: calc(100% - 165px);
 `
 const BookContents = styled.p`
     display: -webkit-box;
+    margin-top: 20px;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    -webkit-line-clamp: 7;
+    -webkit-line-clamp: 5;
 `
 const Title = styled.p`
     font-size: 2rem;
@@ -99,6 +97,7 @@ export default function BannerItems() {
                     alt={`${reviewThumb[0]?.booktitle} 책 표지`}
                     width={150} height={217}
                     priority
+                    fetchPriority="high"
                     />
                 </ImageBox>
                 <Description>
