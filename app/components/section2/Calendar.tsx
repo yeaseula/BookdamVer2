@@ -7,6 +7,10 @@ import { useAuthStore, useSettingStore } from "@/app/lib/userfetch";
 import { throwSupabaseError } from "@/app/error/errorLibrary";
 import SkeletonBox from "../common/SkeletonBox";
 
+const Section = styled.section`
+    position: relative;
+    height: 370px;
+`
 const FullCalBox = styled.div`
     padding: 15px 10px 15px;
     border-radius: 12px;
@@ -119,7 +123,7 @@ export default function Calendar() {
     }
 
     return (
-        <section className="relative">
+        <Section>
             <SkeletonBox isLoading={isLoading} />
             <h2 className="sr-only">나의 독서 스탬프 캘린더.
                 리뷰를 작성 한 날짜에 도장이 찍혀
@@ -145,6 +149,6 @@ export default function Calendar() {
                     }}
                 />
             </FullCalBox>
-        </section>
+        </Section>
     )
 }

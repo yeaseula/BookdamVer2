@@ -9,11 +9,11 @@ import SkeletonBox from "../common/SkeletonBox"
 const ReadBox = styled.div`
     position: relative;
     text-align: center;
-    padding: 15px 15px 25px;
+    padding: 0;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     background-color: var(--main-color);
-    min-height: 135px;
+    height: 150px;
 `
 const ReadBoxP = styled.p`
     margin-top: 5px;
@@ -41,7 +41,7 @@ export default function ReadingState() {
                 style={{ display: 'inline-block' }}
             />
             {books.data?.length == 0 &&
-                <p className="mt-2 text-3xl font-bold">읽고있는 책이 없어요!</p>
+                <p className="mt-3 text-3xl font-bold">읽고있는 책이 없어요!</p>
             }
             {books.data?.length > 0 && (
                 <ReadBoxP>
