@@ -18,7 +18,7 @@ export default function MainPage() {
         <div className={`wrapper ${isLoading ?'loaded' : ''}`}>
             <SpinnerArea text="로딩중 .." announce={isLoading}/>
             <MainBanner />
-            <SectionPageOne />
+            {/* <SectionPageOne /> */}
             <div className="mt-5 px-[15px] pt-[15px] pb-[10x]">
             <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
                 <Calendar/>
