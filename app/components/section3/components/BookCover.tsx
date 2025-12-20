@@ -2,6 +2,7 @@ import styled from "styled-components"
 import Image from "next/image"
 import { useAuthStore } from "@/app/lib/userfetch"
 import { useMemo, useState } from "react"
+
 const BookThumb = styled.div`
     position: relative;
     width: 85px;
@@ -17,9 +18,9 @@ const BookThumb = styled.div`
     }
 `
 const EmptyBox = styled.div`
-    width: 100px;
+    width: 85px;
     height: auto;
-    aspect-ratio: 3/4;
+    aspect-ratio: 0.68;
     background-color: #bdbdbd;
 `
 const Wish = styled.div`

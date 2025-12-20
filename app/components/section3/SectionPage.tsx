@@ -36,7 +36,7 @@ export default function SectionPageThree() {
                     height={80}
                     />
                     <Title>
-                        <span className="font-extrabold">{username}</span>님을 위해<br/>
+                        <span className="font-extrabold">{username}</span>님의 관심사 기반으로<br/>
                         AI가 추천해드려요!
                     </Title>
                 </TitleSection>

@@ -18,6 +18,8 @@ import BookCover from './components/BookCover';
 import BookDesc from './components/BookDes';
 import { BookAiType } from '@/app/lib/dataTypes';
 import SkeletonBox from '../common/SkeletonBox';
+import RealSlide from './components/RealSlide';
+import SkeletonSlide from './components/SkeletonSlide';
 
 const SliderWrap = styled.div`
     position: relative;
@@ -27,30 +29,16 @@ const SliderWrap = styled.div`
 const StyleSwiper = styled(Swiper)`
     overflow:visible;
     width: 85%;
-    .swiper-slide-active { opacity: 1 !important; }
     .swiper-slide:focus-visible { outline: 2px solid var(--point-color) }
-`
-const SwiperDepth = styled.div`
-    display: flex;
-    gap: 10px;
-    padding: 15px;
-    background-color: var(--board_background);
-    color: var(--color_black);
-    border: 1px solid #e0e0e0;
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 `
 
 export default function RecomandSwiper(){
     const SwiperRef = useRef(null);
-    const supabase = createClient()
-    const { session,profile } = useAuthStore()
-    const setToast = useToastStore((state)=>state.setToast)
-    const [isWorking,setIsWorking] = useState(false)
+    const { profile } = useAuthStore()
     const [AithumbArr,setAiThumbArr] = useState<BookAiType[]>([])
     const interest = profile.data?.interests
     const throwError = useErrorUtil()
-    let debounse:boolean = false
+
 
     useEffect(()=>{
         const RecomAi = async(array:string[])=>{
@@ -68,45 +56,12 @@ export default function RecomandSwiper(){
         RecomAi(interest)
     },[profile])
 
-    const handleWishAdd = async(title:string,author:string,price:number) => {
-
-        if(isWorking || debounse) return
-        setIsWorking(true)
-        debounse = true
-
-        try {
-            const { data, error } = await supabase.from("wish").insert([
-                {
-                    user_id: session.user.id,
-                    title,
-                    author,
-                    price,
-                },
-            ]).select();
-
-            const newWish: DataState<Wish> = {
-                data : data?.[0],
-                error: error,
-                ok: !error
-            }
-
-            if(!newWish.data || !newWish.ok) {
-                throw new Error('위시리스트 추가 실패')
-            } else {
-                setToast("읽고싶은 책 추가 성공!","success")
-                useAuthStore.getState().addData('wish',newWish)
-            }
-
-        } catch(error) {
-            setToast("읽고싶은 책 업로드 실패","error")
-            throw new Error('위시리스트 추가 실패')
-        } finally {
-            debounse = false
-            setIsWorking(false)
-        }
-    }
-
     const isLoading = AithumbArr.length === 0
+    const SLIDE_COUNT = 10
+    const slides = AithumbArr.length === 0 ?
+    Array.from({ length: SLIDE_COUNT },()=>null) : AithumbArr
+
+    //const slides = Array.from({ length: SLIDE_COUNT },()=>null)
 
     return (
         <SliderWrap>
@@ -125,7 +80,20 @@ export default function RecomandSwiper(){
                 a11y={{ enabled: true }}
                 slidesPerView={1}
             >
-            {AithumbArr.map((book:BookAiType,index)=>(
+                {slides.map((item,idx)=>(
+                <SwiperSlide
+                key={idx}
+                tabIndex={0}
+                aria-label={`${idx}번째 슬라이드`}
+                >
+                    {item ? (
+                        <RealSlide book={item} />
+                    ) : (
+                        <SkeletonSlide/>
+                    )}
+                </SwiperSlide>
+                ))}
+            {/* {AithumbArr.map((book:BookAiType,index)=>(
                 <SwiperSlide
                 key={book.isbn}
                 tabIndex={0}
@@ -139,7 +107,7 @@ export default function RecomandSwiper(){
                         }}/>
                     </SwiperDepth>
                 </SwiperSlide>
-            ))}
+            ))} */}
             </StyleSwiper>
         </SliderWrap>
     )

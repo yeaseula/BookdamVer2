@@ -85,7 +85,6 @@ export const fetchReviewRecomand = async ( reviews: Reviews[] ) => {
     }
 }
 
-
 export const fetchBookCover = async (title:string,author:string) => {
 
     try {

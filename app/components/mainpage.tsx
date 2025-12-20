@@ -24,7 +24,7 @@ export default function MainPage() {
                 <Calendar/>
             </ErrorBoundary>
             </div>
-            {/* <SectionPageThree /> */}
+            <SectionPageThree />
         </div>
     )
 }

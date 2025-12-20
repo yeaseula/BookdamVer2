@@ -17,7 +17,9 @@ const Container = styled.div<{$isLoading:boolean}>`
 export default function SkeletonBox({isLoading}:{isLoading:boolean}) {
     return (
         <Container $isLoading={isLoading} className="skeleton-box">
+            <div className='relative w-[100%] h-[100%]'>
             <Skeleton className='w-[100%] h-[100%]' />
+            </div>
         </Container>
     )
 }
