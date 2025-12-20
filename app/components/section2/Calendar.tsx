@@ -1,12 +1,11 @@
 "use client"
-import { useState, useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import styled from "styled-components";
 import { useAuthStore, useSettingStore } from "@/app/lib/userfetch";
-import Skeleton from "react-loading-skeleton";
-import 'react-loading-skeleton/dist/skeleton.css'
 import { throwSupabaseError } from "@/app/error/errorLibrary";
+import SkeletonBox from "../common/SkeletonBox";
 
 const FullCalBox = styled.div`
     padding: 15px 10px 15px;
@@ -110,6 +109,7 @@ export default function Calendar() {
     const { isReviewLoaded, reviews } = useAuthStore()
     const { userSetting } = useSettingStore()
 
+    const isLoading = !isReviewLoaded
     const stampDates = useMemo(():string[]=>{
         return reviews.data?.map(ele=>ele.end_date) ?? []
     },[reviews.data])
@@ -119,13 +119,12 @@ export default function Calendar() {
     }
 
     return (
-        <section>
-            <h2 className="sr-only">나의 독서 스탬프 캘린더</h2>
-            <div id="calendar-skeleton" className="calendar-skeleton"></div>
-            {!isReviewLoaded && (
-                <Skeleton height={361} />
-            )}
-            {isReviewLoaded && (
+        <section className="relative">
+            <SkeletonBox isLoading={isLoading} />
+            <h2 className="sr-only">나의 독서 스탬프 캘린더.
+                리뷰를 작성 한 날짜에 도장이 찍혀
+                날짜별 독서 기록을 시각적으로 확인할 수 있습니다.
+            </h2>
             <FullCalBox>
                 <FullCalendar
                     key={stampDates.join()}
@@ -146,7 +145,6 @@ export default function Calendar() {
                     }}
                 />
             </FullCalBox>
-            )}
         </section>
     )
 }

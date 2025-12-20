@@ -4,8 +4,10 @@ import Image from "next/image"
 import Skeleton from "react-loading-skeleton"
 import styled from "styled-components"
 import { throwSupabaseError } from "@/app/error/errorLibrary"
+import SkeletonBox from "../common/SkeletonBox"
 
 const ReadBox = styled.div`
+    position: relative;
     text-align: center;
     padding: 15px 15px 25px;
     border-radius: 12px;
@@ -21,12 +23,15 @@ const ReadBoxP = styled.p`
 export default function ReadingState() {
     const { isBooksLoaded, books } = useAuthStore()
 
+    const isLoading = !isBooksLoaded
+
     if(!books.ok || books.error) {
         throwSupabaseError(books.error)
     }
 
     return (
         <ReadBox>
+            <SkeletonBox isLoading={isLoading} />
             <Image
                 src={'/images/state_book.svg'}
                 alt={''}
@@ -35,25 +40,15 @@ export default function ReadingState() {
                 priority
                 style={{ display: 'inline-block' }}
             />
-            {!isBooksLoaded && (
-                <div>
-                    <Skeleton width={180} height={20} />
-                    <Skeleton width={250} height={20} />
-                </div>
-            )}
-            {isBooksLoaded && (
-                <>
-                {books.data.length == 0 &&
-                    <p className="mt-2 text-3xl font-bold">읽고있는 책이 없어요!</p>
-                }
-                {books.data.length > 0 && (
-                    <ReadBoxP>
-                        현재 읽고있는 책은
-                        <span className="reading-name font-bold"> {books.data[0].title}</span>!<br />
-                        <span className="reading-page font-bold">{books.data[0].current_page} 페이지</span>까지 읽었어요.
-                    </ReadBoxP>
-                )}
-                </>
+            {books.data?.length == 0 &&
+                <p className="mt-2 text-3xl font-bold">읽고있는 책이 없어요!</p>
+            }
+            {books.data?.length > 0 && (
+                <ReadBoxP>
+                    현재 읽고있는 책은
+                    <span className="reading-name font-bold"> {books.data[0].title}</span>!<br />
+                    <span className="reading-page font-bold">{books.data[0].current_page} 페이지</span>까지 읽었어요.
+                </ReadBoxP>
             )}
         </ReadBox>
     )

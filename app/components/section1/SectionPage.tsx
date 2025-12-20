@@ -1,6 +1,5 @@
 "use client"
 import ReadingState from "./ReadingState"
-import ReadingHistory from "./ReadingHistory"
 import { ErrorBoundary } from "react-error-boundary"
 import { CompoErrorFallBack } from "@/app/error/CompoErrorFallBack"
 import { NetworkError } from "@/app/error/errorLibrary"
@@ -16,17 +15,11 @@ export default function SectionPageOne() {
                 <BannerItems />
             </ErrorBoundary>
             </div>
-            {/* <div className="mt-[20px]">
-                <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
-                    <ReadingHistory />
-                </ErrorBoundary>
-            </div> */}
             <div className="mt-[20px]">
             <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
                 <ReadingState/>
             </ErrorBoundary>
             </div>
-
         </section>
     )
 }

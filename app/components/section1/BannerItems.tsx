@@ -8,15 +8,14 @@ import { BannerBook } from "@/app/lib/dataTypes";
 import { useErrorUtil } from "@/app/error/useErrorUtil";
 import { fetchReviewRecomand } from "@/app/lib/fetchBookCover";
 import styled from "styled-components";
-import { ImageStyle } from "../common/ImageStyle";
 
 const WRap = styled.div`
+    position: relative;
     padding: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     background-color: var(--main-color-light);
 `
 const Card = styled.div`
-    position: relative;
     display: flex;
     gap: 15px;
     overflow: hidden;
@@ -93,8 +92,8 @@ export default function BannerItems() {
             최근 읽은 책을 기반으로 추천해드려요!
         </Title>
         <WRap>
+            <SkeletonBox isLoading={isLoading} />
             <Card>
-                <SkeletonBox isLoading={isLoading} />
                 <ImageBox className="overflow-hidden rounded-2xl">
                     <Image src={reviewThumb[0]?.bookThumb || '/images/noThumb.svg'}
                     alt={`${reviewThumb[0]?.booktitle} 책 표지`}

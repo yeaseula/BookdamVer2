@@ -14,15 +14,15 @@ import { useToastStore } from '@/app/lib/useToastStore';
 import { useAuthStore, DataState, Wish } from '@/app/lib/userfetch';
 import { fetchBookAI } from '@/app/lib/fetchBookCover';
 import { useErrorUtil } from '@/app/error/useErrorUtil';
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css'
 import BookCover from './components/BookCover';
 import BookDesc from './components/BookDes';
 import { BookAiType } from '@/app/lib/dataTypes';
+import SkeletonBox from '../common/SkeletonBox';
 
 const SliderWrap = styled.div`
     position: relative;
     margin-top: 5px;
+    height: 156px;
 `
 const StyleSwiper = styled(Swiper)`
     overflow:visible;
@@ -106,14 +106,11 @@ export default function RecomandSwiper(){
         }
     }
 
-    if(AithumbArr.length === 0) {
-        return (
-            <Skeleton height={165}></Skeleton>
-        )
-    }
+    const isLoading = AithumbArr.length === 0
 
     return (
         <SliderWrap>
+            <SkeletonBox isLoading={isLoading} />
             <StyleSwiper
                 modules={[Navigation, A11y, Keyboard, Autoplay]}
                 onSwiper={(swiper)=>SwiperRef.current = swiper}
