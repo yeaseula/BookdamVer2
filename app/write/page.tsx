@@ -17,6 +17,7 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import { WriteType } from "../lib/dataTypes"
 import SubmitButton from "../components/common/SubmitButton"
 import { DATE } from "../lib/Valid"
+import SkeletonBox from "../components/common/Skeleton/SkeletonBox"
 
 const FieldList = styled.div`
     margin-bottom: 20px;
@@ -89,9 +90,6 @@ export default function Write() {
         fetchPost()
     },[postId])
 
-    if(!session) return;
-    const userId = session.user.id;
-
     const handlePoint = (e:React.MouseEvent<HTMLButtonElement>) => {
         const target = e.currentTarget.dataset.score;
         setRating(Number(target))
@@ -103,7 +101,8 @@ export default function Write() {
 
     const handleReviewSubmit = async( reviewdata:WriteType ) => {
 
-        if(loading) return
+        if(loading || !session) return
+        const userId = session.user.id;
         setLoading(true)
 
         if(!reviewdata.category) throw new Error('카테고리를 설정해주세요.')
@@ -186,7 +185,7 @@ export default function Write() {
 
     return (
         <SubWrap>
-            {loading && <SpinnerArea text="글 등록중.."/>}
+            <SpinnerArea text="글 등록중.." isLoading={loading} announce={loading} />
             <form onSubmit={handleSubmit(onSubmit)}>
                 <FieldList>
                     <SelectField
