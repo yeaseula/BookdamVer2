@@ -5,12 +5,10 @@ import { useAuthStore } from "@/app/lib/userfetch"
 import { useEffect, useState } from "react"
 import { Reviews, DataState } from "@/app/lib/userfetch"
 import Thumbnail from "../components/Thumbnail"
-import Skeleton from "react-loading-skeleton"
-import 'react-loading-skeleton/dist/skeleton.css'
 import { ErrorBoundary } from "react-error-boundary"
 import { CompoErrorFallBack } from "@/app/error/CompoErrorFallBack"
-import { SubWrap } from "@/app/components/common/container.styled"
-
+import { DetailWrap } from "@/app/components/common/container.styled"
+import { ReviewDetailSkeleton } from "@/app/components/common/Skeleton/ReviewSkeleton"
 
 const ReivewHead = styled.section`
     display: flex;
@@ -44,12 +42,14 @@ const ReviewBody = styled.section`
 export default function ReviewDetail({postNumber}) {
 
     const [reviewArr,setReviewArr] = useState<DataState<Reviews[]> | null>(null)
-    const { reviews } = useAuthStore()
+    const { reviews, isReviewLoaded } = useAuthStore()
+
+    const isLoading = !isReviewLoaded
 
     useEffect(()=>{
 
         if(!reviews.data) return
-        const find:Reviews[] = reviews.data?.filter((review)=>review.id === postNumber)
+        const find:Reviews[] = reviews.data?.filter((review)=>review.id === postNumber) || []
 
         if(find.length === 0) {
             setReviewArr(null)
@@ -66,85 +66,48 @@ export default function ReviewDetail({postNumber}) {
         } else {
             setReviewArr(reviewdata)
         }
-    },[reviews])
+    },[isReviewLoaded])
 
-    if(!reviewArr) {
-        return (
-            <SubWrap>
-                <ReivewHead>
-                    <BookThumbnail>
-                        <Skeleton height={'100%'} borderRadius={5}/>
-                    </BookThumbnail>
-                    <BookContent>
-                        <Skeleton width={78} height={20} borderRadius={5}></Skeleton>
-                        <Skeleton width={150} height={20} borderRadius={5}></Skeleton>
-                        <Skeleton height={20} borderRadius={5}></Skeleton>
+    return(
+        <DetailWrap>
+            <ReviewDetailSkeleton isLoading={isLoading}/>
+            <ReivewHead>
+                <h2 className="sr-only">{reviewArr?.data?.[0].title} 독서리뷰 내용</h2>
+                <BookThumbnail>
+                    <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
+                    <Thumbnail title={reviewArr?.data?.[0].title} author={reviewArr?.data?.[0].author}/>
+                    </ErrorBoundary>
+                </BookThumbnail>
+                <BookContent>
+                    <p className="text-[1.4rem] text-sx-[1.5rem]">{reviewArr?.data?.[0].category}</p>
+                    <p className="text-[1.8rem] font-bold mt-1.5">{reviewArr?.data?.[0].title}</p>
+                    <p className="text-[1.4rem]">{reviewArr?.data?.[0].author}</p>
 
-                        <div className="text-[1.5rem] mt-5">
-                            <Skeleton height={20} borderRadius={5}></Skeleton>
-                            <Skeleton height={20} borderRadius={5}></Skeleton>
-                        </div>
-
-                        <div className="mt-3 text-[1.5rem]">
-                            <Skeleton height={20} borderRadius={5}></Skeleton>
-                        </div>
-                        <Skeleton height={20} borderRadius={5}></Skeleton>
-                    </BookContent>
-                </ReivewHead>
-                <ReviewBody>
-                    <div className="mb-8">
-                        <Skeleton width={300} height={20} borderRadius={5}></Skeleton>
-                        <Skeleton height={20} borderRadius={5}></Skeleton>
-                    </div>
-                    <div>
-                        <Skeleton width={300} height={20} borderRadius={5}></Skeleton>
-                        <Skeleton height={20} borderRadius={5}></Skeleton>
-                    </div>
-                </ReviewBody>
-            </SubWrap>
-        )
-    }
-
-    if(reviewArr) {
-        return(
-            <SubWrap style={{ color: 'var(--color_black)' }}>
-                <ReivewHead>
-                    <h2 className="sr-only">{reviewArr.data?.[0].title} 독서리뷰 내용</h2>
-                    <BookThumbnail>
-                        <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
-                        <Thumbnail title={reviewArr.data?.[0].title} author={reviewArr?.data[0].author}/>
-                        </ErrorBoundary>
-                    </BookThumbnail>
-                    <BookContent>
-                        <p className="text-[1.4rem] text-sx-[1.5rem]">{reviewArr?.data[0].category}</p>
-                        <p className="text-[1.8rem] font-bold mt-1.5">{reviewArr?.data[0].title}</p>
-                        <p className="text-[1.4rem]">{reviewArr?.data[0].author}</p>
-
-                        <div className="text-[1.5rem] mt-5">
-                            <Highlight>{reviewArr?.data[0].start_date}</Highlight> 부터<br />
-                            <Highlight>{reviewArr?.data[0].end_date}</Highlight> 까지 읽었어요.
-                        </div>
-
-                        <div className="mt-3 text-[1.5rem]">
-                            <p><span>유저</span>님의 평가는</p>
-                        </div>
-                        <StarRaiting rating={reviewArr?.data[0].rating} />
-                    </BookContent>
-                </ReivewHead>
-                <ReviewBody>
-                    <h2 className="sr-only">리뷰 내용</h2>
-                    <div className="mb-8">
-                        <p className="text-[1.8rem] font-bold mb-2">한줄평</p>
-                        <p>{reviewArr?.data[0].memo}</p>
+                    <div className="text-[1.5rem] mt-5">
+                        <Highlight>{reviewArr?.data?.[0].start_date}</Highlight> 부터<br />
+                        <Highlight>{reviewArr?.data?.[0].end_date}</Highlight> 까지 읽었어요.
                     </div>
 
-                    <div>
-                        <p className="text-[1.8rem] font-bold mb-2">서평</p>
-                        <p dangerouslySetInnerHTML={{ __html: reviewArr?.data[0].content }}></p>
+                    <div className="mt-3 text-[1.5rem]">
+                        <p><span>유저</span>님의 평가는</p>
                     </div>
-                </ReviewBody>
-            </SubWrap>
-        )
-    }
+                    <StarRaiting rating={reviewArr?.data?.[0].rating} />
+                </BookContent>
+            </ReivewHead>
+            <ReviewBody>
+                <h2 className="sr-only">리뷰 내용</h2>
+                <div className="mb-8">
+                    <p className="text-[1.8rem] font-bold mb-2">한줄평</p>
+                    <p>{reviewArr?.data?.[0].memo}</p>
+                </div>
+
+                <div>
+                    <p className="text-[1.8rem] font-bold mb-2">서평</p>
+                    <p dangerouslySetInnerHTML={{ __html: reviewArr?.data?.[0].content }}></p>
+                </div>
+            </ReviewBody>
+        </DetailWrap>
+    )
+
 
 }

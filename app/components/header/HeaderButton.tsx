@@ -26,10 +26,9 @@ export default function HeaderButton() {
     const [modal,setModal] = useState(false)
     const [selectModal,setSelectModal] = useState(false) //첫번째모달
     const [deleteModal,setDeleteModal] = useState(false) //삭제여부
-    let debounce:boolean = false;
     const [loading,setLoading] = useState(false)
     const setToast = useToastStore((s)=>s.setToast)
-    const { session ,removeData } = useAuthStore()
+    const { session } = useAuthStore()
     const router = useRouter()
     const params = useParams()
     const userId = session.user.id

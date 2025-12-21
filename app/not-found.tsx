@@ -1,8 +1,16 @@
 "use client"
 import Image from 'next/image';
 import { Button } from "./error/Error.styled"
+import { useAuthStore } from './lib/userfetch';
+import { useEffect } from 'react';
 
 export default function NotFound() {
+    const setGlobalError = useAuthStore((s) => s.setGlobalError)
+    useEffect(() => {
+        setGlobalError(true)
+        return () => setGlobalError(false)
+    }, [])
+
     return (
         <div className="flex flex-col items-center justify-center min-h-screen">
         <Image src={'/images/fox_error404.svg'}

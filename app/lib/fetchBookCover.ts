@@ -120,7 +120,7 @@ export const fetchEditorRecomand = async () => {
 export const fetchBookCover = async (title:string,author:string) => {
 
     try {
-        const query = `${title} ${author}`;
+        const query = `${title}`;
         const res = await fetchAladinReview(query,"MidBig")
 
         return {

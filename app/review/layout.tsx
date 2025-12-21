@@ -16,11 +16,9 @@ export default function RootLayout({ children }: LayoutProps){
 
     return(
         <>
-            <main>
-                <ErrorBoundary FallbackComponent={GlobalErrorFallback}>
-                    {children}
-                </ErrorBoundary>
-            </main>
+            <ErrorBoundary FallbackComponent={GlobalErrorFallback}>
+                {children}
+            </ErrorBoundary>
             <Footer />
         </>
     )

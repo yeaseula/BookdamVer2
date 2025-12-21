@@ -178,7 +178,7 @@ export default function SignUp() {
     return(
         <SignUpWrapper>
             <h2 className="sr-only">책담 회원가입 페이지. 모든 항목은 필수입력 입니다.</h2>
-            {loading && <SpinnerArea text="회원가입 처리중..." />}
+            <SpinnerArea text="회원가입 처리중..." isLoading={loading}/>
             <Image
             src={'/images/main-logo.svg'}
             alt=""

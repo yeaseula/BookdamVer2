@@ -76,7 +76,7 @@ export default function EditPass() {
 
     return(
         <SubWrap>
-            {loading && <SpinnerArea text="비밀번호 변경 처리중..." />}
+            <SpinnerArea text="비밀번호 변경 처리중..." isLoading={loading} />
             <form onSubmit={handleSubmit(onSubmit)}>
             <LabelStyle>
                 <InputFields

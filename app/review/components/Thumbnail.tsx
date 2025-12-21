@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import styled from "styled-components"
 import Skeleton from "react-loading-skeleton";
@@ -7,6 +8,7 @@ import { fetchBookCover } from "@/app/lib/fetchBookCover";
 import { useErrorUtil } from "@/app/error/useErrorUtil";
 
 const ThumbContainer = styled.div`
+    position: relative;
     width: 100%;
     height: 100%;
     background-color: #bdbdbd;
@@ -26,6 +28,7 @@ export default function Thumbnail({title, author}:ThumbProps) {
 
     useEffect(()=>{
         const image = async (title:string,author:string) => {
+            if(!title) return
             try {
                 const Thumbnails = await fetchBookCover(title,author)
                 if(Thumbnails.bookThumb == '') {
@@ -38,17 +41,18 @@ export default function Thumbnail({title, author}:ThumbProps) {
             }
         }
         image(title,author)
-    },[])
+    },[title])
 
     return(
         <>
-            {!thumbnail &&
-            <Skeleton style={{ width: '100%', height:'100%', lineHeight: '1.6' }}/>
-            }
-            {thumbnail &&
-                <ThumbContainer
-                style={{ backgroundImage: `url(${thumbnail})` }} />
-            }
+            <ThumbContainer>
+                <Image
+                src={`${thumbnail || '/images/noThumb.svg'}`}
+                fill
+                alt={`${title} 책 표지`}
+                fetchPriority="high"
+                ></Image>
+            </ThumbContainer>
         </>
     )
 }

@@ -154,7 +154,7 @@ export default function Login() {
     return (
         <LoginWrapper>
             <h2 className="sr-only">로그인</h2>
-            {loading && <SpinnerArea text="로그인 진행중.."></SpinnerArea>}
+            <SpinnerArea text="로그인 진행중.." isLoading={loading} />
             <div className="w-[120px]">
             <Image
             src={'/images/main-logo.svg'}

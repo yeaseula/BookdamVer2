@@ -19,3 +19,11 @@ export const SubWrap = styled.div`
     min-height: calc(100vh);
     background: var(--board_background);
 `
+
+export const DetailWrap = styled.div`
+    position: relative;
+    padding: 80px 15px 0;
+    min-height: auto;
+    background: var(--board_background);
+    color: var(--color_black);
+`
