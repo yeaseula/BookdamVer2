@@ -3,13 +3,14 @@ import { NetworkError, ServerError, UnauthorizedError} from "./errorLibrary"
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from "../lib/userfetch";
 import { useEffect } from "react";
-import { Container, Title, Button, Button2 } from "./Error.styled";
+import { Container, Title, Button } from "./Error.styled";
 import Image from "next/image";
 
 export function GlobalErrorFallback({ error,resetErrorBoundary}:any) {
     const router = useRouter()
 
     const setGlobalError = useAuthStore((s) => s.setGlobalError)
+
     useEffect(() => {
         setGlobalError(true)
         return () => setGlobalError(false)

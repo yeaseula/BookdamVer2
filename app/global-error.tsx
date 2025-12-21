@@ -1,6 +1,7 @@
 "use client"
 import Image from "next/image"
 import { Container } from "./error/Error.styled"
+import { Button } from "./error/Error.styled"
 
 export default function GlobalError({
         error,
@@ -19,12 +20,12 @@ export default function GlobalError({
                 <p className="text-gray-600 mb-6">
                 {error.message || '알 수 없는 오류가 발생했습니다'}
                 </p>
-                <button
+                <Button
                 onClick={()=>reset()}
                 className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
                 >
                 다시 시작
-                </button>
+                </Button>
             </div>
             </Container>
         </body>

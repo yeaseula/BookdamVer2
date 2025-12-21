@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import styled from "styled-components";
 import { useState } from "react";
+import { useAuthStore } from "@/app/lib/userfetch";
 
 const FooterCont = styled.footer`
     background-color: var(--color_light_gray);
@@ -64,7 +65,11 @@ const CopyrightText = styled.p`
 `
 export default function Footer() {
     const [toggleState,setToggleState] = useState(false);
+    const { hasGlobalError } = useAuthStore()
 
+    if(hasGlobalError) {
+        return null
+    }
     return (
         <FooterCont>
         <LogoBox>
@@ -75,9 +80,9 @@ export default function Footer() {
             />
         </LogoBox>
         <FooterMenu>
-            <FooterMenuCont><Link href="#"><span>이용약관</span></Link></FooterMenuCont>
+            <FooterMenuCont><Link href="https://github.com/yeaseula" target="_blank"><span>이용약관</span></Link></FooterMenuCont>
             <FooterMenuCont><Bar /></FooterMenuCont>
-            <FooterMenuCont><Link href="#"><span>개인정보처리방침</span></Link></FooterMenuCont>
+            <FooterMenuCont><Link href="https://velog.io/@somv/posts" target="_blank"><span>개인정보처리방침</span></Link></FooterMenuCont>
         </FooterMenu>
         <FooterToggle onClick={()=>{setToggleState(!toggleState)}}>개발자 정보</FooterToggle>
         <CopyRightDropDown $togglestate={toggleState}>
