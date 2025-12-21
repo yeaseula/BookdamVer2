@@ -1,6 +1,5 @@
 "use client"
 
-import Error from "../error";
 import { NetworkError, throwHttpError } from "../error/errorLibrary";
 import { BookAiType } from "./dataTypes";
 import { randomInt, shuffle } from "./aiRecomand";
@@ -27,11 +26,11 @@ function pickMost(arr: (number)[]) {
 
     return result;
 }
-const fetchAladinReview = async (query: string, size: string) => {
+const fetchAladinReview = async (query: string, size: string, options?:RequestInit) => {
     const res = await fetch(
         `/api/aladinThumb?query=${encodeURIComponent(query)}&size=${size}`
     );
-    if(!res.ok) throwHttpError(res)
+    if(!res.ok) { throw new Error(`ALADIN_HTTP_${res.status}`) }
     return res.json();
 };
 const fetchAladin = async (categoryId: number, searchType: string, size: string, maxCount: number) => {
@@ -117,25 +116,19 @@ export const fetchEditorRecomand = async () => {
     }
 }
 
-export const fetchBookCover = async (title:string,author:string) => {
-
+export const fetchBookCover = async (title:string, signal?: AbortSignal) => {
     try {
         const query = `${title}`;
-        const res = await fetchAladinReview(query,"MidBig")
+        const res = await fetchAladinReview(query,"MidBig", {signal})
 
         return {
-            bookThumb: res.item[0].cover || '',
-            booktitle: res.item[0].title,
+            bookThumb: res?.item?.[0]?.cover ?? null
         }
     } catch(err) {
-        console.log(err)
-        if (err instanceof TypeError && err.message.includes('fetch')) {
-            throw new NetworkError()
+        if ((err as DOMException)?.name === 'AbortError') {
+            return null
         }
-        if(err instanceof Error) {
-            throw err
-        }
-        throw err
+        return null
     }
 }
 

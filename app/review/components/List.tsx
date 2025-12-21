@@ -77,7 +77,13 @@ const Date = styled.p`
     }
 `
 
-export default function List({reviews}: {reviews:Reviews[]}) {
+type RenderReviews = Reviews & {
+    coverImage: {
+        bookThumb: string | null
+    } | null
+}
+
+export default function List({reviews}: {reviews:RenderReviews[]}) {
     return (
         <>
         {reviews?.map(cont=>(
@@ -85,7 +91,7 @@ export default function List({reviews}: {reviews:Reviews[]}) {
                 <ListHref href={`review/${cont.id}`}></ListHref>
                 <BookThumbnail>
                     <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
-                        <Thumbnail title={cont.title} author={cont.author}/>
+                        <Thumbnail cover={cont.coverImage?.bookThumb ?? null} title={cont.title}/>
                     </ErrorBoundary>
                 </BookThumbnail>
                 <Content>

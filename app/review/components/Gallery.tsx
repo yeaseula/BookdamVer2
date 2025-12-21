@@ -7,6 +7,7 @@ import Thumbnail from "./Thumbnail"
 import { ErrorBoundary } from "react-error-boundary"
 import { CompoErrorFallBack } from "@/app/error/CompoErrorFallBack"
 
+
 const GalleryContainer = styled.div`
     display: flex;
     flex-wrap: wrap;
@@ -35,7 +36,15 @@ const BookThumbnail = styled.div`
         height: 85px;
     }
 `
-export default function GalleryList({reviews}: {reviews: Reviews[]}) {
+
+type RenderReviews = Reviews & {
+    coverImage: {
+        bookThumb: string | null
+    } | null
+}
+
+export default function GalleryList({reviews}: {reviews: RenderReviews[]}) {
+
     return (
         <GalleryContainer>
         {reviews?.map((ele)=> (
@@ -44,7 +53,7 @@ export default function GalleryList({reviews}: {reviews: Reviews[]}) {
                     <BookThumbnail>
                     <ErrorBoundary
                     FallbackComponent={CompoErrorFallBack}>
-                        <Thumbnail title={ele.title} author={ele.author}/>
+                        <Thumbnail cover={ele.coverImage?.bookThumb ?? null} title={ele.title}/>
                     </ErrorBoundary>
                     </BookThumbnail>
                     <p className="text-xl mt-3 font-medium">{ele.title}</p>

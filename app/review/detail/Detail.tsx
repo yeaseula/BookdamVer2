@@ -7,9 +7,9 @@ import { Reviews, DataState } from "@/app/lib/userfetch"
 import Thumbnail from "../components/Thumbnail"
 import { ErrorBoundary } from "react-error-boundary"
 import { CompoErrorFallBack } from "@/app/error/CompoErrorFallBack"
-import { CommonWrap, DetailWrap } from "@/app/components/common/container.styled"
+import {  DetailWrap } from "@/app/components/common/container.styled"
 import { ReviewDetailSkeleton } from "@/app/components/common/Skeleton/ReviewSkeleton"
-import Footer from "@/app/components/footer/Footer"
+import { fetchBookCover } from "@/app/lib/fetchBookCover"
 
 const ReivewHead = styled.section`
     display: flex;
@@ -40,71 +40,102 @@ const ReviewBody = styled.section`
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
     background: var(--background-color-light);
 `
+
+type RenderReviews = Reviews & {
+    coverImage: {
+        bookThumb: string | null
+    } | null
+}
+
 export default function ReviewDetail({postNumber}) {
 
-    const [reviewArr,setReviewArr] = useState<DataState<Reviews[]> | null>(null)
+    const [reviewArr,setReviewArr] = useState<RenderReviews[]| null>(null)
     const { reviews, isReviewLoaded } = useAuthStore()
 
-    const isLoading = !isReviewLoaded
+    const isLoading = !isReviewLoaded || !reviewArr
+
+    const fetchThumb = async(find:Reviews[], signal:AbortSignal) => {
+        try {
+            const results = await fetchBookCover(find?.[0].title, signal)
+                return {
+                    coverImage: results.bookThumb
+                }
+        } catch {
+            return {
+                coverImage: null
+            }
+        }
+    }
 
     useEffect(()=>{
-
         if(!reviews.data) return
-        const find:Reviews[] = reviews.data?.filter((review)=>review.id === postNumber) || []
+        const controller = new AbortController()
+
+        const find = reviews.data?.filter((review)=>review.id === postNumber) || []
 
         if(find.length === 0) {
             setReviewArr(null)
             return
         }
 
-        const reviewdata = {
-            data: find,
-            error: reviews.error,
-            ok: !reviews.error
+        const thumbfetchrun = async() => {
+            const res = await fetchThumb(find, controller.signal);
+            console.log(find)
+            console.log(res)
+            if(res) {
+                //setReviewArr()
+                setReviewArr([{
+                    ...find[0],
+                    coverImage: {bookThumb: res.coverImage}
+                }])
+            }
         }
-        if(reviews.error) {
-            throw new Error
-        } else {
-            setReviewArr(reviewdata)
-        }
+        thumbfetchrun()
+
+        return ()=> controller.abort()
+
     },[isReviewLoaded])
+
+    useEffect(()=>{
+        console.log(reviewArr)
+    },[reviewArr])
 
     return(
         <DetailWrap>
             <ReviewDetailSkeleton isLoading={isLoading}/>
             <ReivewHead>
-                <h2 className="sr-only">{reviewArr?.data?.[0].title} 독서리뷰 내용</h2>
+                <h2 className="sr-only">{reviewArr?.[0].title} 독서리뷰 내용</h2>
                 <BookThumbnail>
                     <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
-                    <Thumbnail title={reviewArr?.data?.[0].title} author={reviewArr?.data?.[0].author}/>
+                    <Thumbnail cover={reviewArr?.[0].coverImage.bookThumb} title={reviewArr?.[0].title}/>
                     </ErrorBoundary>
                 </BookThumbnail>
                 <BookContent>
-                    <p className="text-[1.4rem] text-sx-[1.5rem]">{reviewArr?.data?.[0].category}</p>
-                    <p className="text-[1.8rem] font-bold mt-1.5">{reviewArr?.data?.[0].title}</p>
-                    <p className="text-[1.4rem]">{reviewArr?.data?.[0].author}</p>
+                    <p className="text-[1.4rem] text-sx-[1.5rem]">{reviewArr?.[0].category}</p>
+                    <p className="text-[1.8rem] font-bold mt-1.5">{reviewArr?.[0].title}</p>
+                    <p className="text-[1.4rem]">{reviewArr?.[0].author}</p>
 
                     <div className="text-[1.5rem] mt-5">
-                        <Highlight>{reviewArr?.data?.[0].start_date}</Highlight> 부터<br />
-                        <Highlight>{reviewArr?.data?.[0].end_date}</Highlight> 까지 읽었어요.
+                        <Highlight>{reviewArr?.[0].start_date}</Highlight> 부터<br />
+                        <Highlight>{reviewArr?.[0].end_date}</Highlight> 까지 읽었어요.
                     </div>
 
                     <div className="mt-3 text-[1.5rem]">
                         <p><span>유저</span>님의 평가는</p>
                     </div>
-                    <StarRaiting rating={reviewArr?.data?.[0].rating} />
+                    <StarRaiting rating={reviewArr?.[0].rating} />
                 </BookContent>
             </ReivewHead>
             <ReviewBody>
                 <h2 className="sr-only">리뷰 내용</h2>
                 <div className="mb-8">
                     <p className="text-[1.8rem] font-bold mb-2">한줄평</p>
-                    <p>{reviewArr?.data?.[0].memo}</p>
+                    <p>{reviewArr?.[0].memo}</p>
                 </div>
 
                 <div>
                     <p className="text-[1.8rem] font-bold mb-2">서평</p>
-                    <p dangerouslySetInnerHTML={{ __html: reviewArr?.data?.[0].content }}></p>
+                    <p dangerouslySetInnerHTML={{ __html: reviewArr?.[0].content }}></p>
                 </div>
             </ReviewBody>
         </DetailWrap>
