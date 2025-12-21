@@ -5,7 +5,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import styled from "styled-components";
 import { useAuthStore, useSettingStore } from "@/app/lib/userfetch";
 import { throwSupabaseError } from "@/app/error/errorLibrary";
-import SkeletonBox from "../common/SkeletonBox";
+import SkeletonBox from "../common/Skeleton/SkeletonBox";
 
 const Section = styled.section`
     position: relative;
@@ -128,6 +128,12 @@ export default function Calendar() {
             <h2 className="sr-only">나의 독서 스탬프 캘린더.
                 리뷰를 작성 한 날짜에 도장이 찍혀
                 날짜별 독서 기록을 시각적으로 확인할 수 있습니다.
+                도장이 찍힌 날짜는
+                    {!isLoading &&
+                        stampDates?.map((val,idx)=>(
+                            <time key={`${idx}-${val}`} dateTime={val}>{val}</time>
+                        ))
+                    } 입니다.
             </h2>
             <FullCalBox>
                 <FullCalendar

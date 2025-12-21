@@ -80,7 +80,7 @@ const Date = styled.p`
 export default function List({reviews}: {reviews:Reviews[]}) {
     return (
         <>
-        {reviews.map(cont=>(
+        {reviews?.map(cont=>(
             <ListItem key={cont.id}>
                 <ListHref href={`review/${cont.id}`}></ListHref>
                 <BookThumbnail>

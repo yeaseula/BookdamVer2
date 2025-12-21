@@ -38,7 +38,7 @@ const BookThumbnail = styled.div`
 export default function GalleryList({reviews}: {reviews: Reviews[]}) {
     return (
         <GalleryContainer>
-        {reviews.map((ele)=> (
+        {reviews?.map((ele)=> (
             <GalleryItem key={ele.id}>
                 <ListHref href={`review/${ele.id}`} />
                     <BookThumbnail>

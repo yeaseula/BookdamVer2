@@ -1,13 +1,10 @@
 "use client"
-import styled from "styled-components"
 import { useEffect, useState, useRef } from "react"
 import { useAuthStore,DataState,Memo } from "../lib/userfetch"
 import { useToastStore } from "../lib/useToastStore"
 import { ErrorBoundary } from "react-error-boundary"
 import { CompoErrorFallBack } from "../error/CompoErrorFallBack"
 import { AnimatePresence } from "framer-motion"
-import Skeleton from "react-loading-skeleton"
-import 'react-loading-skeleton/dist/skeleton.css'
 
 import MemoForm from "./components/memoForm"
 import MemoContent from "./components/memoContent"
@@ -22,6 +19,7 @@ import { SubWrap } from "../components/common/container.styled"
 import { useInitialToggle,
     AllModalClose, SelectModalClose, DeleteModalClose,
     handleEditClose, handleDelete } from "../hook/useModal"
+import { FormSkeleton } from "../components/common/Skeleton/ReviewSkeleton"
 
 export default function MemoPage() {
     const { session, isMemoRoaded, removeData } = useAuthStore()
@@ -39,6 +37,8 @@ export default function MemoPage() {
     let debounce:boolean = false;
     const [loading,setLoading] = useState(false)
     const setToast = useToastStore((s)=>s.setToast)
+
+    const isLoading = !isMemoRoaded
 
     useEffect(()=>{
         setCurrentMemo(memo)
@@ -91,30 +91,10 @@ export default function MemoPage() {
         setSelectModal
     })
 
-
-    if(!isMemoRoaded) {
-        return (
-            <SubWrap>
-                <Skeleton height={37} borderRadius={5}/>
-                <div className="mt-1.5">
-                    <Skeleton height={90} borderRadius={5} />
-                </div>
-                <div className="mt-[35px]">
-                    <Skeleton height={25} borderRadius={5}/>
-                </div>
-                <div className="mt-[10px] text-right">
-                    <Skeleton width={100} height={25} borderRadius={5}/>
-                </div>
-                <div className="mt-[5px] text-right">
-                    <Skeleton width={150} height={25} borderRadius={5}/>
-                </div>
-            </SubWrap>
-        )
-    }
-
     return(
         <SubWrap>
             <h2 className="sr-only">기억에 남는 구절</h2>
+            <FormSkeleton isLoading={isLoading} />
             {currentMemo && (
                 <>
                     <MemoForm session={session}/>
@@ -174,7 +154,6 @@ export default function MemoPage() {
                     </AnimatePresence>
                 </>
             )}
-
         </SubWrap>
     )
 }

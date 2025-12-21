@@ -1,14 +1,11 @@
 "use client"
 
-import styled from "styled-components"
 import { useState, useEffect, useRef } from "react"
 import { useAuthStore, DataState, Wish } from "../lib/userfetch"
 import { useToastStore } from "../lib/useToastStore"
 import { ErrorBoundary } from "react-error-boundary"
 import { CompoErrorFallBack } from "../error/CompoErrorFallBack"
 import { AnimatePresence } from "framer-motion"
-import Skeleton from "react-loading-skeleton"
-import 'react-loading-skeleton/dist/skeleton.css'
 
 import WishForm from "./components/wishForm"
 import WishContent from "./components/WishContent"
@@ -23,6 +20,7 @@ import { SubWrap } from "../components/common/container.styled"
 import { useInitialToggle,
     AllModalClose, SelectModalClose, DeleteModalClose,
     handleEditClose, handleDelete } from "../hook/useModal"
+import { FormSkeleton } from "../components/common/Skeleton/ReviewSkeleton"
 
 export default function WishPage() {
     const { session, isWishLoaded, removeData } = useAuthStore()
@@ -41,6 +39,8 @@ export default function WishPage() {
     let debounce:boolean = false;
     const [loading,setLoading] = useState(false)
     const setToast = useToastStore((s)=>s.setToast)
+
+    const isLoading = !isWishLoaded
 
     useEffect(()=>{
         setCurrentWish(wish)
@@ -93,30 +93,11 @@ export default function WishPage() {
         setSelectModal
     })
 
-    if(!isWishLoaded) {
-        return (
-            <SubWrap>
-                <Skeleton height={37} borderRadius={5}/>
-                <div className="mt-1.5">
-                    <Skeleton height={90} borderRadius={5} />
-                </div>
-                <div className="mt-[35px]">
-                    <Skeleton height={25} borderRadius={5}/>
-                </div>
-                <div className="mt-[10px] text-right">
-                    <Skeleton width={100} height={25} borderRadius={5}/>
-                </div>
-                <div className="mt-[5px] text-right">
-                    <Skeleton width={150} height={25} borderRadius={5}/>
-                </div>
-            </SubWrap>
-        )
-    }
-
     return (
         <>
             <SubWrap>
                 <h2 className="sr-only">위시리스트</h2>
+                <FormSkeleton isLoading={isLoading} />
                 {currentWish && (
                     <>
                     <WishForm session={session} />

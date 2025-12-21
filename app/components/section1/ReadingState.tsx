@@ -4,7 +4,7 @@ import Image from "next/image"
 import Skeleton from "react-loading-skeleton"
 import styled from "styled-components"
 import { throwSupabaseError } from "@/app/error/errorLibrary"
-import SkeletonBox from "../common/SkeletonBox"
+import SkeletonBox from "../common/Skeleton/SkeletonBox"
 
 const ReadBox = styled.section`
     position: relative;

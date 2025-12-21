@@ -3,17 +3,19 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/app/lib/userfetch";
 import { throwSupabaseError } from "@/app/error/errorLibrary";
-import SkeletonBox from "../common/SkeletonBox";
+import SkeletonBox from "../common/Skeleton/SkeletonBox";
 import { BannerBook } from "@/app/lib/dataTypes";
 import { useErrorUtil } from "@/app/error/useErrorUtil";
 import { fetchEditorRecomand, fetchReviewRecomand } from "@/app/lib/fetchBookCover";
 import styled from "styled-components";
 import Link from "next/link";
+import SkeletonText from "../common/Skeleton/SkeletonText";
 
 const Wrapper = styled.div`
     position: relative;
     padding: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
     background-color: var(--main-color-light);
 `
 const Card = styled.div`
@@ -38,6 +40,7 @@ const BookInfor = styled.p`
     -webkit-line-clamp: 1;
 `
 const Description = styled.div`
+    position: relative;
     width: calc(100% - 165px);
     display: flex;
     flex-direction: column;
@@ -125,8 +128,8 @@ export default function EditorRecomand() {
                 이런 책은 어때요?
             </Title>
             <div className="relative">
-                <SkeletonBox isLoading={isLoading} />
                 <Wrapper>
+                    <SkeletonText isLoading={isLoading} />
                     <Card>
                         <ImageBox>
                             <Image src={reviewThumb[0]?.bookThumb || '/images/noThumb.svg'}

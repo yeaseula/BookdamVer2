@@ -31,7 +31,7 @@ export default function ReadingForm({ session }) {
 
     const onSubmit: SubmitHandler<ReadingFormType> = (data) => handleReadSubmit(data)
 
-    const userId = session.user.id
+    const userId = session?.user.id
 
     const handleReadSubmit = async(readdata:ReadingFormType) => {
 

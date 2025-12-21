@@ -13,7 +13,7 @@ import { useAuthStore } from '@/app/lib/userfetch';
 import { fetchBookAI } from '@/app/lib/fetchBookCover';
 import { useErrorUtil } from '@/app/error/useErrorUtil';
 import { BookAiType } from '@/app/lib/dataTypes';
-import SkeletonBox from '../common/SkeletonBox';
+import SkeletonBox from '../common/Skeleton/SkeletonBox';
 import RealSlide from './components/RealSlide';
 import SkeletonSlide from './components/SkeletonSlide';
 

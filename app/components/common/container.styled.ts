@@ -14,6 +14,8 @@ export const Main = styled.div`
 `
 
 export const SubWrap = styled.div`
+    position: relative;
     padding: 80px 15px 65px;
+    min-height: calc(100vh);
     background: var(--board_background);
 `

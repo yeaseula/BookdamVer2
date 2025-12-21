@@ -24,6 +24,7 @@ import { SubWrap } from "../components/common/container.styled"
 import { useInitialToggle,
     AllModalClose, SelectModalClose, DeleteModalClose,
     handleEditClose, handleDelete } from "../hook/useModal"
+import { FormSkeleton } from "../components/common/Skeleton/ReviewSkeleton"
 
 export default function ReadingPage() {
     //data first access point
@@ -51,6 +52,7 @@ export default function ReadingPage() {
     const [loading,setLoading] = useState(false)
     const setToast = useToastStore((s)=>s.setToast)
 
+    const isLoading = !isBooksLoaded
 
     useEffect(()=>{
         if(logWatchNum.length === 0) {
@@ -119,39 +121,21 @@ export default function ReadingPage() {
         setSelectModal
     })
 
-    if(!isBooksLoaded) {
-        return (
-            <SubWrap>
-                <Skeleton height={37} borderRadius={5}/>
-                <div className="mt-1.5">
-                    <Skeleton height={90} borderRadius={5} />
-                </div>
-                <div className="mt-[35px]">
-                    <Skeleton height={25} borderRadius={5}/>
-                </div>
-                <div className="mt-[10px] text-right">
-                    <Skeleton width={100} height={25} borderRadius={5}/>
-                </div>
-                <div className="mt-[5px] text-right">
-                    <Skeleton width={150} height={25} borderRadius={5}/>
-                </div>
-            </SubWrap>
-        )
-    }
 
     return(
         <SubWrap>
             <h2 className="sr-only">읽고있는 책</h2>
+            <FormSkeleton isLoading={isLoading} />
             <ReadingForm session={session}/>
             <div className="mt-[35px]">
                 <ErrorBoundary FallbackComponent={CompoErrorFallBack}>
-                <ReadingContent
-                books={books}
-                setCheckId={setCheckId}
-                currentBooks={currentBooks}
-                logWatchNum={logWatchNum}
-                setLogWatchNum={setLogWatchNum}
-                />
+                    <ReadingContent
+                    books={books}
+                    setCheckId={setCheckId}
+                    currentBooks={currentBooks}
+                    logWatchNum={logWatchNum}
+                    setLogWatchNum={setLogWatchNum}
+                    />
                 </ErrorBoundary>
             </div>
             <AnimatePresence>
