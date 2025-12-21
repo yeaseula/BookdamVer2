@@ -6,7 +6,7 @@ const ThumbContainer = styled.div`
     position: relative;
     width: 100%;
     height: 100%;
-    background-color: #bdbdbd;
+    background-color: #ebebeb;
     background-size: cover;
     background-position: center;
 `

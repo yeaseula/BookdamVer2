@@ -20,7 +20,16 @@ export default function ReviewList() {
     const { userSetting } = useSettingStore()
     const [reviewsWithThumb, setReviewsWithThumb] = useState<RenderReviews[] | null>(null)
 
-    const isLoading = !isReviewLoaded || (reviews.data.length !== 0 ? !reviewsWithThumb : !!reviewsWithThumb)
+    const isLoading = !isReviewLoaded
+
+    const baseReviews: RenderReviews[] = reviews.data?.map(review => ({
+        ...review,
+        coverImage: null,
+    }))
+
+    //썸네일 호출까지 완료하면 새롭게 만들어진 review 배열로 다시 갈아끼움
+    const renderReviews:RenderReviews[] = reviewsWithThumb ?? baseReviews
+
 
     const fetchThumb = async(signal:AbortSignal) => {
         if(!reviews.data || reviews.data?.length === 0) return;
@@ -93,8 +102,8 @@ export default function ReviewList() {
             <h2 className="sr-only">내가 쓴 리뷰 리스트</h2>
             <p className="total-count text-s">총 {reviews.data?.length}개</p>
             <div className="mt-[10px]">
-                {userSetting.data?.review_set === 'gallery' && <GalleryList reviews={reviewsWithThumb} />}
-                {userSetting.data?.review_set === 'list' && <List reviews={reviewsWithThumb} />}
+                {userSetting.data?.review_set === 'gallery' && <GalleryList reviews={renderReviews} />}
+                {userSetting.data?.review_set === 'list' && <List reviews={renderReviews} />}
             </div>
         </SubWrap>
     )
