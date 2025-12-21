@@ -80,8 +80,7 @@ export default function ReviewDetail({postNumber}) {
 
         const thumbfetchrun = async() => {
             const res = await fetchThumb(find, controller.signal);
-            console.log(find)
-            console.log(res)
+
             if(res) {
                 //setReviewArr()
                 setReviewArr([{
@@ -95,10 +94,6 @@ export default function ReviewDetail({postNumber}) {
         return ()=> controller.abort()
 
     },[isReviewLoaded])
-
-    useEffect(()=>{
-        console.log(reviewArr)
-    },[reviewArr])
 
     return(
         <DetailWrap>

@@ -20,9 +20,7 @@ export default function ReviewList() {
     const { userSetting } = useSettingStore()
     const [reviewsWithThumb, setReviewsWithThumb] = useState<RenderReviews[] | null>(null)
 
-    const isLoading = !isReviewLoaded || !reviewsWithThumb
-
-    const renderReviews = reviewsWithThumb ?? reviews.data
+    const isLoading = !isReviewLoaded || (reviews.data.length !== 0 ? !reviewsWithThumb : !!reviewsWithThumb)
 
     const fetchThumb = async(signal:AbortSignal) => {
         if(!reviews.data || reviews.data?.length === 0) return;
