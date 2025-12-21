@@ -1,4 +1,3 @@
-import Footer from "../components/footer/Footer";
 import { ErrorBoundary } from "react-error-boundary";
 import { GlobalErrorFallback } from "../error/GlobalErrorFallBack";
 
@@ -9,12 +8,9 @@ export const metadata = {
 export default function RootLayout({children}){
     return(
         <>
-            <main>
-                <ErrorBoundary FallbackComponent={GlobalErrorFallback}>
-                {children}
-                </ErrorBoundary>
-            </main>
-            <Footer />
+            <ErrorBoundary FallbackComponent={GlobalErrorFallback}>
+            {children}
+            </ErrorBoundary>
         </>
     )
 }

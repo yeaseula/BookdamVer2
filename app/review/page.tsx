@@ -4,8 +4,9 @@ import GalleryList from "./components/Gallery"
 import List from "./components/List"
 import Image from "next/image"
 import { throwSupabaseError } from "../error/errorLibrary"
-import { SubWrap } from "../components/common/container.styled"
+import { CommonWrap, SubWrap } from "../components/common/container.styled"
 import { ListSkeleton } from "../components/common/Skeleton/ReviewSkeleton"
+import Footer from "../components/footer/Footer"
 
 export default function ReviewList() {
     const { reviews,isReviewLoaded } = useAuthStore()

@@ -8,6 +8,7 @@ import { AppleSDGothicNeo } from "@/public/fonts/fonts";
 import { ToastContainer } from "react-toastify";
 import Toast from "./components/modal/Toast";
 import Header from "./components/header/Header";
+import Footer from "./components/footer/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,28 +31,30 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     session, profile,
     reviews, memo, books, log, wish, settings
   } = await createClient()
-
   return (
     <html lang="en" className={AppleSDGothicNeo.className}>
       <body>
-        <StyledComponentsRegistry>
-          <ClientRoot
-          initialSession={session}
-          initialProfile={profile}
-          initialReview={reviews}
-          initialMemo={memo}
-          initialBooks={books}
-          initialLog={log}
-          initialWish={wish}
-          initialSettings={settings}
-          >
+        <div className="relative width-[100%] shadow-2xl overflow-x-hidden bg-[var(--color_white)]">
+          <StyledComponentsRegistry>
+            <ClientRoot
+            initialSession={session}
+            initialProfile={profile}
+            initialReview={reviews}
+            initialMemo={memo}
+            initialBooks={books}
+            initialLog={log}
+            initialWish={wish}
+            initialSettings={settings}
+            >
               <ToastContainer limit={3} />
               <Toast />
               <Header />
               {children}
-            <NavBar />
-          </ClientRoot>
-        </StyledComponentsRegistry>
+              <Footer />
+              <NavBar />
+            </ClientRoot>
+          </StyledComponentsRegistry>
+        </div>
       </body>
     </html>
   );

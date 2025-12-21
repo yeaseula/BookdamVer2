@@ -117,7 +117,6 @@ export default function Header() {
                 <Depth>
                     <button onClick={()=>router.back()}><RiArrowLeftLine size={20}></RiArrowLeftLine></button>
                     <Title>{title}</Title>
-                    <Search />
                     <FloatWrite />
                 </Depth>
             </Container>

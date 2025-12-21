@@ -1,4 +1,3 @@
-import Footer from "../components/footer/Footer";
 import { ErrorBoundary } from "react-error-boundary";
 import { GlobalErrorFallback } from "../error/GlobalErrorFallBack";
 
@@ -19,7 +18,6 @@ export default function RootLayout({ children }: LayoutProps){
             <ErrorBoundary FallbackComponent={GlobalErrorFallback}>
                 {children}
             </ErrorBoundary>
-            <Footer />
         </>
     )
 }

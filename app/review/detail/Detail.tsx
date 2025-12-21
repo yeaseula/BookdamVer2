@@ -7,8 +7,9 @@ import { Reviews, DataState } from "@/app/lib/userfetch"
 import Thumbnail from "../components/Thumbnail"
 import { ErrorBoundary } from "react-error-boundary"
 import { CompoErrorFallBack } from "@/app/error/CompoErrorFallBack"
-import { DetailWrap } from "@/app/components/common/container.styled"
+import { CommonWrap, DetailWrap } from "@/app/components/common/container.styled"
 import { ReviewDetailSkeleton } from "@/app/components/common/Skeleton/ReviewSkeleton"
+import Footer from "@/app/components/footer/Footer"
 
 const ReivewHead = styled.section`
     display: flex;
@@ -108,6 +109,4 @@ export default function ReviewDetail({postNumber}) {
             </ReviewBody>
         </DetailWrap>
     )
-
-
 }

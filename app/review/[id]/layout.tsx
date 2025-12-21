@@ -31,11 +31,9 @@ export default async function RootLayout({ params, children }){
 
     return(
         <>
-            <main>
-                <ErrorBoundary FallbackComponent={GlobalErrorFallback}>
-                    {children}
-                </ErrorBoundary>
-            </main>
+            <ErrorBoundary FallbackComponent={GlobalErrorFallback}>
+                {children}
+            </ErrorBoundary>
         </>
     )
 }
