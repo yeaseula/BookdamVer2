@@ -43,12 +43,10 @@ interface InputType extends Omit<InputHTMLAttributes<HTMLInputElement>, 'width'|
     show?: boolean
 }
 
-const InputFields = ({
+export default function InputFields ({
     label, error ,register, rules, name, width, required, show, ...rest
-}:InputType)=>{
-
+}:InputType){
     const id = name
-
     return (
         <Wrap $width={width}>
             <Label htmlFor={id} className={`${show && 'sr-only'}`}>{label} {required && <b className="font-bold text-red-700"> *</b>}</Label>
@@ -63,6 +61,3 @@ const InputFields = ({
         </Wrap>
     )
 }
-
-
-export default InputFields
